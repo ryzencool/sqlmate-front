@@ -1,44 +1,12 @@
 import React, {useRef, useState} from "react";
 import {Outlet, useNavigate} from "react-router";
 import Button from "@mui/material/Button";
-import {useAtom} from "jotai";
-import {dbTypeAtom} from "../store/sqlStore";
-import {exporter, Parser, importer} from "@dbml/core";
-import ZMenu from "../components/ZMenu";
+import OperationMenu from "./dbpage/OperationMenu";
 import {useLocation} from "react-router-dom";
 
 function Header() {
 
     const location = useLocation()
-
-    console.log("当前路径", location.pathname, location.hash, location.search)
-
-    const [dbType, setDbType] = useAtom(dbTypeAtom)
-
-
-    // const handleChange = (e) => {
-    //     setDbType(e.target.value)
-    // }
-    //
-    // const selectFile = () => {
-    //     fileInput.current.click()
-    // }
-    //
-    //
-    // const fileInput  = useRef()
-    //
-    // const showFile = (e) => {
-    //     e.preventDefault();
-    //     const reader = new FileReader();
-    //     reader.onload = (e) => {
-    //         const text = e.target.result;
-    //         let dbml = importer.import(text.toString(), 'postgres')
-    //         let sqlJson = exporter.export(dbml, 'json');
-    //         console.log(sqlJson)
-    //     };
-    //     reader.readAsText(e.target.files[0]);
-    // };
-
 
     const navigate = useNavigate()
     return (
@@ -51,13 +19,8 @@ function Header() {
                     <div className={'flex flex-row  items-center justify-between'}>
                         <div>
                             {
-                                location.pathname.includes("home") &&  <ZMenu/>
+                                location.pathname.includes("home") &&  <OperationMenu/>
                             }
-
-                            {/*<input type={'file'} style={{display: "none"}} ref={fileInput} onChange={showFile}/>*/}
-                            {/*<Button>同步表</Button>*/}
-                            {/*<Button onClick={() => selectFile()}>import</Button>*/}
-                            {/*<Button>export</Button>*/}
                         </div>
                         <div className={"flex flex-row items-center pr-10  gap-2"}>
                             <Button>邀请伙伴</Button>

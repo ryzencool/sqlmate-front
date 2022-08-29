@@ -1,45 +1,39 @@
 import {Route, Routes} from "react-router-dom";
 import About from "./pages/About";
-import Home from "./pages/Home";
-import Index from "./pages/Index";
+import DBMain from "./pages/DBMain";
+import Home from "./pages/home/Home";
 import Profile from "./pages/Profile";
 import Error from "./pages/Error";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Header from "./pages/Header";
-import FavoriteProject from "./pages/FavoriteProject";
-import Template from "./pages/Template";
-import DashProject from "./pages/DashProject";
-import CodeSettings from "./pages/CodeSettings";
-import CodeTemplateEdit from "./pages/CodeTemplateEdit";
-import PublicProject from "./pages/PublicProject";
-import Team from './pages/Team'
-import FieldSettings from "./pages/FieldSettings";
-import MyProject from "./pages/MyProject";
-import SignUpIn from "./pages/SignUpIn";
-import SignUp from "./pages/SignUp";
-import SignIn from "./pages/SignIn";
-import TeamDetail from "./pages/TeamDetail";
-import DefaultColumnTemplate from "./pages/DefaultColumnTemplate";
-import DefaultColumnTemplateDetail from "./pages/DefaultColumnTemplateDetail";
+import FavoriteProject from "./pages/dashboard/FavoriteProject";
+import Template from "./pages/dashboard/Template";
+import DashProject from "./pages/dashboard/DashProject";
+import CodeSettings from "./pages/dashboard/CodeSettings";
+import CodeTemplateEdit from "./pages/dashboard/CodeTemplateEdit";
+import PublicProject from "./pages/dashboard/PublicProject";
+import Team from './pages/dashboard/Team'
+import FieldSettings from "./pages/dashboard/FieldSettings";
+import MyProject from "./pages/dashboard/MyProject";
+import SignUpIn from "./pages/auth/SignUpIn";
+import SignUp from "./pages/auth/SignUp";
+import SignIn from "./pages/auth/SignIn";
+import TeamDetail from "./pages/dashboard/TeamDetail";
+import DefaultColumnTemplate from "./pages/dashboard/DefaultColumnTemplate";
+import DefaultColumnTemplateDetail from "./pages/dashboard/DefaultColumnTemplateDetail";
 
-// const routerMap = [
-//     {
-//         path: '/index',
-//         element: <Index/>,
-//     }
-// ]
 
 const CustomRouter = () => {
     return (
         <Routes>
-            <Route path="/" element={<Index/>}/>
-            <Route path="/index" element={<Index/>}/>
+            <Route path="/" element={<Home/>}/>
+            <Route path="/index" element={<Home/>}/>
             <Route path="/auth" element={<SignUpIn/>}>
                 <Route path="signUp" element={<SignUp/>}/>
                 <Route path="signIn" element={<SignIn/>}/>
             </Route>
             <Route path="/header" element={<Header/>}>
-                <Route path={"home/:id"} element={<Home/>}/>
+                <Route path={"home/:id"} element={<DBMain/>}/>
 
                 <Route path={"dashboard"} element={<Dashboard/>}>
                     <Route path={"favorite"} element={<FavoriteProject/>}/>
