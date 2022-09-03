@@ -34,25 +34,32 @@ export default function SignIn() {
                 <div>
                     <div className={'block font-semibold text-sm text-gray-700'}>手机号</div>
                     <input
-                        {...register("phone")}
+                        {...register("phone", {
+                            required: true,
+                            maxLength: 13,
+                            minLength: 10
+                        })}
                         className={'border-gray-300 rounded-md border-2 mt-2 block w-96 h-11 p-2'} />
                 </div>
                 <div>
                     <div className={'block font-semibold text-sm text-gray-700'}>密码</div>
-                    <input
-                        {...register("password")}
+                    <input type={"password"}
+                        {...register("password", {
+                            required : true,
+                            minLength: 8,
+                        })}
                         className={'border-gray-300 rounded-md border-2 mt-2 block w-96 h-11 p-2'}/>
                 </div>
 
                 <div>
-                    <input type={"submit"} className={'bg-indigo-600 w-96 h-11 mt-2 tracking-widest text-white rounded-md'} value={"登录"}/>
+                    <input type={"submit"} className={' w-96 h-11 mt-2 tracking-widest bg-indigo-500 hover:bg-indigo-700 text-white  font-bold  rounded-lg'} value={"登录"}/>
                 </div>
                 </div>
             </form>
         </div>
         <div className={'w-96 mt-9 rounded-lg border-t bg-slate-300 '}></div>
         <div className={'mt-3 tracking-widest text-center'}>
-            还未注册，<Link to={"/auth/signUp"}><span className={'text-indigo-600'}>快速注册</span></Link>
+            还未注册，<Link to={"/auth/signUp"}><span className={'text-indigo-500'}>快速注册</span></Link>
         </div>
     </div>
 }

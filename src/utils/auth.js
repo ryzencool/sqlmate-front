@@ -21,6 +21,8 @@ export function handleLoginSuccess(data, setGlobalToken, setUser, navigate) {
         toast.error("当前手机用户已被注册")
     } else if (data.data.code === "000002") {
         toast.error("用户不存在")
+    } else  if (data.data.code === "000004") {
+        toast.error("密码错误，请重试")
     }
 
 

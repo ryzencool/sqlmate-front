@@ -12,20 +12,23 @@ import {consoleSqlAtom} from "../../store/consoleStore";
 import {format} from 'sql-formatter';
 import {databaseTypeAtom} from "../../store/databaseStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {executeSql} from "../../api/dbApi";
+import {addProjectSql, executeSql, queryOptimizer, syncConsole} from "../../api/dbApi";
 import * as _ from "lodash"
 import {activeProjectAtom} from "../../store/projectStore";
+import {useGetConsole} from "../../store/rq/reactQueryStore";
+import toast from "react-hot-toast";
+import {EditSqlDialog} from "./DBDdl";
 
 export default function DBConsole() {
 
     const [db, setDb] = useAtom(dbAtom)
     const [consoleSql, setConsoleSql] = useAtom(consoleSqlAtom)
     const [activeTable, setActiveTable] = useAtom(activeTableAtom)
-    const [project, setProject] = useAtom(activeProjectAtom)
-    const [databaseType, setDatabaseType] = useAtom(databaseTypeAtom)
+    const [project] = useAtom(activeProjectAtom)
+    const [databaseType] = useAtom(databaseTypeAtom)
     const [selectedSql, setSelectedSql] = useState("")
     const [resultHeader, setResultHeader] = useState([])
-
+    const [saveFavoriteOpen, setSaveFavoriteOpen] = useState(false)
     const [sqlResult, setSqlResult] = useState("")
     const [resultData, setResultData] = useState([]);
     const [sqlResData, setSqlResDate] = useState({
@@ -33,8 +36,30 @@ export default function DBConsole() {
         values: []
     })
 
-
     const queryClient = useQueryClient();
+
+    const optimizeMutation = useMutation(queryOptimizer)
+
+    const getConsoleQuery = useGetConsole({
+        projectId: project.id
+    }, {
+        enabled: !!project.id,
+        onSuccess: data => {
+            setConsoleSql(data.data.data.content)
+        }
+    })
+
+    const syncConsoleMutation = useMutation(syncConsole, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries(["projectConsole"])
+        }
+    });
+
+    const saveFavoriteMutation = useMutation(addProjectSql, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["projectSqls"])
+        }
+    })
 
     const sqlExecuteMutation = useMutation(executeSql, {
         onSuccess: (res) => {
@@ -47,6 +72,8 @@ export default function DBConsole() {
                     setSqlResult("当前结果集为空")
                 } else {
                     let data = res.data.data
+                    console.log("接收到数据:", _.keys(data[0]))
+
                     setResultHeader(_.keys(data[0]).map(it => {
                         return columnHelper.accessor(it, {
                             header: () => it,
@@ -55,7 +82,6 @@ export default function DBConsole() {
                     }))
                     setResultData(data)
                 }
-                console.log("接收到数据:", res.data.data)
             }
         }
     })
@@ -70,9 +96,19 @@ export default function DBConsole() {
             db.exec(sql)
         } else {
             sqlExecuteMutation.mutate({
-                sql: sql
+                sql: sql,
+                projectId: project.id,
+                dbType: databaseType
             })
         }
+    }
+
+    const handleOptimize = () => {
+        optimizeMutation.mutate({
+            projectId: project.id,
+            sql: selectedSql,
+            dbType: databaseType
+        })
     }
 
     const formatSql = () => {
@@ -110,22 +146,62 @@ export default function DBConsole() {
         } else {
             // 发送给后台
             sqlExecuteMutation.mutate({
-                sql: selectedSql
+                projectId: project.id,
+                sql: selectedSql,
+                dbType: databaseType
             })
         }
 
     }
+
+    const saveToFavorite = () => {
+        setSaveFavoriteOpen(true)
+    }
+
+    const saveSql = () => {
+        syncConsoleMutation.mutate({
+            projectId: project.id,
+            content: consoleSql
+        }, {
+            onSuccess: () => {
+                toast("保存当前console成功")
+            }
+        })
+    }
+
+    const handleCloseSaveFavorite = () => {
+        setSaveFavoriteOpen(false)
+    }
+
+    const submitSaveFavoriteForm = (data, reset) => {
+        saveFavoriteMutation.mutate({
+            ...data,
+            projectId: project.id
+        }, {
+            onSuccess: () => {
+                reset()
+            }
+        })
+    }
+
+    if (getConsoleQuery.isLoading) {
+        return <div>加载中</div>
+    }
+
     return (
         <div className={"w-full grid grid-cols-5 gap-2"}>
             <div className={"flex flex-col gap-1 col-span-5"}>
                 <div className={'flex flex-row gap-2'}>
-                    <Button size={"small"} variant={"contained"} onClick={() => executeSqlOnline()}>运行</Button>
-                    <Button size={"small"} variant={"contained"} onClick={() => formatSql()}>格式化</Button>
-                    <Button size={"small"} variant={"contained"}>复制</Button>
-                    <Button size={"small"} variant={"contained"}>收藏</Button>
-                    <Button size={"small"} variant={"contained"} onClick={() => {
-                        handleExplain()
-                    }}>explain</Button>
+                    <Button size={"small"} variant={"contained"} onClick={executeSqlOnline}>运行</Button>
+                    <Button size={"small"} variant={"contained"} onClick={formatSql}>格式化</Button>
+                    <Button size={"small"} variant={"contained"} onClick={saveToFavorite}>收藏</Button>
+                    <EditSqlDialog closeDialog={handleCloseSaveFavorite} mode={1} open={saveFavoriteOpen}
+                                   submitForm={submitSaveFavoriteForm} value={{
+                                       sql: selectedSql
+                    }}/>
+                    <Button size={"small"} variant={"contained"} onClick={handleExplain}>explain</Button>
+                    <Button size={'small'} variant={'contained'} onClick={handleOptimize}>调优</Button>
+                    <Button size={"small"} variant={"contained"} onClick={saveSql}>保存</Button>
                 </div>
                 <div className={'mt-4'}>
                     <CodeMirror
@@ -147,7 +223,7 @@ export default function DBConsole() {
                         {!!sqlResult && <Card className={'p-3 mt-3'}>
                             {sqlResult}
                         </Card>}
-                        { sqlResult === "" && <div className={'overflow-auto'}>
+                        {sqlResult === "" && <div className={'overflow-auto'}>
                             <ZTable data={resultData} columns={resultHeader} canSelect={false}/>
                         </div>}
 

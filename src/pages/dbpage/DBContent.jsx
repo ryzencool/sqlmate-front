@@ -46,7 +46,7 @@ export default DBContent
 
 function DBProjectInterface({projectId}) {
 
-    const projectQuery = useGetProjectDetail({projectId: projectId}, {
+    const projectQuery = useGetProjectDetail({projectId: projectId, dbType: 2}, {
         enabled: !!projectId
     })
 
@@ -163,7 +163,6 @@ function DBTableTab() {
                 <Tab label="代码" {...a11yProps(5)} />
                 <Tab label="快照" {...a11yProps(6)} />
                 <Tab label="SQL库" {...a11yProps(7)} />
-                <Tab label="优化" {...a11yProps(8)} />
             </Tabs>
         </Box>
         <Box className={"h-[calc(100vh-9rem)] overflow-auto"}>
@@ -189,9 +188,6 @@ function DBTableTab() {
                 <DBSnapshot/>
             </ZTabPanel>
             <ZTabPanel value={value} index={7}>
-                <DBDdl/>
-            </ZTabPanel>
-            <ZTabPanel value={value} index={8}>
                 <DBDdl/>
             </ZTabPanel>
         </Box>

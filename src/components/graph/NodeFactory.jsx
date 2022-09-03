@@ -14,7 +14,6 @@ export class NodeFactory extends AbstractReactFactory {
     }
 
     generateReactWidget(event) {
-        console.log("factory");
         return (
             <NodeWidget engine={this.engine} node={event.model} />
         );

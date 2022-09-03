@@ -5,9 +5,9 @@ import {exporter, importer} from "@dbml/core";
 import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/projectStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {importProjectDbml} from "../../api/dbApi";
+import {importProjectDbml, syncDatabase} from "../../api/dbApi";
 import {databaseTypeAtom} from "../../store/databaseStore";
-import {useListTablesDetail} from "../../store/rq/reactQueryStore";
+import {useListTablesDetail, useProjectDBML} from "../../store/rq/reactQueryStore";
 import {dbAtom} from "../../store/sqlStore";
 import toast from "react-hot-toast";
 
@@ -33,7 +33,16 @@ export default function OperationMenu() {
         reader.onload = (e) => {
             const text = e.target.result;
             console.log(text.toString())
-            let dbml = importer.import(text.toString(), 'postgres')
+            let dbType;
+            if (activeDatabase === 1) {
+                dbType = 'mysql'
+            } else if (activeDatabase === 2){
+                dbType = 'postgres'
+            } else if (activeDatabase === 3) {
+                dbType ='mssql'
+            }
+
+            let dbml = importer.import(text.toString(), dbType)
             console.log(dbml)
             let sqlJson = exporter.export(dbml, 'json');
             console.log(sqlJson)
@@ -60,6 +69,12 @@ export default function OperationMenu() {
     const allTableQuery = useListTablesDetail({projectId: project.id}, {
         enabled: false
     })
+
+    const dbmlProjectQuery = useProjectDBML({projectId: project.id}, {
+        enabled: false
+    })
+
+    const syncDatabaseMutation = useMutation(syncDatabase)
 
     const generateSqliteCol = (col) => {
         let name = col.name
@@ -103,9 +118,41 @@ ${cols}
             execSqlite()
         } else {
             // 生成dbml 然后生成sql 进行插入
+            dbmlProjectQuery.refetch().then(res  => {
+                let sql;
+                if (activeDatabase === 1) {
+                    sql = 'mysql'
+                } else if (activeDatabase === 2){
+                    sql = 'postgres'
+                } else if (activeDatabase === 3) {
+                    sql ='mssql'
+                }
+
+                console.log("当前数据库", sql, res.data.data)
+
+                let lang = exporter.export(res.data.data.data, sql);
+                // 插入
+                syncDatabaseMutation.mutate({
+                    projectId: project.id,
+                    sql: lang,
+                    dbType: activeDatabase
+                }, {
+                    onSuccess: () => {
+                        toast(`同步${sql}成功`)
+                    }
+                })
+
+            })
         }
         setAnchorEl(false)
         toast("同步数据库成功")
+    }
+
+    const handleExportSql = () => {
+        dbmlProjectQuery.refetch().then(res => {
+            let data = res.data.data.data
+            // exporter.export(res.)
+        })
     }
 
     return (
@@ -135,7 +182,7 @@ ${cols}
                 }}>导入SQL</MenuItem>
                 <input type={'file'} style={{display: "none"}} ref={fileInput} onChange={showFile}/>
 
-                <MenuItem onClick={handleClose}>导出SQL</MenuItem>
+                <MenuItem onClick={handleExportSql}>导出SQL</MenuItem>
                 <MenuItem onClick={() => handleSyncDatabase()}>同步数据库</MenuItem>
             </Menu>
         </div>

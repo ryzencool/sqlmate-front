@@ -11,11 +11,14 @@ import FormInputText from "../../components/form/FormInputText";
 import FormSelect from "../../components/form/FormSelect";
 import FormMultiSelect from "../../components/form/FormMultiSelect";
 import FormCheckBox from "../../components/form/FormCheckBox";
-
+import {FaRegClone, FaRegEye, FaRegHeart} from "react-icons/fa";
+import {useAtom} from "jotai";
+import {activeTableAtom} from "../../store/tableListStore";
 
 export default function MyProject() {
     const navigate = useNavigate()
     const [search, setSearch] = useState({})
+    const [activeTable, setActiveTable] = useAtom(activeTableAtom)
     const myProjects = useListMyProject(search)
     const [projectCreateOpen, setProjectCreateOpen] = useState(false)
     const [projectUpdateOpen, setProjectUpdateOpen] = useState(false)
@@ -36,6 +39,7 @@ export default function MyProject() {
         setProjectCreateOpen(false)
     }
     const handleClickProjectDetail = (it) => {
+        setActiveTable(0)
         navigate(`/header/home/${it.id}`)
     }
     const handleCloseProjectSetting = () => {
@@ -67,36 +71,59 @@ export default function MyProject() {
     return (<Box>
         <div className={"flex flex-row gap-8 flex-wrap mb-10"}>
             {
-                myProjects.data.data.data.map(
-                    it => <Card className={"w-52 h-80 flex  flex-col justify-between"} key={it.id}   >
-                        <div className={"h-1/2 "}>
-                            <img  className={'w-full h-full object-cover'} src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/pexels-pixabay-162318.jpg"}/>
+                myProjects.data.data.data.map(it =>
+                    <Card className={"w-56 h-96 flex  flex-col  rounded-2xl justify-between "} key={it.id}>
+                        <div>
+                            <div
+                                className={"h-16 w-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center pl-4"}>
+                                <div className={"font-bold text-2xl"}> {it.name}</div>
+                            </div>
+                            <div className={"flex-col flex  w-full pl-4 pr-4 pt-4 "}>
+                                <div>
+                                    <div className={'flex-row flex justify-around gap-1 w-full'}>
+                                        <div className={'flex-col items-center flex gap-1'}>
+                                            <FaRegClone className={'text-lg'}/>
+                                            <div className={'text-sm'}>1123</div>
+                                        </div>
+                                        <div className={'flex-col items-center flex gap-1'}>
+                                            <FaRegEye className={'text-lg'}/>
+                                            <div className={'text-sm'}>3235</div>
+                                        </div>
+                                        <div className={'flex-col items-center flex gap-1'}>
+                                            <FaRegHeart className={'text-lg'}/>
+                                            <div className={'text-sm'}>3234</div>
+                                        </div>
+                                    </div>
+                                    <div className={'text-sm text-slate-400 mt-4'}>
+                                        {it.note}
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                        <div className={"pl-2 pt-2 pb-1 flex-col flex "}>
-                            <div className={" font-bold "}>
-                                {it.name}
-                            </div>
-                            <div className={'text-sm text-slate-400'}>
-                                {it.note}
-                            </div>
-                            <div className={'mt-2 flex flex-row flex-wrap gap-1 '}>
-                                {
-                                    !!it.tags && it.tags.map(tag => (
-                                        <Chip label={tag} size={'small'}/>
-                                    ))
-                                }
+                        <div className={'pl-4 pr-4 relative mb-2 flex-col flex justify-between '}>
+                            <div>
+                                <div className={'flex flex-row gap-4 mt-4'}>
+                                    <div className={'font-bold text-sm'}>数据库</div>
+                                    <div className={'text-sm'}>Postgres</div>
+                                </div>
 
-
+                                <div className={'flex flex-row gap-0.5 flex-wrap'}>
+                                    {
+                                        !!it.tags && it.tags.map(tag => (
+                                            <Chip label={tag} size={'small'} className={'mt-1'}/>
+                                        ))
+                                    }
+                                </div>
                             </div>
-
-                        </div>
-                        <div className={'mt-2 w-full flex-row flex justify-end gap-1 mb-2'}>
-                            <Button size={"small"} onClick={handleClickSetProject}>设置</Button>
-                            <EditProjectDialog value={it} mode={2}
-                                               closeDialog={handleCloseProjectSetting}
-                                               open={projectUpdateOpen}
-                                               submitForm={(data) => submitUpdateProjectForm(data, it.id)}/>
-                            <Button size={"small"} onClick={() => handleClickProjectDetail(it)}>详情</Button>
+                            <div className={'mt-2 w-full flex-row flex justify-end gap-1 mb-2'}>
+                                <Button size={"small"} onClick={handleClickSetProject}>设置</Button>
+                                <EditProjectDialog value={it} mode={2}
+                                                   closeDialog={handleCloseProjectSetting}
+                                                   open={projectUpdateOpen}
+                                                   submitForm={(data) => submitUpdateProjectForm(data, it.id)}/>
+                                <Button size={"small"} onClick={() => handleClickProjectDetail(it)}>详情</Button>
+                            </div>
                         </div>
                     </Card>
                 )

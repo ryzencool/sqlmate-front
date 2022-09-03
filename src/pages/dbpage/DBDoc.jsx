@@ -55,7 +55,6 @@ function DBDoc() {
     })
 
 
-
     // mutation
     const columnAddMutation = useMutation(addColumn, {
         onSuccess: () => {
@@ -157,10 +156,14 @@ function DBDoc() {
                                 setColumnAddOpen(false)
                             }}
                             open={columnAddOpen}
-                            submitForm={data => {
+                            submitForm={(data, reset) => {
                                 columnAddMutation.mutate({
                                     ...data,
                                     tableId: activeTableState
+                                }, {
+                                    onSuccess: () => {
+                                        reset()
+                                    }
                                 })
                             }}/>
                         <Button size={"small"} variant={"contained"} onClick={() => {
@@ -182,10 +185,14 @@ function DBDoc() {
                             value={tableColumnsQuery.data.data.data.filter(it => it.id.toString() === columnsSelectedState[0])[0]}
                             closeDialog={() => setColumnEditOpen(false)}
                             open={columnEditOpen}
-                            submitForm={data => {
+                            submitForm={(data, reset) => {
                                 columnUpdateMutation.mutate({
                                     ...data,
                                     id: columnsSelectedState[0]
+                                }, {
+                                    onSuccess: () => {
+                                        reset()
+                                    }
                                 })
                             }}/>
                         <Button size={"small"} variant={"contained"} onClick={() => {
@@ -339,10 +346,15 @@ const EditColumnDialog = ({
         }
     }, [value])
 
-    return <Dialog open={open} onClose={closeDialog}>
+    return <Dialog open={open} onClose={() => {
+        closeDialog();
+        reset();
+    }
+    }>
         <DialogTitle>新增</DialogTitle>
-        <form onSubmit={handleSubmit(data => {
-            submitForm(data)
+        <form onSubmit={handleSubmit((data) => {
+            submitForm(data, reset)
+            closeDialog()
         })}>
             <DialogContent>
                 <FormInputText name={"name"} control={control} label={"字段名称"}/>
@@ -384,8 +396,12 @@ const EditColumnDialog = ({
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={closeDialog}>取消</Button>
-                <Button type={"submit"} onClick={closeDialog}>确定</Button>
+                <Button onClick={() => {
+                    closeDialog();
+                    reset();
+                }
+                }>取消</Button>
+                <Button type={"submit"}>确定</Button>
             </DialogActions>
         </form>
     </Dialog>
@@ -554,7 +570,6 @@ const columnHeader = [
         cell: (info) => info.getValue(),
     },
 ]
-
 
 
 export default DBDoc

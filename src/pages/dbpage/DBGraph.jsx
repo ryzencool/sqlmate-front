@@ -6,16 +6,25 @@ import {NodeFactory} from "../../components/graph/NodeFactory";
 import {NodeModel} from "../../components/graph/NodeModel";
 import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/projectStore";
-import {tableListDetailAtom, tableRelsAtom} from "../../store/tableListStore";
+import {useListTableDetail, useListTableRel} from "../../store/rq/reactQueryStore";
 
 function DBGraph() {
 
     const engine = createEngine();
     engine.getNodeFactories().registerFactory(new NodeFactory());
     const [project, setProject] = useAtom(activeProjectAtom)
-    const [tableList, useTableList] = useAtom(tableListDetailAtom)
-    const [tableRels, setTableRels] = useAtom(tableRelsAtom)
 
+
+    const tableListQuery = useListTableDetail({projectId: project.id});
+    const tableRelsQuery = useListTableRel({projectId: project.id})
+
+
+    if (tableListQuery.isLoading || tableRelsQuery.isLoading) {
+        return <div>加载中</div>
+    }
+
+    let tableList = tableListQuery.data.data.data
+    let tableRels = tableRelsQuery.data.data.data
     const model = new DiagramModel();
 
     let nodes = []

@@ -50,13 +50,11 @@ export default function SignUp() {
                         className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                 </div>
                 <div>
-                    <div className={'block font-semibold text-sm text-gray-700'}>邮箱</div>
-                    <input
-                        {
-                            ...register("email")
-                        }
-                        className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
+                    <div className={'block font-semibold text-sm text-gray-700'}>重新输入密码</div>
+                    <input type={"password"}
+                           className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                 </div>
+
 
                 <div>
                     <div className={'block font-semibold text-sm text-gray-700'}>验证码</div>
@@ -67,14 +65,14 @@ export default function SignUp() {
                                 ...register("code")
                             }
                             className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 p-2'}/>
-                        <button  className={'h-11 w-1/3 rounded-md bg-indigo-600 text-white text-sm'}>发送验证码</button>
+                        <button type={'button'} className={'h-11 w-1/3 bg-indigo-500 hover:bg-indigo-700 text-white text-sm font-bold  rounded-lg'}>发送验证码</button>
 
                     </div>
 
                 </div>
                 <div className={'mt-2'}>
                     <input type="submit"
-                           className={'bg-indigo-600 w-96 h-11 mt-2 tracking-widest text-white rounded-lg'}
+                           className={'w-96 h-11 mt-2 tracking-widest bg-indigo-500 hover:bg-indigo-700 text-white  font-bold  rounded-lg'}
                            value={"注册"}/>
                 </div>
             </div>

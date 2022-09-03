@@ -31,6 +31,7 @@ export default function DBDdl() {
     const [open, setOpen] = React.useState(false);
     const [addSqlOpen, setAddSqlOpen] = useState(false);
     const [project] = useAtom(activeProjectAtom);
+    const [dbType] = useAtom(databaseTypeAtom);
     const handleCloseAddSql = () => {
         setAddSqlOpen(false)
     }
@@ -105,7 +106,9 @@ export default function DBDdl() {
         } else {
             console.log("点击了执行了")
             executeSqlMutation.mutate({
-                sql: projectSql.sql
+                sql: projectSql.sql,
+                projectId: project.id,
+                dbType: dbType
             })
         }
     }
@@ -213,7 +216,7 @@ export default function DBDdl() {
     </div>
 }
 
-function EditSqlDialog({mode, value, open, closeDialog, submitForm}) {
+export function EditSqlDialog({mode, value, open, closeDialog, submitForm}) {
 
     const {handleSubmit, reset, control} = useForm()
 
@@ -224,11 +227,16 @@ function EditSqlDialog({mode, value, open, closeDialog, submitForm}) {
         }
     }, [value])
 
-    return <Dialog open={open} onClose={closeDialog}>
+    return <Dialog open={open} onClose={() => {
+        closeDialog()
+        reset()
+    }
+    }>
         <DialogTitle>{mode === 1 ? "添加sql" : "修改sql"}</DialogTitle>
 
         <form onSubmit={handleSubmit(data => {
             submitForm(data, reset)
+            closeDialog()
         })}>
             <DialogContent sx={{width: '600px', display: "flex", flexDirection: "column"}}>
                 <FormInputText name={"name"} label={"SQL名称"} control={control}/>

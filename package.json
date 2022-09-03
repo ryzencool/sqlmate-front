@@ -43,6 +43,7 @@
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.34.0",
     "react-hot-toast": "^2.3.0",
+    "react-icons": "^4.4.0",
     "react-scripts": "^5.0.1",
     "resize-observer-polyfill": "^1.5.1",
     "sql-formatter": "^9.1.0",

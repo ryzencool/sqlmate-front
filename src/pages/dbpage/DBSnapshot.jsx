@@ -38,7 +38,6 @@ export default function DBSnapshot() {
 
     const [dmlDrawerOpen, setDmlDrawerOpen] = useState(false)
 
-    const [dbmlSearch, setDbmlSearch] = useState(null);
 
     const [dmlData, setDmlData] = useState('')
 
@@ -46,10 +45,14 @@ export default function DBSnapshot() {
         enabled: !!activeProject.id
     })
 
-    const projectDbmlQuery = useProjectDBML(dbmlSearch, {enabled: false})
-
-
     const queryClient = useQueryClient()
+
+    const projectDbmlQuery = useProjectDBML({
+        projectId: activeProject.id
+    }, {enabled: false})
+
+
+
 
     const createSnapMutation = useMutation(createSnapshot, {
         onSuccess: () => {
@@ -60,7 +63,7 @@ export default function DBSnapshot() {
 
     const [createSnapOpen, setCreateSnapOpen] = useState(false)
 
-    if ( snapshotListQuery.isLoading) {
+    if ( snapshotListQuery.isLoading ) {
         return <div>加载中</div>
     }
 
@@ -129,7 +132,6 @@ export default function DBSnapshot() {
             <SpeedDial onClick={() => {
                 setCreateSnapOpen(true)
 
-                setDbmlSearch({projectId: activeProject.id})
             }}
                        ariaLabel="SpeedDial basic example"
                        sx={{position: 'absolute', bottom: 100, right: 140}}
@@ -140,15 +142,17 @@ export default function DBSnapshot() {
 
         <EditSnapshotDialog mode={1} closeDialog={() => setCreateSnapOpen(false)}
                             submitForm={(data) => {
+                                projectDbmlQuery.refetch().then(res => {
+                                    let content = res.data.data.data
+                                    console.log("生成数据", content)
+                                    createSnapMutation.mutate({
+                                        ...data,
+                                        projectId: activeProject.id,
+                                        content: content
 
-                                let content = projectDbmlQuery.data.data.data
-                                console.log("生成数据", content)
-                                createSnapMutation.mutate({
-                                    ...data,
-                                    projectId: activeProject.id,
-                                    content: content
-
+                                    })
                                 })
+
                             }} open={createSnapOpen}/>
 
 
@@ -218,7 +222,7 @@ function CodePanel({content}) {
     }
 
 
-    return <Box sx={{width: '100%'}}>
+    return <Box sx={{width: '100%', paddingBottom: '20px'}}>
         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label="postgresql" {...a11yProps(0)} />
@@ -235,7 +239,7 @@ function CodePanel({content}) {
 
         </ZTabPanel>
         <ZTabPanel value={value} index={2}>
-            <CodeResult format={'sql'} content={mysql}/>
+            <CodeResult format={'sql'} content={mssql}/>
 
         </ZTabPanel>
         <ZTabPanel value={value} index={3}>

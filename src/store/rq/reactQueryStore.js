@@ -2,6 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import {
     dbmlTable,
     getCodeTemplate,
+    getConsole,
     getProject,
     getProjectDetail,
     getTable,
@@ -57,7 +58,7 @@ export const useListTables = (search, options = {}) => {
     })
 }
 
-export const useListTablesDetail = (search, options={}) => {
+export const useListTablesDetail = (search, options = {}) => {
     return useQuery(['projectTablesDetail', search], () => listTablesDetail(search), options)
 }
 
@@ -141,4 +142,9 @@ export const useListDefaultColumnTemplate = (search, options = {}) => {
 
 export const useListDefaultColumn = (search, options = {}) => {
     return useQuery(['defaultColumns', search], () => listDefaultColumns(search), options)
+}
+
+
+export const useGetConsole = (search, options = {}) => {
+    return useQuery(['projectConsole', search], () => getConsole(search), options)
 }

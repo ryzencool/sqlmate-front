@@ -1,5 +1,6 @@
 import {get, post} from '../utils/httpUtil'
 
+
 const getProjectDetailUrl = "/project/get/detail"
 const getProjectUrl = "/project/get"
 const addProjectUrl = "/project/add"
@@ -16,7 +17,7 @@ const listTableIndexesUrl = "/tableIndex/list"
 const getCodeTemplateUrl = "/codeTemplate/get"
 const listProjectSqlUrl = "/projectSql/list"
 const addProjectSqlUrl = "/projectSql/add"
-const queryOptimizerUrl = "/queryOptimizer"
+const queryOptimizerUrl = "/optimize"
 const listCodeTemplateUrl = "/codeTemplate/list"
 const addCodeTemplateUrl = "/codeTemplate/add"
 const updateCodeTemplateUrl = "/codeTemplate/update"
@@ -56,6 +57,20 @@ const updateDefaultColumnTemplateUrl = "/defaultColumn/template/update"
 const listDefaultColumnsUrl = "/defaultColumn/detail/list"
 const addDefaultColumnUrl = "/defaultColumn/detail/add"
 const updateDefaultColumnUrl = "/defaultColumn/detail/update"
+const syncDatabaseUrl = "/database/sync"
+const syncConsoleUrl = "/console/sync"
+const getConsoleUrl = "/console/get"
+
+export function syncConsole(params) {
+    return post(syncConsoleUrl, params)
+}
+
+export function getConsole(params) {
+    return get(getConsoleUrl, params)
+}
+export function syncDatabase(params) {
+    return post(syncDatabaseUrl, params)
+}
 
 export function updateDefaultColumn(params) {
     return post(updateDefaultColumnUrl, params)
