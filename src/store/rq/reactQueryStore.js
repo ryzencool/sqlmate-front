@@ -49,7 +49,7 @@ export const useGetCodeTemplate = (params = {}, options = {}) => {
 }
 
 export const useListProjectSql = (params = {}, options = {}) => {
-    return useQuery(['projectSqls'], () => listProjectSql(params), options)
+    return useQuery(['projectSqls', params], () => listProjectSql(params), options)
 }
 
 export const useListTables = (search, options = {}) => {

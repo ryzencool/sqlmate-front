@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react'
-import {useListDefaultColumnTemplate, useListMyProject, useListTeam} from "../../store/rq/reactQueryStore";
+import {useListDefaultColumnTemplate, useListMyProject, useListTeam} from "../../../store/rq/reactQueryStore";
 import {Card, Chip, Dialog, DialogActions, DialogContent, DialogTitle, SpeedDial, SpeedDialIcon} from "@mui/material";
 import {useNavigate} from "react-router";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addProject, updateProject} from "../../api/dbApi";
-import FormInputText from "../../components/form/FormInputText";
-import FormSelect from "../../components/form/FormSelect";
-import FormMultiSelect from "../../components/form/FormMultiSelect";
-import FormCheckBox from "../../components/form/FormCheckBox";
+import {addProject, updateProject} from "../../../api/dbApi";
+import FormInputText from "../../../components/form/FormInputText";
+import FormSelect from "../../../components/form/FormSelect";
+import FormMultiSelect from "../../../components/form/FormMultiSelect";
+import FormCheckBox from "../../../components/form/FormCheckBox";
 import {FaRegClone, FaRegEye, FaRegHeart} from "react-icons/fa";
 import {useAtom} from "jotai";
-import {activeTableAtom} from "../../store/tableListStore";
+import {activeTableAtom} from "../../../store/tableListStore";
 
 export default function MyProject() {
     const navigate = useNavigate()

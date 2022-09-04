@@ -1,7 +1,7 @@
 import React from 'react'
 import {useParams} from "react-router-dom";
 import {List, ListItem, ListItemButton, ListItemText} from "@mui/material";
-import {useListTeamUser} from "../../store/rq/reactQueryStore";
+import {useListTeamUser} from "../../../store/rq/reactQueryStore";
 import Button from "@mui/material/Button";
 
 

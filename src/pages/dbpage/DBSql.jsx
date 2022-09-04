@@ -27,11 +27,12 @@ import Box from "@mui/material/Box";
 import {format} from "sql-formatter";
 
 
-export default function DBDdl() {
+export default function DBSql() {
     const [open, setOpen] = React.useState(false);
     const [addSqlOpen, setAddSqlOpen] = useState(false);
     const [project] = useAtom(activeProjectAtom);
     const [dbType] = useAtom(databaseTypeAtom);
+    const [searchParam, setSearchParam] = useState({projectId: project.id})
     const handleCloseAddSql = () => {
         setAddSqlOpen(false)
     }
@@ -47,7 +48,7 @@ export default function DBDdl() {
     const [optimizerParam, setOptimizerParam] = useState({})
 
 
-    const projectSqlsQuery = useListProjectSql({projectId: project.id}, {
+    const projectSqlsQuery = useListProjectSql(searchParam, {
         enabled: !!project.id
     })
 
@@ -123,13 +124,22 @@ export default function DBDdl() {
         }
     }
 
+    const handleSearch = (e) => {
+        let value = e.target.value
+        console.log("选择", value)
+        setSearchParam({
+            projectId: project.id,
+            condition: value
+        })
+    }
+
     if (projectSqlsQuery.isLoading) {
         return <div>加载中</div>
     }
 
     return <div className={"w-full flex flex-col gap-5 "}>
         <div className={'w-full flex flex-row justify-between'}>
-            <TextField size={"small"} className={"w-full"} label={"搜索"}/>
+            <TextField size={"small"} className={"w-full"} label={"搜索"} onChange={handleSearch}/>
         </div>
 
         <div>
@@ -139,7 +149,7 @@ export default function DBDdl() {
                     projectSqlsQuery.data.data.data.map(it => {
                         return (
                             <div className={'flex flex-col gap-3 border-b pb-4'} key={it.id}>
-                                <div className={'font-bold'}>{it.name}</div>
+                                <div className={'font-bold'}>{it.name}({it.functionName})</div>
                                 <CopyBlock
                                     text={format(it.sql)}
                                     theme={nord}

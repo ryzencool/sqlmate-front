@@ -3,17 +3,17 @@ import CodeMirror from "@uiw/react-codemirror";
 import {javascript} from "@codemirror/lang-javascript";
 import {json} from "@codemirror/lang-json";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addTemplateFile, updateCodeTemplate, updateCodeTemplateFile} from "../../api/dbApi";
+import {addTemplateFile, updateCodeTemplate, updateCodeTemplateFile} from "../../../api/dbApi";
 import Box from "@mui/material/Box";
 import {Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {autocompletion} from "@codemirror/autocomplete";
 import {useParams} from "react-router-dom";
-import {useGetCodeTemplate, useListTemplateFile} from "../../store/rq/reactQueryStore";
+import {useGetCodeTemplate, useListTemplateFile} from "../../../store/rq/reactQueryStore";
 import mustache from "mustache/mustache.mjs";
 import toast from "react-hot-toast";
-import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
-import {a11yProps, ZTabPanel} from "../../components/tab/ZTabPanel";
+import {CodeResult, TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
+import {a11yProps, ZTabPanel} from "../../../components/tab/ZTabPanel";
 import {xml} from "@codemirror/lang-xml";
 import {java} from "@codemirror/lang-java";
 import AddIcon from '@mui/icons-material/Add';
@@ -109,14 +109,18 @@ export default function CodeTemplateEdit() {
             <div className={'flex flex-row gap-2 items-center'}>
                 <div className={'font-bold text-lg'}>模版数据填充</div>
                 <div>
-                    <Button onClick={() => {
-                        codeTemplateUpdate.mutate({
-                            id: id,
-                            transferFn: transferFn
-                        })
-                    }}
-                            size={"small"}
-                            variant={"contained"}>同步</Button>
+                    {
+                        codeTemplateGetQuery.data.data.data.ownerId !== 0 &&
+                        <Button onClick={() => {
+                            codeTemplateUpdate.mutate({
+                                id: id,
+                                transferFn: transferFn
+                            })
+                        }}
+                                size={"small"}
+                                variant={"contained"}>同步</Button>
+                    }
+
                 </div>
             </div>
             <div className={'flex flex-row gap-4 mt-2'}>
@@ -172,12 +176,16 @@ export default function CodeTemplateEdit() {
                         let func = eval(codeTemplateGetQuery.data.data.data.transferFn)
                         return <ZTabPanel value={tabValue} index={index}>
                             <div className={'flex flex-row gap-2'}>
-                                <Button variant={"contained"} size={"small"} onClick={() => {
-                                    codeTemplateFileUpdate.mutate({
-                                        id: file.id,
-                                        content: tableCode
-                                    })
-                                }}>同步</Button>
+                                {
+                                    codeTemplateGetQuery.data.data.data.ownerId !== 0 &&
+                                    <Button variant={"contained"} size={"small"} onClick={() => {
+                                        codeTemplateFileUpdate.mutate({
+                                            id: file.id,
+                                            content: tableCode
+                                        })
+                                    }}>同步</Button>
+                                }
+
                                 <Button variant={"contained"} size={'small'} onClick={() => {
                                     setPreviewCode(mustache.render(file.content,
                                         func(JSON.parse(tableObj))))

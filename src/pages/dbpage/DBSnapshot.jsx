@@ -196,22 +196,27 @@ function CodePanel({content}) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    console.log("内容是", content)
+
     let pg = "";
     try {
-        pg = format(exporter.export(content, "postgres"))
+        pg = exporter.export(content, "postgres")
     } catch (e) {
+        console.log("异常是",e.message)
 
     }
     let mysql = ""
     try {
-        mysql = format(exporter.export(content, "mysql"))
+        mysql = exporter.export(content, "mysql")
     } catch (e) {
-
+        console.log("异常是",e)
     }
     let mssql = ""
     try {
-        mssql = format(exporter.export(content, "mssql"))
+        mssql = exporter.export(content, "mssql")
     } catch (e) {
+        console.log("异常是",e.message)
 
     }
     let json = ""

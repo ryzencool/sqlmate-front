@@ -1,10 +1,22 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Button from "@mui/material/Button";
-import {Card, Chip, Dialog, DialogActions, DialogContent, SpeedDial, SpeedDialIcon, TextField} from "@mui/material";
-import {useListCodeTemplate} from "../../store/rq/reactQueryStore";
+import {
+    Card,
+    Chip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    SpeedDial,
+    SpeedDialIcon,
+    TextField
+} from "@mui/material";
+import {useListCodeTemplate} from "../../../store/rq/reactQueryStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addCodeTemplate} from "../../api/dbApi";
+import {addCodeTemplate, cloneCodeTemplate} from "../../../api/dbApi";
 import {useNavigate} from "react-router";
+import {useForm} from "react-hook-form";
+import FormInputText from "../../../components/form/FormInputText";
 
 
 export default function CodeSettings() {
@@ -12,13 +24,13 @@ export default function CodeSettings() {
     const navigate = useNavigate()
 
     const [open, setOpen] = React.useState(false);
-
+    const [cloneOpen, setCloneOpen] = useState(false)
     const handleClose = () => {
         setOpen(false);
     };
 
     const codeTemplates = useListCodeTemplate()
-
+    const [selectedTemplate, setSelectedTemplate] = useState({})
     const queryClient = useQueryClient()
     const handleSubmitTemplate = useMutation(addCodeTemplate, {
         onSuccess: () => {
@@ -26,11 +38,37 @@ export default function CodeSettings() {
         }
     })
 
+    const cloneTemplateMutation = useMutation(cloneCodeTemplate, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["codeTemplates"])
+        }
+    })
+
     const [templateSubmit, setTemplateSubmit] = useState({})
+
+    const handleClickClone = (it) => {
+        setCloneOpen(true)
+        setSelectedTemplate(it)
+    }
+
+    const handleCloseCloneDialog = () => {
+        setCloneOpen(false)
+    }
+
+    const submitCloneForm = (data, reset) => {
+        cloneTemplateMutation.mutate({
+            ...data,
+            templateId: selectedTemplate.id
+        })
+        reset({})
+        handleCloseCloneDialog()
+    }
 
     if (codeTemplates.isLoading) {
         return <div>加载中</div>
     }
+
+
 
     return <div>
         <div className={"flex flex-row gap-10"}>
@@ -51,8 +89,10 @@ export default function CodeSettings() {
                                         <Chip label={it.lang} size={"small"}/>
                                     </div>
                                     <div>
-                                        <Button
-                                            onClick={() => navigate(`/header/dashboard/codeTemplateEdit/${it.id}`)}>点击进入</Button>
+                                        <Button size={"small"} onClick={() => handleClickClone(it)}>克隆</Button>
+
+                                        <Button size={"small"}
+                                                onClick={() => navigate(`/header/dashboard/codeTemplateEdit/${it.id}`)}>点击进入</Button>
                                     </div>
                                 </div>
                             </div>
@@ -60,6 +100,9 @@ export default function CodeSettings() {
                     )
                 )
             }
+            <CloneDialog closeDialog={handleCloseCloneDialog} title={selectedTemplate.name}
+                         open={cloneOpen}
+                         submitForm={submitCloneForm}/>
         </div>
         <Dialog open={open} onClose={handleClose}>
             <DialogContent>
@@ -115,4 +158,35 @@ export default function CodeSettings() {
         </SpeedDial>
 
     </div>
+}
+
+function CloneDialog({value, open, closeDialog, submitForm, title}) {
+
+    const {handleSubmit, control, reset} = useForm({
+        defaultValues: value
+    })
+
+    useEffect(() => {
+        reset(value)
+    }, [value])
+
+    return <Dialog open={open} onClose={closeDialog}>
+        <DialogTitle>从<span>{title}</span>克隆</DialogTitle>
+        <form onSubmit={handleSubmit(data => {
+            console.log("内部提交", data)
+            submitForm(data, reset)
+        })}>
+            <DialogContent>
+
+                <FormInputText name={"name"} control={control} label={"模版名称"}/>
+                <FormInputText name={"lang"} control={control} label={"编程语言"}/>
+                <FormInputText name={"note"} control={control} label={"备注"}/>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={closeDialog}>取消</Button>
+                <Button type={"submit"} >确定</Button>
+            </DialogActions>
+        </form>
+    </Dialog>;
+
 }

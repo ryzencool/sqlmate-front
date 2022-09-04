@@ -79,13 +79,20 @@ ALTER table ${tableName} ADD UNIQUE [indexName] (column_name(length));
         return <div>加载中</div>
     }
 
+    let createDML
+    try {
+        createDML = exporter.export(dbmlQuery.data.data.data, dbType);
+    } catch (e) {
+        createDML = "";
+    }
+
 
     return <div className={"w-full"}>
         <div className={"w-full flex flex-col gap-8"}>
             <div>
                 <div className={'font-bold text-lg border-b pb-3'}>表操作</div>
                 <div className={'mt-4 flex flex-col gap-4'}>
-                    <CodeComponent title={"创建表"} code={exporter.export(dbmlQuery.data.data.data, dbType)}/>
+                    <CodeComponent title={"创建表"} code={createDML}/>
                     <CodeComponent title={"删除表"} code={dropTableDML}/>
                     <CodeComponent title={"修改表"} code={alterTableNameDML}/>
                 </div>

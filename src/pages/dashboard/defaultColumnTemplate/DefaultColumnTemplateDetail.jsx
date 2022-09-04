@@ -1,15 +1,15 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {useParams} from "react-router-dom";
-import {useListDefaultColumn} from "../../store/rq/reactQueryStore";
+import {useListDefaultColumn} from "../../../store/rq/reactQueryStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addDefaultColumn, updateDefaultColumn} from "../../api/dbApi";
-import ZTable, {IndeterminateCheckbox} from "../../components/table/ZTable";
+import {addDefaultColumn, updateDefaultColumn} from "../../../api/dbApi";
+import ZTable, {IndeterminateCheckbox} from "../../../components/table/ZTable";
 import * as _ from "lodash";
 import {Chip, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
-import FormInputText from "../../components/form/FormInputText";
-import FormCheckBox from "../../components/form/FormCheckBox";
+import FormInputText from "../../../components/form/FormInputText";
+import FormCheckBox from "../../../components/form/FormCheckBox";
 
 export default function DefaultColumnTemplateDetail() {
 

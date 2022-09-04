@@ -17,7 +17,7 @@ import * as _ from "lodash"
 import {activeProjectAtom} from "../../store/projectStore";
 import {useGetConsole} from "../../store/rq/reactQueryStore";
 import toast from "react-hot-toast";
-import {EditSqlDialog} from "./DBDdl";
+import {EditSqlDialog} from "./DBSql";
 
 export default function DBConsole() {
 
@@ -93,7 +93,8 @@ export default function DBConsole() {
         setSqlResult("")
         const sql = "explain " + selectedSql
         if (databaseType === 0) {
-            db.exec(sql)
+            // let res = db.exec(sql)
+            executeSqlOnline(sql)
         } else {
             sqlExecuteMutation.mutate({
                 sql: sql,
@@ -104,11 +105,15 @@ export default function DBConsole() {
     }
 
     const handleOptimize = () => {
-        optimizeMutation.mutate({
-            projectId: project.id,
-            sql: selectedSql,
-            dbType: databaseType
-        })
+        if(databaseType === 0) {
+            toast.error("Sqlite暂不支持调优");
+        } else {
+            optimizeMutation.mutate({
+                projectId: project.id,
+                sql: selectedSql,
+                dbType: databaseType
+            })
+        }
     }
 
     const formatSql = () => {
@@ -180,6 +185,7 @@ export default function DBConsole() {
         }, {
             onSuccess: () => {
                 reset()
+                toast("收藏成功")
             }
         })
     }
@@ -210,7 +216,6 @@ export default function DBConsole() {
                         value={consoleSql}
                         extensions={[sql()]}
                         onStatistics={data => {
-                            console.log(data.selectionCode)
                             setSelectedSql(data.selectionCode)
                         }}
                         onChange={data => {

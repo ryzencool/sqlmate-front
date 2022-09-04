@@ -47,7 +47,13 @@ export default function DBCode() {
         return <div>isLoading</div>
     }
 
-    let dbmlObj = Parser.parse(dbmlQuery.data.data.data, 'dbml')
+    let dbmlObj;
+    try {
+
+        dbmlObj = Parser.parse(dbmlQuery.data.data.data, 'dbml')
+    }catch (e) {
+        return <div>无字段</div>
+    }
 
 
     return (<div className={"w-full"}>
@@ -77,7 +83,7 @@ export default function DBCode() {
             <div className={'flex flex-col gap-6 w-full'}>
                 {
                     codeTemplatesQuery.data.data.data.map((tpl, index) => {
-                        return <ZTabPanel value={value} index={index} key={tpl.id} className={'w-full '}>
+                        return <ZTabPanel value={value} index={index} key={tpl.id} className={'w-full'}>
                             <div className={'flex flex-col gap-6'}>
                                 {
                                     templateFilesQuery.data.data.data.map(

@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react'
 import Box from "@mui/material/Box";
 import {Card, Paper, Tab, Tabs} from "@mui/material";
 import DBDoc from "./DBDoc";
-import DBGraph from "./DBGraph";
+import DBEr from "./DBEr";
 import DBConsole from "./DBConsole";
 import DBData from "./DBData";
 import DBDml from "./DBDml";
-import DBDdl from "./DBDdl";
+import DBSql from "./DBSql";
 import DBCode from "./DBCode";
 import {activeTableAtom} from "../../store/tableListStore";
 import DBSnapshot from "./DBSnapshot";
@@ -170,7 +170,7 @@ function DBTableTab() {
                 <DBDoc/>
             </ZTabPanel>
             <ZTabPanel value={value} index={1}>
-                <DBGraph/>
+                <DBEr/>
             </ZTabPanel>
             <ZTabPanel value={value} index={2}>
                 <DBConsole/>
@@ -188,7 +188,7 @@ function DBTableTab() {
                 <DBSnapshot/>
             </ZTabPanel>
             <ZTabPanel value={value} index={7}>
-                <DBDdl/>
+                <DBSql/>
             </ZTabPanel>
         </Box>
     </React.Fragment>)

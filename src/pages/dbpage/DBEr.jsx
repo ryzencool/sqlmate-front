@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import createEngine, {DefaultLinkModel, DiagramModel,} from "@projectstorm/react-diagrams";
 
 import DiagramWidget from "../../components/graph/DiagramWidget";
@@ -7,24 +7,45 @@ import {NodeModel} from "../../components/graph/NodeModel";
 import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/projectStore";
 import {useListTableDetail, useListTableRel} from "../../store/rq/reactQueryStore";
+import Button from "@mui/material/Button";
 
-function DBGraph() {
+function DBEr() {
 
+    const [project] = useAtom(activeProjectAtom)
+    const [tableList, setTableList] = useState(null);
+    const [tableRels, setTableRels] = useState(null);
+    const tableListQuery = useListTableDetail({projectId: project.id}, {
+        enabled: false
+    });
+    const tableRelsQuery = useListTableRel({projectId: project.id}, {
+        enabled: false
+    })
+
+    return (
+        <div>
+            <Button onClick={() => {
+                tableListQuery.refetch().then(
+                    res => {
+                        console.log("数据是", res.data.data.data)
+                        setTableList(res.data.data.data)
+                    }
+                )
+
+                tableRelsQuery.refetch().then(
+                    res => {
+                        setTableRels(res.data.data.data)
+                    }
+                )
+            }}>刷新</Button>
+            {!!tableList && !!tableRels && <Graph tableList={tableList} tableRels={tableRels}/>}
+        </div>
+    )
+}
+
+function Graph({tableList, tableRels}) {
     const engine = createEngine();
     engine.getNodeFactories().registerFactory(new NodeFactory());
-    const [project, setProject] = useAtom(activeProjectAtom)
 
-
-    const tableListQuery = useListTableDetail({projectId: project.id});
-    const tableRelsQuery = useListTableRel({projectId: project.id})
-
-
-    if (tableListQuery.isLoading || tableRelsQuery.isLoading) {
-        return <div>加载中</div>
-    }
-
-    let tableList = tableListQuery.data.data.data
-    let tableRels = tableRelsQuery.data.data.data
     const model = new DiagramModel();
 
     let nodes = []
@@ -54,8 +75,6 @@ function DBGraph() {
     engine.setModel(model)
 
     return <DiagramWidget engine={engine}/>;
-
-
 }
 
-export default DBGraph;
+export default DBEr;

@@ -60,6 +60,16 @@ const updateDefaultColumnUrl = "/defaultColumn/detail/update"
 const syncDatabaseUrl = "/database/sync"
 const syncConsoleUrl = "/console/sync"
 const getConsoleUrl = "/console/get"
+const cloneCodeTemplateUrl = "/codeTemplate/clone"
+const cloneDefaultColumnUrl = "/defaultColumn/clone"
+
+export function cloneDefaultColumn(params) {
+    return post(cloneDefaultColumnUrl, params)
+}
+
+export function cloneCodeTemplate(params) {
+    return post(cloneCodeTemplateUrl, params)
+}
 
 export function syncConsole(params) {
     return post(syncConsoleUrl, params)

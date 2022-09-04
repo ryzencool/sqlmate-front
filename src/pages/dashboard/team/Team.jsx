@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import {useListTeam, useListTeamUser} from "../../store/rq/reactQueryStore";
+import {useListTeam, useListTeamUser} from "../../../store/rq/reactQueryStore";
 import Button from "@mui/material/Button";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {createTeam} from "../../api/dbApi";
+import {createTeam} from "../../../api/dbApi";
 import {
     Accordion,
     AccordionDetails,
@@ -24,7 +24,7 @@ export default function Team() {
 
     const [teamAddOpen, setTeamAddOpen] = useState(false)
     const [teamAddData, setTeamAddData] = useState({})
-    const [selectedTeam, setSelectedTeam] = useState();
+    const [selectedTeam, setSelectedTeam] = useState({});
     const queryClient = useQueryClient()
     const teamAdd = useMutation(createTeam, {
         onSuccess: () => {
