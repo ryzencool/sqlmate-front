@@ -3,14 +3,14 @@ import {Drawer} from "@mui/material";
 import Box from "@mui/material/Box";
 import {CopyBlock, nord} from "react-code-blocks";
 
-export  function TemporaryDrawer({open, handleClose, element}) {
+export  function TemporaryDrawer({open, handleClose, element, dir="bottom"}) {
 
 
     return (
         <div className={'rounded-lg'}>
-            <React.Fragment key={"bottom"}>
+            <React.Fragment key={dir}>
                 <Drawer
-                    anchor={"bottom"}
+                    anchor={dir}
                     open={open}
                     onClose={handleClose}
                 >
