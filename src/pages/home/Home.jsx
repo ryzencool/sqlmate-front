@@ -4,6 +4,8 @@ import {Link} from "react-router-dom";
 import {Avatar} from "@mui/material";
 import {useGetUserInfo} from "../../store/rq/reactQueryStore";
 import {colors} from "../dashboard/project/ProjectCard";
+import {useAtom} from "jotai";
+import {userAtom} from "../../store/userStore";
 
 export default function Home() {
 
@@ -15,11 +17,7 @@ export default function Home() {
 
     const navigate = useNavigate()
 
-
-    const userQuery = useGetUserInfo({}, {
-        enabled: !!auth
-    })
-
+    const [user] = useAtom(userAtom)
 
 
     return <div className={'w-screen bg-slate-100 flex-col items-center pb-10'}>
@@ -29,7 +27,7 @@ export default function Home() {
             </div>
 
             {
-                auth ? <div className={" flex flex-row gap-10 items-center text-indigo-700"}>
+                auth  ? <div className={" flex flex-row gap-10 items-center text-indigo-700"}>
                         <Link to={"/header/dashboard/myProject"}>
                             <div
                                 className={'bg-indigo-400 text-white font-bold rounded-md p-2 w-24 text-center tracking-wider'}>
@@ -37,7 +35,7 @@ export default function Home() {
                             </div>
                         </Link>
 
-                        <Avatar className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery?.data?.data?.data?.username?.substring(0,1)}</Avatar>
+                        <Avatar className={`text-2xl ${colors[user.username.length % 6]}`}>{user.username?.substring(0,1)}</Avatar>
                     </div>
                     :
                     <div className={" flex flex-row gap-6 items-center"}>

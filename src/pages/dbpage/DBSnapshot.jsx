@@ -91,15 +91,15 @@ export default function DBSnapshot() {
                         <div className={'pt-3 pb-3 pl-4 flex flex-row justify-between items-center w-full'}>
                             <div className={'pl-4  text-sm grid grid-rows-3 text-left gap-2'}>
                                 <div className={'grid grid-cols-2'}>
-                                    <div>快照版本</div>
+                                    <div className={'text-slate-500'}>快照版本</div>
                                     <div className={'font-bold'}> {snapshot.name}</div>
                                 </div>
                                 <div className={'grid grid-cols-2'}>
-                                    <div>快照备注</div>
+                                    <div className={'text-slate-500'}>快照备注</div>
                                     <div className={'font-bold'}>{snapshot.note}</div>
                                 </div>
                                 <div className={'grid grid-cols-2'}>
-                                    <div>快照时间</div>
+                                    <div className={'text-slate-500'}>快照时间</div>
                                     <div className={'font-bold'}>{snapshot.createTime}</div>
                                 </div>
                             </div>

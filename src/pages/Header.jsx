@@ -5,6 +5,7 @@ import OperationMenu from "./dbpage/OperationMenu";
 import {useLocation} from "react-router-dom";
 import {useGetUserInfo} from "../store/rq/reactQueryStore";
 import {Avatar} from "@mui/material";
+import {colors} from "./dashboard/project/ProjectCard";
 
 function Header() {
 
@@ -20,8 +21,6 @@ function Header() {
     if (userQuery.isLoading) {
         return <div>加载中</div>
     }
-
-    console.log("用户是", userQuery.data.data.data)
 
     return (
         <div className="h-screen w-screen">
@@ -40,7 +39,7 @@ function Header() {
                             <Button>邀请伙伴</Button>
                             <Button size={"small"} variant={"contained"} onClick={() => navigate('/header/dashboard/myProject')}>控制台</Button>
                             <div>
-                                <Avatar>{userQuery.data.data.data.username}</Avatar>
+                                <Avatar className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery.data.data.data.username.substring(0, 1)}</Avatar>
                             </div>
                         </div>
                     </div>
