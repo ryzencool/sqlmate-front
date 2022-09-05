@@ -10,6 +10,7 @@ import {activeProjectAtom} from "../../../store/projectStore";
 import {useForm} from "react-hook-form";
 import FormInputText from "../../../components/form/FormInputText";
 import toast from "react-hot-toast";
+import {colors} from "../project/ProjectCard";
 
 export default function DefaultColumnTemplate(props) {
 
@@ -74,8 +75,8 @@ export default function DefaultColumnTemplate(props) {
 
         <div className={'flex flex-row flex-wrap gap-8'}>
             {listTemplateQuery.data.data.data.map(it => (
-                <Card className={'w-52 h-72 flex flex-col gap-2'}>
-                    <div className={'h-2/3  w-full bg-purple-300'}>
+                <Card className={'w-52 h-72 flex flex-col gap-2 rounded-xl'}>
+                    <div className={`h-2/3  w-full bg-purple-300 ${colors[it.name.length % 6]}`}>
                     </div>
 
                     <div className={'pl-2'}>

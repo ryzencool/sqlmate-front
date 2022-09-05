@@ -75,7 +75,9 @@ function DBTablePanel({projectId}) {
             projectId: projectId
         }, {
             onSuccess: data => {
+                console.log("创建的id", data.data.data)
                 setTableCreateOpen(false)
+                setActiveTable(data.data.data)
                 reset({})
             }
         })

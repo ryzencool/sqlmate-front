@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router";
+import {colors} from "../project/ProjectCard";
 
 export default function Team() {
 
@@ -35,11 +36,11 @@ export default function Team() {
     const navigate = useNavigate()
     console.log("团队列表", teamUsers)
     return <div>
-        <div className={'flex flex-row gap-10'}>
+        <div className={'flex flex-row gap-10 '}>
             {!teams.isLoading && teams.data.data.data.map(it => (
 
-                <Card className={"w-52 h-72"} key={it.id} >
-                    <div className={"h-1/2 bg-purple-300"} >
+                <Card className={"w-52 h-72 rounded-xl"} key={it.id} >
+                    <div className={`h-1/2 ${colors[it.name.length % 6]}`} >
                     </div>
                     <div className={"p-3 flex-col flex justify-between h-1/2"}>
                         <div className={" font-bold text-xl"}>

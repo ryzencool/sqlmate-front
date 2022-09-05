@@ -86,15 +86,15 @@ export default function MyProject() {
                                     <div className={'flex-row flex justify-around gap-1 w-full'}>
                                         <div className={'flex-col items-center flex gap-1'}>
                                             <FaRegClone className={'text-lg'}/>
-                                            <div className={'text-sm'}>1123</div>
+                                            <div className={'text-sm'}>{it.cloneCount}</div>
                                         </div>
                                         <div className={'flex-col items-center flex gap-1'}>
                                             <FaRegEye className={'text-lg'}/>
-                                            <div className={'text-sm'}>3235</div>
+                                            <div className={'text-sm'}>{it.openCount}</div>
                                         </div>
                                         <div className={'flex-col items-center flex gap-1'}>
                                             <FaRegHeart className={'text-lg'}/>
-                                            <div className={'text-sm'}>3234</div>
+                                            <div className={'text-sm'}>{it.collectCount}</div>
                                         </div>
                                     </div>
                                     <div className={'text-sm text-slate-400 mt-4'}>

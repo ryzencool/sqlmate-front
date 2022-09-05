@@ -17,6 +17,7 @@ import {addCodeTemplate, cloneCodeTemplate} from "../../../api/dbApi";
 import {useNavigate} from "react-router";
 import {useForm} from "react-hook-form";
 import FormInputText from "../../../components/form/FormInputText";
+import {colors} from "../project/ProjectCard";
 
 
 export default function CodeSettings() {
@@ -75,9 +76,9 @@ export default function CodeSettings() {
             {
                 !codeTemplates.isLoading && codeTemplates.data.data?.data.map(
                     it => (
-                        <Card key={it.id} className={"w-52 h-80"}
+                        <Card key={it.id} className={"w-52 h-80 rounded-xl "}
                         >
-                            <div className={'h-4/6 bg-purple-300 '}>
+                            <div className={`h-4/6 bg-purple-300 ${colors[it.name.length % 6]}`}>
 
                             </div>
                             <div className={'h-2/6 p-2 flex flex-col justify-between'}>

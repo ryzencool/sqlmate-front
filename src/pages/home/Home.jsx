@@ -17,9 +17,10 @@ export default function Home() {
 
             {
                 auth ? <div className={" flex flex-row gap-6 items-center text-indigo-700"}>
+                    <Link to={"/header/dashboard/myProject"}>
                     <div
                         className={'bg-indigo-400 text-white font-bold rounded-md p-2 w-24 text-center tracking-wider'}>
-                        <Link to={"/header/dashboard/myProject"}>控制台</Link></div>
+                        控制台</div></Link>
                 </div> : <div className={" flex flex-row gap-6 items-center"}>
                     <div className={"text-indigo-400"} onClick={() => navigate("/auth/signIn")}>登录</div>
                     <div className={"bg-indigo-400 text-white rounded-md pl-2 pr-2 pt-1 pb-1 w-24 text-center"}
@@ -37,9 +38,9 @@ export default function Home() {
                 基于SQL创建文档，生成ER图和代码，管理SQL语句，调优SQL，与团队协作，一切尽在SQLMate。
             </div>
             <div className={"mt-16 flex flex-row gap-20"}>
-                <div className={"bg-white font-bold  rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center"}>了解一下</div>
+                <div className={"bg-white font-bold  rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"}>了解一下</div>
                 <div
-                    className={"bg-indigo-400 font-bold text-white rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center"}>开始吧
+                    className={"bg-indigo-400 font-bold text-white rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"}>开始吧
                 </div>
             </div>
         </div>
@@ -58,20 +59,11 @@ export default function Home() {
                              img={'https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/iShot_2022-09-03_14.57.51.png'}
                              mainTitle={"在线测试"}
                              subTitle={"提供测试数据库环境，简单快捷测试"}/>
+                <FeatureCard color={'bg-purple-200'}
+                             img={'https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/iShot_2022-09-05_19.00.48.png'}
+                             mainTitle={"模版社区"}
+                             subTitle={"共享项目模版，代码生成，难点SQL，学习和借鉴社区项目"}/>
 
-
-                <div className={'flex flex-col items-center w-56'}>
-                    <div className={'bg-purple-800 rounded-xl w-56 h-32'}>
-
-                    </div>
-                    <div className={'font-bold mt-2'}>
-                        模版社区
-                    </div>
-                    <div className={'text-sm text-slate-500 w-4/5'}>
-                        共享项目模版，学习和借鉴社区项目
-                    </div>
-                </div>
-      
                 <FeatureCard color={'bg-purple-200'}
                              img={'https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/iShot_2022-09-05_17.06.13.png'}
                              mainTitle={"代码生成"}
@@ -109,7 +101,7 @@ export default function Home() {
                 <div className={'w-32 h-24 '}>
                     <img src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/postgresql.png"}/>
                 </div>
-                <div className={'w-32 h-24 mt-2'}>
+                <div className={'w-32 h-24 mt-1'}>
                     <img src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/sqlite.png"}/>
                 </div>
                 <div className={'w-32 h-24'}>
