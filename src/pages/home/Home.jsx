@@ -1,32 +1,51 @@
 import React from 'react'
 import {useNavigate} from 'react-router'
 import {Link} from "react-router-dom";
+import {Avatar} from "@mui/material";
+import {useGetUserInfo} from "../../store/rq/reactQueryStore";
+import {colors} from "../dashboard/project/ProjectCard";
 
 export default function Home() {
 
-    const navigate = useNavigate()
+
+
 
     let auth = localStorage.getItem("authToken")
 
 
+    const navigate = useNavigate()
+
+
+    const userQuery = useGetUserInfo({}, {
+        enabled: !!auth
+    })
+
+
+
     return <div className={'w-screen bg-slate-100 flex-col items-center pb-10'}>
-        <div className={' h-16  pl-20 pr-20 flex flex-row justify-between  items-center'}>
+        <div className={' h-20  pl-20 pr-20 flex flex-row justify-between  items-center'}>
             <div className={"font-bold  text-2xl text-center"}>
                 SQLMate
             </div>
 
             {
-                auth ? <div className={" flex flex-row gap-6 items-center text-indigo-700"}>
-                    <Link to={"/header/dashboard/myProject"}>
-                    <div
-                        className={'bg-indigo-400 text-white font-bold rounded-md p-2 w-24 text-center tracking-wider'}>
-                        控制台</div></Link>
-                </div> : <div className={" flex flex-row gap-6 items-center"}>
-                    <div className={"text-indigo-400"} onClick={() => navigate("/auth/signIn")}>登录</div>
-                    <div className={"bg-indigo-400 text-white rounded-md pl-2 pr-2 pt-1 pb-1 w-24 text-center"}
-                         onClick={() => navigate("/auth/signUp")}>试一试
+                auth ? <div className={" flex flex-row gap-10 items-center text-indigo-700"}>
+                        <Link to={"/header/dashboard/myProject"}>
+                            <div
+                                className={'bg-indigo-400 text-white font-bold rounded-md p-2 w-24 text-center tracking-wider'}>
+                                控制台
+                            </div>
+                        </Link>
+
+                        <Avatar className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery?.data?.data?.data?.username?.substring(0,1)}</Avatar>
                     </div>
-                </div>
+                    :
+                    <div className={" flex flex-row gap-6 items-center"}>
+                        <div className={"text-indigo-400"} onClick={() => navigate("/auth/signIn")}>登录</div>
+                        <div className={"bg-indigo-400 text-white rounded-md pl-2 pr-2 pt-1 pb-1 w-24 text-center"}
+                             onClick={() => navigate("/auth/signUp")}>试一试
+                        </div>
+                    </div>
             }
 
         </div>
@@ -38,7 +57,9 @@ export default function Home() {
                 基于SQL创建文档，生成ER图和代码，管理SQL语句，调优SQL，与团队协作，一切尽在SQLMate。
             </div>
             <div className={"mt-16 flex flex-row gap-20"}>
-                <div className={"bg-white font-bold  rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"}>了解一下</div>
+                <div
+                    className={"bg-white font-bold  rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"}>了解一下
+                </div>
                 <div
                     className={"bg-indigo-400 font-bold text-white rounded-md pl-4 pr-4 pt-3 pb-3 text-lg w-52 text-center transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"}>开始吧
                 </div>
@@ -96,16 +117,20 @@ export default function Home() {
             <div className={'font-bold text-3xl tracking-widest mt-6'}>多数据库支持</div>
             <div className={'flex flex-row justify-center gap-16 p-6'}>
                 <div className={'w-32 h-24 '}>
-                    <img src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/mysql.png"}/>
+                    <img
+                        src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/mysql.png"}/>
                 </div>
                 <div className={'w-32 h-24 '}>
-                    <img src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/postgresql.png"}/>
+                    <img
+                        src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/postgresql.png"}/>
                 </div>
                 <div className={'w-32 h-24 mt-1'}>
-                    <img src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/sqlite.png"}/>
+                    <img
+                        src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/sqlite.png"}/>
                 </div>
                 <div className={'w-32 h-24'}>
-                    <img src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/sqlserver.png"}/>
+                    <img
+                        src={"https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/sqlserver.png"}/>
                 </div>
             </div>
         </div>
@@ -113,7 +138,7 @@ export default function Home() {
 
         <div className={'mt-10  flex-row flex justify-center'}>
             <div>
-            © 2022 SQLMate. All rights reserved.
+                © 2022 SQLMate. All rights reserved.
             </div>
         </div>
     </div>

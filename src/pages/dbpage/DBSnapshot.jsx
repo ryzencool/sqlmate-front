@@ -25,6 +25,7 @@ import {exporter} from "@dbml/core";
 import Box from "@mui/material/Box";
 import {a11yProps, ZTabPanel} from "../../components/tab/ZTabPanel";
 import beautify from "json-beautify";
+import {colors} from "../dashboard/project/ProjectCard";
 
 
 export default function DBSnapshot() {
@@ -84,27 +85,22 @@ export default function DBSnapshot() {
             {
                 snapshotListQuery.data.data.data.map(snapshot =>
                     <Card key={snapshot.id} className={'flex flex-row '}>
-                        <div className={'w-1/4 bg-purple-300'}>
+                        <div className={`w-1/4 ${colors[snapshot.id % 6]}`}>
 
                         </div>
-                        <div className={'pt-2 pb-2 pl-4 flex flex-row justify-between items-center w-full'}>
-                            <div className={'grid grid-rows-2 text-left'}>
+                        <div className={'pt-3 pb-3 pl-4 flex flex-row justify-between items-center w-full'}>
+                            <div className={'pl-4  text-sm grid grid-rows-3 text-left gap-2'}>
                                 <div className={'grid grid-cols-2'}>
-                                    <div>快照名称</div>
-                                    <div>{snapshot.name}</div>
+                                    <div>快照版本</div>
+                                    <div className={'font-bold'}> {snapshot.name}</div>
                                 </div>
                                 <div className={'grid grid-cols-2'}>
                                     <div>快照备注</div>
-                                    <div>{snapshot.note}</div>
+                                    <div className={'font-bold'}>{snapshot.note}</div>
                                 </div>
                                 <div className={'grid grid-cols-2'}>
-                                    <div>快照人</div>
-                                    <div>周美勇</div>
-                                </div>
-                                <div className={'grid grid-cols-2'}>
-
                                     <div>快照时间</div>
-                                    <div>{snapshot.createTime}</div>
+                                    <div className={'font-bold'}>{snapshot.createTime}</div>
                                 </div>
                             </div>
                             <div className={'mr-3 flex flex-col gap-4'}>
