@@ -78,7 +78,7 @@ export default function DBData() {
                         dt = i + 1;
                     } else if (type.includes("int") && !it.isAutoIncrement) {
                         dt = faker.datatype.number(1000000);
-                    } else if (it.includes("varchar") || it.includes("text")) {
+                    } else if (type.includes("varchar") || it.includes("text")) {
                         dt = faker.random.word()
                     }
 

@@ -27,7 +27,19 @@ export default function DBCode() {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    const codeTemplatesQuery = useListCodeTemplate({})
+    // 官方和自己的
+    const codeTemplatesQuery = useListCodeTemplate({}, {
+        onSuccess: data => {
+            console.log("当前的选择", data.data.data)
+            let res = data.data.data
+            if (!!res && res.length > 0) {
+                setSelectedTemplateSearch({
+                    templateId: res[0].id
+                })
+            }
+
+        }
+    })
 
     const [selectedTemplateSearch, setSelectedTemplateSearch] = useState({})
 
@@ -49,7 +61,6 @@ export default function DBCode() {
 
     let dbmlObj;
     try {
-
         dbmlObj = Parser.parse(dbmlQuery.data.data.data, 'dbml')
     }catch (e) {
         return <div>无字段</div>

@@ -6,7 +6,7 @@ import {
     getProject,
     getProjectDetail,
     getTable,
-    getTemplateFile,
+    getTemplateFile, getUserInfo,
     listCodeTemplate,
     listDefaultColumns,
     listDefaultColumnTemplate,
@@ -28,6 +28,9 @@ import {
     queryProjectDBML
 } from "../../api/dbApi";
 
+export const useGetUserInfo = (params, options = {}) => {
+    return useQuery(['userInfo', params], () => getUserInfo(params), options)
+}
 
 export const useGetProject = (params, options) => useQuery(['project', params],
     () => getProject(params), options)

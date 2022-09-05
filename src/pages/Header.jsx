@@ -3,12 +3,26 @@ import {Outlet, useNavigate} from "react-router";
 import Button from "@mui/material/Button";
 import OperationMenu from "./dbpage/OperationMenu";
 import {useLocation} from "react-router-dom";
+import {useGetUserInfo} from "../store/rq/reactQueryStore";
+import {Avatar} from "@mui/material";
 
 function Header() {
+
+
+
 
     const location = useLocation()
 
     const navigate = useNavigate()
+
+    const userQuery = useGetUserInfo({})
+
+    if (userQuery.isLoading) {
+        return <div>加载中</div>
+    }
+
+    console.log("用户是", userQuery.data.data.data)
+
     return (
         <div className="h-screen w-screen">
             <div className="h-20  flex-col flex w-full">
@@ -22,11 +36,11 @@ function Header() {
                                 location.pathname.includes("home") &&  <OperationMenu/>
                             }
                         </div>
-                        <div className={"flex flex-row items-center pr-10  gap-2"}>
+                        <div className={"flex flex-row items-center pr-10  gap-5"}>
                             <Button>邀请伙伴</Button>
                             <Button size={"small"} variant={"contained"} onClick={() => navigate('/header/dashboard/myProject')}>控制台</Button>
                             <div>
-                                zmyjust@gmail.com
+                                <Avatar>{userQuery.data.data.data.username}</Avatar>
                             </div>
                         </div>
                     </div>
