@@ -25,6 +25,8 @@ import {activeProjectAtom} from "../../store/projectStore";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {format} from "sql-formatter";
+import {OptimizeDrawer} from "./DBConsole";
+import toast from "react-hot-toast";
 
 
 export default function DBSql() {
@@ -33,6 +35,11 @@ export default function DBSql() {
     const [project] = useAtom(activeProjectAtom);
     const [dbType] = useAtom(databaseTypeAtom);
     const [searchParam, setSearchParam] = useState({projectId: project.id})
+    const [optimizeOpen, setOptimizeOpen] = useState(false)
+    const [optimizeResult, setOptimizeResult] = useState(null)
+    const [projectSqlState, setProjectSqlState] = useState({});
+    const [optimizerParam, setOptimizerParam] = useState({})
+
     const handleCloseAddSql = () => {
         setAddSqlOpen(false)
     }
@@ -41,11 +48,9 @@ export default function DBSql() {
         setOpen(true);
     };
 
-    const [projectSqlState, setProjectSqlState] = useState({});
 
     const queryClient = useQueryClient()
 
-    const [optimizerParam, setOptimizerParam] = useState({})
 
 
     const projectSqlsQuery = useListProjectSql(searchParam, {
@@ -90,15 +95,24 @@ export default function DBSql() {
         setDrawerOpen(false)
     }
 
-    const handleClickOptimize = (it) => {
-        console.log("数据是", it)
-        optimizeSqlMutation.mutate({
-            ...it
-        }, {
-            onSuccess: data => {
-                console.log("所有数据", data)
-            }
-        })
+    const handleClickOptimizeSql = (it) => {
+        console.log("优化")
+        if (databaseType === 0) {
+            toast.error("Sqlite暂不支持调优");
+        } else {
+            optimizeSqlMutation.mutate({
+                projectId: project.id,
+                sql: it.sql,
+                dbType: databaseType
+            }, {
+                onSuccess: data => {
+                    console.log(data.data.data)
+                    setOptimizeResult(data.data.data)
+                    setOptimizeOpen(true)
+
+                }
+            })
+        }
     }
 
     const handleExecute = (projectSql) => {
@@ -163,7 +177,8 @@ export default function DBSql() {
                                 />
                                 <div className={'flex flex-row gap-2'}>
                                     <Button variant={'contained'} size={'small'} onClick={() => {
-                                        handleClickOptimize(it)
+                                        console.log("我懵逼了")
+                                        handleClickOptimizeSql(it)
                                     }}>调优</Button>
                                     <Button variant={'contained'} size={'small'}
                                             onClick={() => setDeleteSqlOpen(true)}>删除sql</Button>
@@ -186,6 +201,11 @@ export default function DBSql() {
                                              confirm={() => {
                                                  deleteSqlMutation.mutate({
                                                      id: it.id
+                                                 }, {
+                                                     onSuccess: data => {
+                                                         toast("删除成功")
+                                                         setDeleteSqlOpen(false)
+                                                     }
                                                  })
                                              }}/>
 
@@ -196,6 +216,11 @@ export default function DBSql() {
 
             </div>
         </div>
+        <TemporaryDrawer open={optimizeOpen}
+                         handleClose={() => {
+                             setOptimizeOpen(false)
+                         }}
+                         dir={"right"} element={<OptimizeDrawer data={optimizeResult}/>}/>
         <TemporaryDrawer open={drawerOpen} handleClose={() => handleDrawerClose()} element={<div>
 
         </div>}/>

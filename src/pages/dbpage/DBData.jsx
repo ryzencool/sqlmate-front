@@ -3,7 +3,7 @@ import {activeTableAtom} from "../../store/tableListStore";
 import {Button} from "@mui/material";
 import {dbAtom} from "../../store/sqlStore";
 import {useAtom} from "jotai";
-import {useGetDBML} from "../../store/rq/reactQueryStore";
+import {useGetDBML, useListColumn} from "../../store/rq/reactQueryStore";
 import {Parser} from "@dbml/core";
 import {createColumnHelper} from "@tanstack/react-table";
 import {faker} from "@faker-js/faker";
@@ -26,6 +26,7 @@ export default function DBData() {
     const [databaseType, setDatabase] = useAtom(databaseTypeAtom)
     const [insertSql, setInsertSql] = useState("");
     const [jsonData, setJsonData] = useState("");
+    const [generateCount, setGenerateCount] = useState(1000)
     useGetDBML({tableId: activeTable}, {
         enabled: !!activeTable,
         onSuccess: (data) => {
@@ -44,6 +45,13 @@ export default function DBData() {
 
     })
 
+
+
+    const listColumnQuery = useListColumn({tableId: activeTable}, {
+        enabled: !!activeTable
+    })
+
+
     useEffect(() => {
         setData([])
     }, [activeTable])
@@ -58,14 +66,25 @@ export default function DBData() {
 
     const handleGenerateData = () => {
         let push = []
-        for (let i = 0; i < 100; i++) {
-            let obj = dbmlObj.fields.map(it => {
-                let data = {}
-                if (it.type.type_name.startsWith('int')) {
-                    return {...data, [it.name]: faker.datatype.number({max: 10000000})}
+        let data = listColumnQuery.data.data.data
+        for (let i = 0; i < generateCount; i++) {
+            let res = data.map((it, index) => {
+                let dt;
+                if (it.kindKey != null && it.kindKey !== '' && it.cateKey != null && it.cateKey !== '') {
+                    dt = faker[it.kindKey][it.cateKey]()
+                } else {
+                    let type = it.type.toLowerCase();
+                    if ((type.includes("int") && it.isAutoIncrement) || type.includes("serial")) {
+                        dt = i + 1;
+                    } else if (type.includes("int") && !it.isAutoIncrement) {
+                        dt = faker.datatype.number(1000000);
+                    } else if (it.includes("varchar") || it.includes("text")) {
+                        dt = faker.random.word()
+                    }
+
                 }
-                if (it.type.type_name.startsWith("varchar")) {
-                    return {...data, [it.name]: faker.random.word()}
+                return {
+                    [it.name]: dt
                 }
             }).reduce((a, b) => {
                 return {
@@ -73,11 +92,8 @@ export default function DBData() {
                     ...b
                 }
             }, {})
-            push.push(obj)
+            push.push(res)
         }
-
-
-        console.log("数据是", push)
         setData(push)
     }
 
@@ -89,12 +105,11 @@ export default function DBData() {
         let fields = dbmlObj.fields.map(it => it.name).join(",")
         let header = `INSERT INTO ${tableName} (${fields}) VALUES `
         console.log("生成：", tableName, fields)
-        let res = header + data.map(it => {
+        return header + data.map(it => {
             let vs = _.values(it).join(",")
 
             return `(${vs})`
         }).join(",")
-        return res
     }
 
     const handleClickGenerateSql = () => {
@@ -120,6 +135,10 @@ export default function DBData() {
 
     const handleClickClearDatabase = () => {
 
+    }
+
+    if (listColumnQuery.isLoading) {
+        return <div>加载中</div>
     }
 
     return <div className={"w-full flex flex-col gap-3"}>

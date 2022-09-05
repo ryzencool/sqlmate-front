@@ -2,16 +2,23 @@ import React from 'react'
 import {FaRegClone, FaRegEye, FaRegHeart} from "react-icons/fa";
 import {Card, Chip} from "@mui/material";
 import Button from "@mui/material/Button";
-
+export const colors = [
+    "bg-gradient-to-l from-cyan-500 to-blue-500",
+    "bg-gradient-to-l from-indigo-500 to-purple-500",
+    "bg-gradient-to-l from-purple-500 to-pink-500",
+    "bg-gradient-to-l from-yellow-500 to-pink-500",
+    "bg-gradient-to-l from-blue-500 to-green-500",
+    "bg-gradient-to-l from-indigo-500 to-yellow-500"
+]
 
 export default function ProjectCard({project, mode, operateArea}) {
 
 
     return (
-        <Card className={"w-56 h-96 flex  flex-col  rounded-2xl justify-between "} key={project.id}>
+        <Card className={"w-56 h-96 flex  flex-col  rounded-xl justify-between "} key={project.id}>
             <div>
                 <div
-                    className={"h-16 w-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center pl-4"}>
+                    className={`h-16 w-full ${colors[project.name.length % 6]} flex items-center pl-4`}>
                     <div className={"font-bold text-2xl overflow-hidden text-ellipsis whitespace-nowrap"}> {project.name}</div>
                 </div>
                 <div className={"flex-col flex  w-full pl-4 pr-4 pt-4 "}>

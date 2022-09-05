@@ -19,6 +19,7 @@ import Box from "@mui/material/Box";
 import FormTableAndColumnSelectBox from "../../components/form/FormTableAndColumnSelectBox";
 import {useNavigate} from "react-router";
 import {activeProjectAtom} from "../../store/projectStore";
+import FormFaker from "../../components/form/FormFaker";
 
 function DBDoc() {
     const queryClient = useQueryClient()
@@ -340,6 +341,7 @@ const EditColumnDialog = ({
         name: "relationShip"
     });
 
+
     useEffect(() => {
         if (value != null) {
             reset(value)
@@ -361,11 +363,22 @@ const EditColumnDialog = ({
                 <FormInputText name={"type"} control={control} label={"类型"}/>
                 <FormInputText name={"note"} control={control} label={"备注"}/>
                 <FormInputText name={"defaultValue"} control={control} label={"默认值"}/>
-                <FormCheckBox name={"isPrimaryKey"} control={control} label={"主键"}/>
-                <FormCheckBox name={"isNull"} control={control} label={"可空"}/>
-                <FormCheckBox name={"isAutoIncrement"} control={control} label={"自增"}/>
-                <FormCheckBox name={"isUniqueKey"} control={control} label={"唯一"}/>
-                <Box sx={{display: "flex", flexDirection: "row", gap: "2", alignItems: "center"}}>
+                <Box sx={{display: "flex", flexDirection: "row", gap: "30px"}}>
+                    <FormFaker control={control}
+                               nameKind={"kindKey"}
+                               nameCate={"cateKey"}
+                               watch={watch}
+                               getValues={getValues}/>
+                </Box>
+                <Box sx={{display: "flex", flexDirection: "row", gap: "20px", marginTop: "20px"}}>
+                    <FormCheckBox name={"isPrimaryKey"} control={control} label={"主键"}/>
+                    <FormCheckBox name={"isNull"} control={control} label={"非空"}/>
+                    <FormCheckBox name={"isAutoIncrement"} control={control} label={"自增"}/>
+                    <FormCheckBox name={"isUniqueKey"} control={control} label={"唯一"}/>
+                </Box>
+
+
+                <Box sx={{display: "flex", flexDirection: "row", gap: "2", marginTop: "20px", alignItems: "center"}}>
                     <Button size={"small"} variant={"contained"}
                             onClick={() => append({type: "", tableId: "", columnId: ""})}>添加关系</Button>
                 </Box>

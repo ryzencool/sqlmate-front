@@ -20,7 +20,6 @@ export default function ZTable({data, columns, getSelectedRows, canSelect}) {
     }
 
     const getRowId = (row, relativeIndex, parent) => {
-        console.log("获取rowID", row)
         return row.id;
     };
 

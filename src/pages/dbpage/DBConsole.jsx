@@ -233,7 +233,7 @@ export default function DBConsole() {
                                      handleClose={() => {
                                          setOptimizeOpen(false)
                                      }}
-                                     dir={"right"} element={<OptimizePanel data={optimizeResult}/>}/>
+                                     dir={"right"} element={<OptimizeDrawer data={optimizeResult}/>}/>
                     <Button size={"small"} variant={"contained"} onClick={saveSql}>保存</Button>
                 </div>
                 <div className={'mt-4'}>
@@ -265,7 +265,7 @@ export default function DBConsole() {
         </div>)
 }
 
-function OptimizePanel({data}) {
+export  function OptimizeDrawer({data}) {
 
     if (data === null) {
         return <Box>加载中</Box>
@@ -357,7 +357,7 @@ function OptimizePanel({data}) {
                         borderRightColor: "grey"
                     }}>
                         {
-                            explain.explainTable.map(it =>
+                            !!explain.explainTable  && explain.explainTable.map(it =>
                                 <Box sx={{display: "flex", flexDirection: "row", gap: "10px"}}>
                                     <Box sx={{width: "110px"}}>{it.key}</Box>
                                     <Box sx={{width: "100px"}}>{it.value}</Box>
@@ -369,19 +369,19 @@ function OptimizePanel({data}) {
                             <Box sx={{fontWeight: "bold"}}>
                                 查询类型
                             </Box>
-                            <Box>{explain.selectType.value}</Box>
+                            <Box>{explain.selectType === null ? '无': explain.selectType.value}</Box>
                         </Box>
                         <Box>
                             <Box sx={{fontWeight: "bold"}}>
                                 表扫描情况
                             </Box>
-                            <Box>{explain.type.value}</Box>
+                            <Box>{explain.type === null ? '无' : explain.type.value}</Box>
                         </Box>
                         <Box>
                             <Box sx={{fontWeight: "bold"}}>
                                 额外信息
                             </Box>
-                            <Box>{explain.extra.value}</Box>
+                            <Box>{explain.extra === null ? '无' : explain.extra.value}</Box>
                         </Box>
 
                     </Box>

@@ -14,6 +14,7 @@ import FormCheckBox from "../../../components/form/FormCheckBox";
 import {FaRegClone, FaRegEye, FaRegHeart} from "react-icons/fa";
 import {useAtom} from "jotai";
 import {activeTableAtom} from "../../../store/tableListStore";
+import {colors} from "./ProjectCard";
 
 export default function MyProject() {
     const navigate = useNavigate()
@@ -68,14 +69,16 @@ export default function MyProject() {
     }
 
 
+
+
     return (<Box>
         <div className={"flex flex-row gap-8 flex-wrap mb-10"}>
             {
                 myProjects.data.data.data.map(it =>
-                    <Card className={"w-56 h-96 flex  flex-col  rounded-2xl justify-between "} key={it.id}>
+                    <Card className={"w-56 h-96 flex  flex-col  rounded-xl justify-between "} key={it.id}>
                         <div>
                             <div
-                                className={"h-16 w-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center pl-4"}>
+                                className={`h-16 w-full  flex items-center pl-4 ${colors[it.name.length % 6]}`}>
                                 <div className={"font-bold text-2xl"}> {it.name}</div>
                             </div>
                             <div className={"flex-col flex  w-full pl-4 pr-4 pt-4 "}>

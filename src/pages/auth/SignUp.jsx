@@ -32,7 +32,14 @@ export default function SignUp() {
             signUpMutation.mutate(data)
         })}>
             <div className={'flex flex-col gap-4 mt-4'}>
-
+                <div>
+                    <div className={'block font-semibold text-sm text-gray-700'}>昵称</div>
+                    <input
+                        {
+                            ...register("username")
+                        }
+                        className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
+                </div>
                 <div>
                     <div className={'block font-semibold text-sm text-gray-700'}>手机号</div>
                     <input
@@ -50,26 +57,26 @@ export default function SignUp() {
                         className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                 </div>
                 <div>
-                    <div className={'block font-semibold text-sm text-gray-700'}>重新输入密码</div>
+                    <div className={'block font-semibold text-sm text-gray-700'}>确认密码</div>
                     <input type={"password"}
                            className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                 </div>
 
 
-                <div>
-                    <div className={'block font-semibold text-sm text-gray-700'}>验证码</div>
-                    <div className={"flex flex-row items-center justify-between gap-2"}>
+                {/*<div>*/}
+                {/*    <div className={'block font-semibold text-sm text-gray-700'}>验证码</div>*/}
+                {/*    <div className={"flex flex-row items-center justify-between gap-2"}>*/}
 
-                        <input
-                            {
-                                ...register("code")
-                            }
-                            className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 p-2'}/>
-                        <button type={'button'} className={'h-11 w-1/3 bg-indigo-500 hover:bg-indigo-700 text-white text-sm font-bold  rounded-lg'}>发送验证码</button>
+                {/*        <input*/}
+                {/*            {*/}
+                {/*                ...register("code")*/}
+                {/*            }*/}
+                {/*            className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 p-2'}/>*/}
+                {/*        <button type={'button'} className={'h-11 w-1/3 bg-indigo-500 hover:bg-indigo-700 text-white text-sm font-bold  rounded-lg'}>发送验证码</button>*/}
 
-                    </div>
+                {/*    </div>*/}
 
-                </div>
+                {/*</div>*/}
                 <div className={'mt-2'}>
                     <input type="submit"
                            className={'w-96 h-11 mt-2 tracking-widest bg-indigo-500 hover:bg-indigo-700 text-white  font-bold  rounded-lg'}
