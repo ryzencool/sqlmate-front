@@ -48,26 +48,7 @@ function DBTablePanel({projectId}) {
         }
     })
 
-    const projectMutation = useMutation(updateProject, {
-        onSuccess: data => {
-            queryClient.invalidateQueries(['project'])
-        }
 
-    })
-
-    const handleSelectDbType = (evt) => {
-        let dbType = evt.target.value
-        console.log(dbType)
-        projectMutation.mutate({
-            id: projectId,
-            dbType: dbType
-        }, {
-            onSuccess: data => {
-                setDatabaseType(dbType)
-            }
-        })
-
-    }
 
     const submitCreateTableForm = (data, reset) => {
         tableCreateMutation.mutate({
@@ -100,23 +81,8 @@ function DBTablePanel({projectId}) {
                         }}/>
                     </div>
                 </div>
-                <div className={"flex flex-row gap-2 justify-between w-10/12 mt-2"}>
-                    <FormControl className={"w-1/2"} size="small">
-                        <InputLabel>DB</InputLabel>
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={databaseType}
-                            label="Age"
-                            onChange={handleSelectDbType}
-                        >
-
-                            <MenuItem value={0}>Sqlite</MenuItem>
-                            <MenuItem value={1}>Mysql</MenuItem>
-                            <MenuItem value={2}>Postgresql</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <Button className={"bg-black text-white w-1/2"} onClick={() => {
+                <div className={"flex flex-row gap-2 justify-between w-10/12 mt-1"}>
+                    <Button className={"p-2 bg-black text-white w-full tracking-widest rounded-lg"} onClick={() => {
                         setTableCreateOpen(true)
                     }}>
                         创建表

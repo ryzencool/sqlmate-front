@@ -23,7 +23,10 @@ export function handleLoginSuccess(data, setGlobalToken, setUser, navigate) {
         toast.error("用户不存在")
     } else  if (data.data.code === "000004") {
         toast.error("密码错误，请重试")
+    } else {
+        toast.error("注册失败，请联系客服")
     }
+
 
 
 }

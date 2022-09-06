@@ -74,92 +74,11 @@ export default function OperationMenu() {
         enabled: false
     })
 
-    const syncDatabaseMutation = useMutation(syncDatabase)
-
-    const generateSqliteCol = (col) => {
-        let name = col.name
-        let type = col.type
-        if (type.includes("int")) {
-            type = "integer"
-        }
-        let isUnique = col.isUniqueKey
-        let isPrimary = col.isPrimaryKey
-        let isAutoIncrement = col.isAutoIncrement
-        let isNotNull = col.isNotNull
-        let header = `\t${name} ${type}`
-        if (isUnique) header += ` unique`
-        if (isPrimary) header += ` primary key`
-        if (isAutoIncrement) header += ` autoincrement`
-        if (isNotNull) header += ` not null`
-        return header;
-    }
-
-    const execSqlite = () => {
-        allTableQuery.refetch().then(data => {
-            let tableInfo = data.data.data.data
-            tableInfo.forEach(table => {
-                sqliteDB.exec(`drop table if exists ${table.title}`)
-                let cols = table.content.map(col => {
-                    return generateSqliteCol(col)
-                }).join(",\n")
-                let tableText = `create table if not exists ${table.title} (
-${cols} 
-)`
-                console.log(tableText)
-                sqliteDB.exec(tableText)
-            })
-        })
-    }
 
 
-    const handleSyncDatabase = () => {
-        // 获取所有的表
-        if (activeDatabase === 0) {
-            execSqlite()
-            toast("同步Sqlite成功")
-        } else {
-            console.log("当前类型")
-            // 生成dbml 然后生成sql 进行插入
-            dbmlProjectQuery.refetch().then(res  => {
-                let sql;
-                if (activeDatabase === 1) {
-                    sql = 'mysql'
-                } else if (activeDatabase === 2){
-                    sql = 'postgres'
-                } else if (activeDatabase === 3) {
-                    sql ='mssql'
-                }
 
 
-                let lang = exporter.export(res.data.data.data, sql);
 
-                if (lang.includes("(now())")) {
-                    lang = lang.replaceAll("(now())", "now()")
-                }
-
-                console.log("cula")
-
-                // 插入
-                syncDatabaseMutation.mutate({
-                    projectId: project.id,
-                    sql: lang,
-                    dbType: activeDatabase
-                }, {
-                    onSuccess: (res) => {
-                        console.log("返回的结果是", res.data)
-                        if (res.data.code !== "000000") {
-                            toast.error(`同步${sql}模拟库失败`)
-                        } else {
-                            toast(`同步${sql}成功`)
-                        }
-
-                    }
-                })
-
-            })
-        }
-        setAnchorEl(false)
-    }
 
     const handleExportSql = () => {
         dbmlProjectQuery.refetch().then(res => {
@@ -177,7 +96,7 @@ ${cols}
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                菜单
+                更多操作
             </Button>
 
             <Menu
@@ -196,7 +115,6 @@ ${cols}
                 <input type={'file'} style={{display: "none"}} ref={fileInput} onChange={showFile}/>
 
                 <MenuItem onClick={handleExportSql}>导出SQL</MenuItem>
-                <MenuItem onClick={() => handleSyncDatabase()}>同步数据库</MenuItem>
             </Menu>
         </div>
     );

@@ -46,6 +46,7 @@
     "react-hot-toast": "^2.3.0",
     "react-icons": "^4.4.0",
     "react-scripts": "^5.0.1",
+    "react-select": "^5.4.0",
     "resize-observer-polyfill": "^1.5.1",
     "sql-formatter": "^9.1.0",
     "sql.js": "^1.7.0",

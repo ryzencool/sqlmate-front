@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Box from "@mui/material/Box";
-import {Card, Paper, Tab, Tabs} from "@mui/material";
+import {Tab, Tabs} from "@mui/material";
 import DBDoc from "./DBDoc";
 import DBEr from "./DBEr";
 import DBConsole from "./DBConsole";
@@ -12,10 +12,8 @@ import {activeTableAtom} from "../../store/tableListStore";
 import DBSnapshot from "./DBSnapshot";
 import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/projectStore";
-import {useGetProject, useGetProjectDetail, useListTables} from "../../store/rq/reactQueryStore";
+import {useGetProject} from "../../store/rq/reactQueryStore";
 import {a11yProps, ZTabPanel} from "../../components/tab/ZTabPanel";
-import ZTable from "../../components/table/ZTable";
-import {createColumnHelper} from "@tanstack/react-table";
 import DBProjectInterface from "./DBProjectInterface";
 
 
@@ -25,11 +23,20 @@ function DBContent({projectId}) {
 
     const [project, setProject] = useAtom(activeProjectAtom)
 
+
+    useGetProject({
+        id: projectId
+    }, {
+        enabled: !!projectId,
+        onSuccess: (res) => {
+            console.log("项目是", res.data.data)
+            setProject(res.data.data)
+        }
+    })
+
     useEffect(() => {
         setProject({id: projectId})
     }, [])
-
-
 
 
     console.log(activeTable)
@@ -43,9 +50,6 @@ function DBContent({projectId}) {
 }
 
 export default DBContent
-
-
-
 
 
 function DBTableTab() {
