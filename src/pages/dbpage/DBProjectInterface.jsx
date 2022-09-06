@@ -43,7 +43,7 @@ export default function DBProjectInterface({projectId}) {
 
     return <div>
         <div className={'text-sm border-b pb-2'}>项目介绍</div>
-        <div className={'mt-5 text-xl font-bold'}>{projectData.projectInfo?.name}</div>
+        <div className={'mt-5 text-2xl font-bold'}>{projectData.projectInfo?.name}</div>
         <div className={'mt-3'}>
             <div className={'grid grid-rows-3 w-10/12 gap-2'}>
                 <div className={'grid grid-cols-5 '}>
@@ -75,7 +75,7 @@ export default function DBProjectInterface({projectId}) {
                             表
                         </div>
                         <div className={' font-bold text-3xl '}>
-                            16
+                            {projectData.tableCount}
                         </div>
                     </div>
                     <div className={'p-2'}>
@@ -85,10 +85,10 @@ export default function DBProjectInterface({projectId}) {
                 <Card className={'w-44 h-24 flex flex-row justify-around bg-blue-100 items-center'}>
                     <div className={'flex flex-col gap-2 pl-2'}>
                         <div className={' font-bold text-slate-500 '}>
-                            索引数量
+                            索引
                         </div>
                         <div className={' font-bold text-3xl '}>
-                            16
+                            {projectData.indexCount}
                         </div>
                     </div>
                     <div className={'p-2'}>
@@ -98,10 +98,10 @@ export default function DBProjectInterface({projectId}) {
                 <Card className={'w-44 h-24 flex flex-row justify-around bg-blue-100 items-center'}>
                     <div className={'flex flex-col gap-2 pl-2'}>
                         <div className={' font-bold text-slate-500'}>
-                            字段数量
+                            字段
                         </div>
                         <div className={' font-bold text-3xl '}>
-                            16
+                            {projectData.columnCount}
                         </div>
                     </div>
                     <div className={'p-2'}>
@@ -111,10 +111,10 @@ export default function DBProjectInterface({projectId}) {
                 <Card className={'w-44 h-24 flex flex-row items-center justify-around bg-blue-100'}>
                     <div className={'flex flex-col gap-2 pl-2'}>
                     <div className={' font-bold text-slate-500'}>
-                        sql数量
+                        SQL
                     </div>
                     <div className={' font-bold text-3xl '}>
-                        16
+                        {projectData.sqlCount}
                     </div>
                     </div>
                     <div className={'p-2'}>

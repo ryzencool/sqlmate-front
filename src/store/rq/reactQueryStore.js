@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {
-    dbmlTable,
+    dbmlTable, generateTeamJoin,
     getCodeTemplate,
     getConsole,
     getProject,
@@ -150,4 +150,9 @@ export const useListDefaultColumn = (search, options = {}) => {
 
 export const useGetConsole = (search, options = {}) => {
     return useQuery(['projectConsole', search], () => getConsole(search), options)
+}
+
+
+export const useGenerateTeamJoin = (search, options={}) => {
+    return useQuery(['teamJoinUrl', search], ()=> generateTeamJoin(search), options)
 }

@@ -36,7 +36,7 @@ function Header() {
                             }
                         </div>
                         <div className={"flex flex-row items-center pr-10  gap-5"}>
-                            <Button>邀请伙伴</Button>
+                            {/*<Button>邀请伙伴</Button>*/}
                             <Button size={"small"} variant={"contained"} onClick={() => navigate('/header/dashboard/myProject')}>控制台</Button>
                             <div>
                                 <Avatar className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery.data.data.data.username.substring(0, 1)}</Avatar>

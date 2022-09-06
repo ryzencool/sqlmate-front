@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {host} from "../SystemConfig";
+import {API_HOST} from "../SystemConfig";
 import toast from "react-hot-toast";
 import {currentTime} from "./dateUtil";
 
@@ -40,7 +40,7 @@ export  function  get(url, params = {}) {
 
     return axios({
         method: 'get',
-        url: `${host}${url}${value}`,
+        url: `${API_HOST}${url}${value}`,
         headers: headers
 
     }).then(onSuccess).catch(onError)
@@ -65,7 +65,7 @@ export function post(url, params = {}, header = {}) {
 
     return axios({
         method: 'post',
-        url: `${host}${url}`,
+        url: `${API_HOST}${url}`,
         headers: headers,
         data: params
     }).then(onSuccess).catch(onError)

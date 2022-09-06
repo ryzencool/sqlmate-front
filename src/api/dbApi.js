@@ -62,6 +62,7 @@ const syncConsoleUrl = "/console/sync"
 const getConsoleUrl = "/console/get"
 const cloneCodeTemplateUrl = "/codeTemplate/clone"
 const cloneDefaultColumnUrl = "/defaultColumn/clone"
+const generateTeamUrl = "/team/generateUrl"
 
 export function cloneDefaultColumn(params) {
     return post(cloneDefaultColumnUrl, params)
@@ -314,4 +315,8 @@ export function deleteProjectSql(params) {
 
 export function updateProjectSql(params) {
     return post(updateProjectSqlUrl, params)
+}
+
+export function generateTeamJoin(params) {
+    return get(generateTeamUrl, params)
 }

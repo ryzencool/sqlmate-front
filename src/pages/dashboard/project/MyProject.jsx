@@ -15,6 +15,7 @@ import {FaRegClone, FaRegEye, FaRegHeart} from "react-icons/fa";
 import {useAtom} from "jotai";
 import {activeTableAtom} from "../../../store/tableListStore";
 import {colors} from "./ProjectCard";
+import {DB_TYPE_List} from "../../../constant/dbConstant";
 
 export default function MyProject() {
     const navigate = useNavigate()
@@ -39,6 +40,7 @@ export default function MyProject() {
     const handleCloseProjectCreateDialog = () => {
         setProjectCreateOpen(false)
     }
+
     const handleClickProjectDetail = (it) => {
         setActiveTable(0)
         navigate(`/header/home/${it.id}`)
@@ -46,14 +48,19 @@ export default function MyProject() {
     const handleCloseProjectSetting = () => {
         setProjectUpdateOpen(false)
     }
+
     const handleClickSetProject = () => {
         setProjectUpdateOpen(true)
     }
+
     const submitCreateProjectForm = (data) => {
         projectCreateMutation.mutate({
             ...data
+        }, {
+            onSuccess: data => {
+                setProjectCreateOpen(false)
+            }
         })
-        setProjectCreateOpen(false)
     }
 
     const submitUpdateProjectForm = (data, id) => {
@@ -67,8 +74,6 @@ export default function MyProject() {
     if (myProjects.isLoading) {
         return <div>加载中</div>
     }
-
-
 
 
     return (<Box>
@@ -108,7 +113,8 @@ export default function MyProject() {
                             <div>
                                 <div className={'flex flex-row gap-4 mt-4'}>
                                     <div className={'font-bold text-sm'}>数据库</div>
-                                    <div className={'text-sm'}>Postgres</div>
+                                    <div
+                                        className={'text-sm'}>{DB_TYPE_List.find(itt => itt.key === it.dbType).value}</div>
                                 </div>
 
                                 <div className={'flex flex-row gap-0.5 flex-wrap'}>
@@ -179,10 +185,11 @@ function EditProjectDialog({mode, value, open, closeDialog, submitForm}) {
         value: it.name
     }))
 
-    const tagSelections = ["mysql", "postgresql", "mssql", "sqlite", "java", "springboot", "mybatis"].map(it => ({
+    const tagSelections = ["Go", "GORM", "Java", "Mybatis", "MybatisPlus"].map(it => ({
         key: it,
         value: it
     }))
+
 
     return (
         <Dialog open={open} onClose={() => {
@@ -192,11 +199,14 @@ function EditProjectDialog({mode, value, open, closeDialog, submitForm}) {
             <DialogTitle>{mode === 1 ? "新增项目" : "修改项目"}</DialogTitle>
             <form onSubmit={handleSubmit((data) => {
                 submitForm(data)
-                reset({})
+                reset()
             })}>
                 <DialogContent>
                     <FormInputText name={"name"} control={control} label={"项目名称"}/>
                     <FormInputText name={"note"} control={control} label={"项目备注"}/>
+                    <FormSelect name={'dbType'} control={control} label={'偏好数据库'}
+                                choices={DB_TYPE_List}
+                                hasDefaultNull={false}/>
                     <FormSelect
                         name={"defaultColumnTemplateId"}
                         control={control}

@@ -112,7 +112,7 @@ const EditColumnDialog = ({
                 <FormInputText name={"note"} control={control} label={"备注"}/>
                 <FormInputText name={"defaultValue"} control={control} label={"默认值"}/>
                 <FormCheckBox name={"isPrimaryKey"} control={control} label={"主键"}/>
-                <FormCheckBox name={"isNull"} control={control} label={"非空"}/>
+                <FormCheckBox name={"isNotNull"} control={control} label={"非空"}/>
                 <FormCheckBox name={"isAutoIncrement"} control={control} label={"自增"}/>
                 <FormCheckBox name={"isUniqueKey"} control={control} label={"唯一"}/>
             </DialogContent>
@@ -174,7 +174,7 @@ const columnHeader = [
             return (<div className={"flex flex-row gap-1"}>
                 {info.row.original.isPrimaryKey && <Chip label={"pk"} size={"small"}/>}
                 {info.row.original.isAutoIncrement && <Chip size={"small"} label={"auto inc"}/>}
-                {info.row.original.isNull && <Chip size={"small"} label={"not null"}/>}
+                {info.row.original.isNotNull && <Chip size={"small"} label={"not null"}/>}
                 {info.row.original.isUniqueKey && <Chip size={"small"} label={"unique"}/>}
             </div>)
         },

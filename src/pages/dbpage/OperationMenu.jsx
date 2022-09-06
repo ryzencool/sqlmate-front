@@ -85,12 +85,12 @@ export default function OperationMenu() {
         let isUnique = col.isUniqueKey
         let isPrimary = col.isPrimaryKey
         let isAutoIncrement = col.isAutoIncrement
-        let isNull = col.isNull
+        let isNotNull = col.isNotNull
         let header = `\t${name} ${type}`
         if (isUnique) header += ` unique`
         if (isPrimary) header += ` primary key`
         if (isAutoIncrement) header += ` autoincrement`
-        if (isNull) header += ` not null`
+        if (isNotNull) header += ` not null`
         return header;
     }
 
@@ -116,7 +116,9 @@ ${cols}
         // 获取所有的表
         if (activeDatabase === 0) {
             execSqlite()
+            toast("同步Sqlite成功")
         } else {
+            console.log("当前类型")
             // 生成dbml 然后生成sql 进行插入
             dbmlProjectQuery.refetch().then(res  => {
                 let sql;
@@ -128,24 +130,35 @@ ${cols}
                     sql ='mssql'
                 }
 
-                console.log("当前数据库", sql, res.data.data)
 
                 let lang = exporter.export(res.data.data.data, sql);
+
+                if (lang.includes("(now())")) {
+                    lang = lang.replaceAll("(now())", "now()")
+                }
+
+                console.log("cula")
+
                 // 插入
                 syncDatabaseMutation.mutate({
                     projectId: project.id,
                     sql: lang,
                     dbType: activeDatabase
                 }, {
-                    onSuccess: () => {
-                        toast(`同步${sql}成功`)
+                    onSuccess: (res) => {
+                        console.log("返回的结果是", res.data)
+                        if (res.data.code !== "000000") {
+                            toast.error(`同步${sql}模拟库失败`)
+                        } else {
+                            toast(`同步${sql}成功`)
+                        }
+
                     }
                 })
 
             })
         }
         setAnchorEl(false)
-        toast("同步数据库成功")
     }
 
     const handleExportSql = () => {

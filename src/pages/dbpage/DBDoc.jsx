@@ -153,6 +153,7 @@ function DBDoc() {
                             新增
                         </Button>
                         <EditColumnDialog
+                            mode={1}
                             closeDialog={() => {
                                 setColumnAddOpen(false)
                             }}
@@ -183,6 +184,7 @@ function DBDoc() {
                             编辑
                         </Button>
                         <EditColumnDialog
+                            mode={2}
                             value={tableColumnsQuery.data.data.data.filter(it => it.id.toString() === columnsSelectedState[0])[0]}
                             closeDialog={() => setColumnEditOpen(false)}
                             open={columnEditOpen}
@@ -280,9 +282,9 @@ function DBDoc() {
             </div>
 
 
-            <div>
-                <div className={"text-base font-bold"}>关系图</div>
-            </div>
+            {/*<div>*/}
+            {/*    <div className={"text-base font-bold"}>关系图</div>*/}
+            {/*</div>*/}
         </div>
     )
 }
@@ -372,7 +374,7 @@ const EditColumnDialog = ({
                 </Box>
                 <Box sx={{display: "flex", flexDirection: "row", gap: "20px", marginTop: "20px"}}>
                     <FormCheckBox name={"isPrimaryKey"} control={control} label={"主键"}/>
-                    <FormCheckBox name={"isNull"} control={control} label={"非空"}/>
+                    <FormCheckBox name={"isNotNull"} control={control} label={"非空"}/>
                     <FormCheckBox name={"isAutoIncrement"} control={control} label={"自增"}/>
                     <FormCheckBox name={"isUniqueKey"} control={control} label={"唯一"}/>
                 </Box>
@@ -543,11 +545,16 @@ const columnHeader = [
             return (<div className={"flex flex-row gap-1"}>
                 {info.row.original.isPrimaryKey && <Chip label={"pk"} size={"small"}/>}
                 {info.row.original.isAutoIncrement && <Chip size={"small"} label={"auto inc"}/>}
-                {info.row.original.isNull && <Chip size={"small"} label={"not null"}/>}
+                {info.row.original.isNotNull && <Chip size={"small"} label={"not null"}/>}
                 {info.row.original.isUniqueKey && <Chip size={"small"} label={"unique"}/>}
             </div>)
         },
 
+    },
+    {
+        accessorKey: "defaultValue",
+        header: () => <div>默认值</div>,
+        cell: (info) => info.getValue(),
     },
     {
         accessorKey: "columnRelationShip",
