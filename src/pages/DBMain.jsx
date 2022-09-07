@@ -6,10 +6,12 @@ import {useAtom} from "jotai";
 import {activeProjectAtom} from "../store/projectStore";
 import {listTableRel, listTablesDetail} from "../api/dbApi";
 import {tableListDetailAtom, tableRelsAtom} from "../store/tableListStore";
+import {useGetProject} from "../store/rq/reactQueryStore";
 
 
 export default function DBMain() {
 
+    // projectId
     const {id} = useParams()
 
     const [project, setProject] = useAtom(activeProjectAtom)
@@ -18,17 +20,13 @@ export default function DBMain() {
 
     const [tableRels, setTableRels] = useAtom(tableRelsAtom)
 
-    useEffect(() => {
-        setProject({id: id})
-        listTablesDetail({projectId: id}).then(r => {
-            setTableList(r.data.data)
-        })
+    useGetProject({id: id}, {
+        enabled: !!id,
+        onSuccess: res => {
+            setProject(res.data.data)
+        }
+    })
 
-        listTableRel({projectId: id}).then( r => {
-            setTableRels(r.data.data)
-            }
-        )
-    }, [])
     return (
         <div className="grid grid-cols-[280px_1fr] h-full">
             <DBTablePanel projectId={id}/>

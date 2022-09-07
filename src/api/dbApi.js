@@ -63,6 +63,16 @@ const getConsoleUrl = "/console/get"
 const cloneCodeTemplateUrl = "/codeTemplate/clone"
 const cloneDefaultColumnUrl = "/defaultColumn/clone"
 const generateTeamUrl = "/team/generateUrl"
+const createConnectUrl = "/database/createConnect"
+const connectIsLiveUrl = "/database/connectIsLive"
+
+export function connectIsLive(params) {
+    return get(connectIsLiveUrl, params);
+}
+
+export function createConnect(params) {
+    return post(createConnectUrl, params)
+}
 
 export function cloneDefaultColumn(params) {
     return post(cloneDefaultColumnUrl, params)

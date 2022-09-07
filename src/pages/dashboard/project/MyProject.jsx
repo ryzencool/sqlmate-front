@@ -16,10 +16,14 @@ import {useAtom} from "jotai";
 import {activeTableAtom} from "../../../store/tableListStore";
 import {colors} from "./ProjectCard";
 import {DB_TYPE_List} from "../../../constant/dbConstant";
+import {activeProjectAtom} from "../../../store/projectStore";
+import {activeDbTypeAtom} from "../../../store/databaseStore";
 
 export default function MyProject() {
     const navigate = useNavigate()
     const [search, setSearch] = useState({})
+    const [project, setProject] = useAtom(activeProjectAtom)
+    const [dbType, setDbType] = useAtom(activeDbTypeAtom)
     const [activeTable, setActiveTable] = useAtom(activeTableAtom)
     const myProjects = useListMyProject(search)
     const [projectCreateOpen, setProjectCreateOpen] = useState(false)
@@ -43,6 +47,8 @@ export default function MyProject() {
 
     const handleClickProjectDetail = (it) => {
         setActiveTable(0)
+        setProject(it)
+        setDbType(it.dbType)
         navigate(`/header/home/${it.id}`)
     }
     const handleCloseProjectSetting = () => {
@@ -67,8 +73,12 @@ export default function MyProject() {
         projectUpdateMutation.mutate({
             ...data,
             id: id
+        }, {
+            onSuccess: res => {
+                setProjectUpdateOpen(false)
+
+            }
         })
-        setProjectUpdateOpen(false)
     }
 
     if (myProjects.isLoading) {

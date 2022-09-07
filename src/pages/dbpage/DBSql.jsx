@@ -16,7 +16,7 @@ import {addProjectSql, deleteProjectSql, executeSql, queryOptimizer, updateProje
 import {useListProjectSql} from "../../store/rq/reactQueryStore";
 import AlertDialog from "../../components/dialog/AlertDialog";
 import {useAtom} from "jotai";
-import {databaseTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../store/databaseStore";
 import {TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
 import FormInputText from "../../components/form/FormInputText";
 import {useForm} from "react-hook-form";
@@ -33,7 +33,7 @@ export default function DBSql() {
     const [open, setOpen] = React.useState(false);
     const [addSqlOpen, setAddSqlOpen] = useState(false);
     const [project] = useAtom(activeProjectAtom);
-    const [dbType] = useAtom(databaseTypeAtom);
+    const [dbType] = useAtom(activeDbTypeAtom);
     const [searchParam, setSearchParam] = useState({projectId: project.id})
     const [optimizeOpen, setOptimizeOpen] = useState(false)
     const [optimizeResult, setOptimizeResult] = useState(null)
@@ -83,7 +83,7 @@ export default function DBSql() {
 
     const [drawerOpen, setDrawerOpen] = useState(false)
 
-    const [databaseType, setDatabaseType] = useAtom(databaseTypeAtom)
+    const [databaseType, setDatabaseType] = useAtom(activeDbTypeAtom)
 
     const executeSqlMutation = useMutation(executeSql, {
         onSuccess: (data) => {

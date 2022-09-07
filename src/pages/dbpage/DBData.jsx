@@ -8,11 +8,12 @@ import {Parser} from "@dbml/core";
 import {createColumnHelper} from "@tanstack/react-table";
 import {faker} from "@faker-js/faker";
 import * as _ from 'lodash'
-import {databaseTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../store/databaseStore";
 import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
 import beautify from 'json-beautify'
 import {format} from "sql-formatter";
 import ZTable from "../../components/table/ZTable";
+import dateFormat from "dateformat";
 
 // 展现相关联的表的数据
 export default function DBData() {
@@ -23,10 +24,10 @@ export default function DBData() {
     const [jsonDrawerOpen, setJsonDrawerOpen] = useState(false)
     const [insertDrawerOpen, setInsertDrawerOpen] = useState(false)
     const [activeTable, setActiveTable] = useAtom(activeTableAtom)
-    const [databaseType, setDatabase] = useAtom(databaseTypeAtom)
+    const [databaseType, setDatabase] = useAtom(activeDbTypeAtom)
     const [insertSql, setInsertSql] = useState("");
     const [jsonData, setJsonData] = useState("");
-    const [generateCount, setGenerateCount] = useState(1000)
+    const [generateCount, setGenerateCount] = useState(100)
     useGetDBML({tableId: activeTable}, {
         enabled: !!activeTable,
         onSuccess: (data) => {
@@ -44,7 +45,6 @@ export default function DBData() {
         }
 
     })
-
 
 
     const listColumnQuery = useListColumn({tableId: activeTable}, {
@@ -69,18 +69,41 @@ export default function DBData() {
         let data = listColumnQuery.data.data.data
         for (let i = 0; i < generateCount; i++) {
             let res = data.map((it, index) => {
+                console.log(it)
                 let dt;
                 if (it.kindKey != null && it.kindKey !== '' && it.cateKey != null && it.cateKey !== '') {
                     dt = faker[it.kindKey][it.cateKey]()
+                    if (dt instanceof Date) {
+                        dt = dateFormat(dt, "isoDateTime");
+                    }
+
                 } else {
                     let type = it.type.toLowerCase();
-                    if ((type.includes("int") && it.isAutoIncrement) || type.includes("serial")) {
-                        dt = i + 1;
-                    } else if (type.includes("int") && !it.isAutoIncrement) {
-                        dt = faker.datatype.number(1000000);
-                    } else if (type.includes("varchar") || it.includes("text")) {
-                        dt = faker.random.word()
+                    if (it.isAutoIncrement) {
+                        if ((type.includes("int") && it.isAutoIncrement) || type.includes("serial")) {
+                            dt = i + 1;
+                        }
+                    } else {
+                        if (type === "tinyint" && !it.isAutoIncrement) {
+                            dt = faker.datatype.number(128);
+                        } else if ((type === ("smallint") || type.includes("int2")) && !it.isAutoIncrement) {
+                            dt = faker.datatype.number(32767);
+                        } else if ((type === ("mediumint"))) {
+                            dt = faker.datatype.number(8388607);
+                        } else if (type === "int" || type === "integer" || type === "int4") {
+                            dt = faker.datatype.number(2147483647);
+                        } else if (type === "bigint" || type === "int8") {
+                            dt = faker.datatype.number(9223372036854775807);
+                        }
+                        if (type.startsWith("varchar") || type === ("text")) {
+                            dt = faker.random.word()
+                        }
+
+                        if (type === "timestamp") {
+                            dt = dateFormat(faker.date.recent(), "isoDateTime")
+                        }
                     }
+
 
                 }
                 return {
@@ -177,7 +200,6 @@ export default function DBData() {
                 </div>
 
                 <ZTable data={data} columns={tableHeader} canSelect={false}/>
-
             </div>
 
         </div>

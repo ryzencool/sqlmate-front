@@ -1,4 +1,4 @@
 import {atom} from "jotai";
 
 
-export const databaseTypeAtom = atom(1)
+export const activeDbTypeAtom = atom(0)

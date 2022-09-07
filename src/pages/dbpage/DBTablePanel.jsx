@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import {useGetProject, useListDefaultColumnTemplate, useListTables} from "../../store/rq/reactQueryStore";
 import {useAtom} from "jotai";
-import {databaseTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../store/databaseStore";
 import FormInputText from "../../components/form/FormInputText";
 import {useForm} from "react-hook-form";
 import FormSelect from "../../components/form/FormSelect";
@@ -32,7 +32,7 @@ function DBTablePanel({projectId}) {
     const [activeTable, setActiveTable] = useAtom(activeTableAtom)
     const [tableCreateOpen, setTableCreateOpen] = useState(false)
     const [searchParam, setSearchParam] = useState({projectId: projectId});
-    const [databaseType, setDatabaseType] = useAtom(databaseTypeAtom)
+    const [databaseType, setDatabaseType] = useAtom(activeDbTypeAtom)
     const projectQuery = useGetProject({id: projectId}, {
         onSuccess: data => {
             setDatabaseType(data.data.data.dbType)

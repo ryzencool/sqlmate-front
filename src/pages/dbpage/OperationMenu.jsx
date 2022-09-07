@@ -6,7 +6,7 @@ import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/projectStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {importProjectDbml, syncDatabase} from "../../api/dbApi";
-import {databaseTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../store/databaseStore";
 import {useListTablesDetail, useProjectDBML} from "../../store/rq/reactQueryStore";
 import {dbAtom} from "../../store/sqlStore";
 import toast from "react-hot-toast";
@@ -15,7 +15,7 @@ export default function OperationMenu() {
 
     const [project] = useAtom(activeProjectAtom)
     const [sqliteDB] = useAtom(dbAtom)
-    const [activeDatabase] = useAtom(databaseTypeAtom);
+    const [activeDatabase] = useAtom(activeDbTypeAtom);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 

@@ -1,12 +1,15 @@
 import {useQuery} from "@tanstack/react-query";
 import {
-    dbmlTable, generateTeamJoin,
+    connectIsLive,
+    dbmlTable,
+    generateTeamJoin,
     getCodeTemplate,
     getConsole,
     getProject,
     getProjectDetail,
     getTable,
-    getTemplateFile, getUserInfo,
+    getTemplateFile,
+    getUserInfo,
     listCodeTemplate,
     listDefaultColumns,
     listDefaultColumnTemplate,
@@ -153,6 +156,11 @@ export const useGetConsole = (search, options = {}) => {
 }
 
 
-export const useGenerateTeamJoin = (search, options={}) => {
-    return useQuery(['teamJoinUrl', search], ()=> generateTeamJoin(search), options)
+export const useGenerateTeamJoin = (search, options = {}) => {
+    return useQuery(['teamJoinUrl', search], () => generateTeamJoin(search), options)
+}
+
+
+export const useConnectIsLive = (search, options = {}) => {
+    return useQuery(['connectIsLive', search], () => connectIsLive(search), options)
 }

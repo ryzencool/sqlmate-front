@@ -10,12 +10,12 @@ import ZTable from "../../components/table/ZTable";
 import {useAtom} from "jotai";
 import {consoleSqlAtom} from "../../store/consoleStore";
 import {format} from 'sql-formatter';
-import {databaseTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../store/databaseStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {addProjectSql, executeSql, queryOptimizer, syncConsole} from "../../api/dbApi";
 import * as _ from "lodash"
 import {activeProjectAtom} from "../../store/projectStore";
-import {useGetConsole} from "../../store/rq/reactQueryStore";
+import {useConnectIsLive, useGetConsole} from "../../store/rq/reactQueryStore";
 import toast from "react-hot-toast";
 import {EditSqlDialog} from "./DBSql";
 import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
@@ -28,7 +28,7 @@ export default function DBConsole() {
     const [consoleSql, setConsoleSql] = useAtom(consoleSqlAtom)
     const [activeTable, setActiveTable] = useAtom(activeTableAtom)
     const [project] = useAtom(activeProjectAtom)
-    const [databaseType] = useAtom(databaseTypeAtom)
+    const [databaseType] = useAtom(activeDbTypeAtom)
     const [selectedSql, setSelectedSql] = useState("")
     const [resultHeader, setResultHeader] = useState([])
     const [saveFavoriteOpen, setSaveFavoriteOpen] = useState(false)
@@ -44,11 +44,17 @@ export default function DBConsole() {
     const queryClient = useQueryClient();
 
     const optimizeMutation = useMutation(queryOptimizer)
-
+    const connectIsLiveQuery = useConnectIsLive({
+        projectId: project.id,
+        dbType: databaseType
+    }, {
+        enabled: !!project.id && databaseType > 0
+    })
     const getConsoleQuery = useGetConsole({
         projectId: project.id
     }, {
         enabled: !!project.id,
+        refetchOnWindowFocus: false,
         onSuccess: data => {
             setConsoleSql(data.data.data.content)
         }
@@ -95,6 +101,9 @@ export default function DBConsole() {
     const columnHelper = createColumnHelper()
 
     const handleExplain = () => {
+        if (selectedSqlIsEmpty(selectedSql)) {
+            return;
+        }
         setSqlResult("")
         const sql = "explain " + selectedSql
         executeSqlOnline(sql)
@@ -102,6 +111,9 @@ export default function DBConsole() {
     }
 
     const handleOptimize = () => {
+        if (selectedSqlIsEmpty(selectedSql)) {
+            return;
+        }
         if (databaseType === 0) {
             toast.error("Sqlite暂不支持调优");
         } else {
@@ -126,6 +138,9 @@ export default function DBConsole() {
     }
 
     const executeSqlOnline = (executeSql) => {
+        if (selectedSqlIsEmpty(executeSql)) {
+            return;
+        }
         setSqlResult("")
         if (databaseType === 0) {
             try {
@@ -154,33 +169,52 @@ export default function DBConsole() {
                 setSqlResult(e.message)
             }
         } else {
-            // 发送给后台
-            sqlExecuteMutation.mutate({
-                projectId: project.id,
-                sql: executeSql,
-                dbType: databaseType
-            }, {
-                onSuccess: data => {
-                    setSqlResult("")
-                    let res = data.data.data
-                    if (!!res && res.length() > 0) {
-                        setResultHeader(_.keys(res[0]).map(it => {
-                            return columnHelper.accessor(it, {
-                                header: () => it,
-                                cell: info => info.getValue()
-                            })
-                        }))
+            connectIsLiveQuery.refetch().then(res => {
+                console.log("判断当前的链接状态", res.data.data.data)
+                if (res.data === false) {
+                    toast.error("当前与模拟库已断开连接，请先建立连接")
+                } else {
+                    // 发送给后台
+                    sqlExecuteMutation.mutate({
+                        projectId: project.id,
+                        sql: executeSql,
+                        dbType: databaseType
+                    }, {
+                        onSuccess: data => {
+                            setSqlResult("")
+                            let res = data.data.data
+                            if (!!res && res.length() > 0) {
+                                setResultHeader(_.keys(res[0]).map(it => {
+                                    return columnHelper.accessor(it, {
+                                        header: () => it,
+                                        cell: info => info.getValue()
+                                    })
+                                }))
 
-                        setResultData(res)
-                    }
+                                setResultData(res)
+                            }
 
+                        }
+                    })
                 }
             })
+
+
         }
 
     }
 
+    const selectedSqlIsEmpty = (sql) => {
+        if (sql == null || sql.trim() === "") {
+            toast.error("请选择SQL后进行该操作");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     const saveToFavorite = () => {
+        if (selectedSqlIsEmpty(selectedSql)) return;
         setSaveFavoriteOpen(true)
     }
 
@@ -423,8 +457,6 @@ export  function OptimizeDrawer({data}) {
                             }}>{it.value}</Box>
                         </Box>)
                     }
-
-
                 </Box>
 
 
