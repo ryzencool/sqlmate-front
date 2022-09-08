@@ -130,7 +130,7 @@ export default function MyProject() {
                                 <div className={'flex flex-row gap-0.5 flex-wrap'}>
                                     {
                                         !!it.tags && it.tags.map(tag => (
-                                            <Chip label={tag} size={'small'} className={'mt-1'}/>
+                                            <Chip label={tag} size={'small'} className={'mt-1'} key={tag}/>
                                         ))
                                     }
                                 </div>

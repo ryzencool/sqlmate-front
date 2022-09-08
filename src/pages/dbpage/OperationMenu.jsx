@@ -14,8 +14,7 @@ import toast from "react-hot-toast";
 export default function OperationMenu() {
 
     const [project] = useAtom(activeProjectAtom)
-    const [sqliteDB] = useAtom(dbAtom)
-    const [activeDatabase] = useAtom(activeDbTypeAtom);
+    const [activeDbType] = useAtom(activeDbTypeAtom);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -34,11 +33,11 @@ export default function OperationMenu() {
             const text = e.target.result;
             console.log(text.toString())
             let dbType;
-            if (activeDatabase === 1) {
+            if (activeDbType === 1) {
                 dbType = 'mysql'
-            } else if (activeDatabase === 2){
+            } else if (activeDbType === 2){
                 dbType = 'postgres'
-            } else if (activeDatabase === 3) {
+            } else if (activeDbType === 3) {
                 dbType ='mssql'
             }
 
@@ -66,19 +65,9 @@ export default function OperationMenu() {
         }
     })
 
-    const allTableQuery = useListTablesDetail({projectId: project.id}, {
-        enabled: false
-    })
-
     const dbmlProjectQuery = useProjectDBML({projectId: project.id}, {
         enabled: false
     })
-
-
-
-
-
-
 
     const handleExportSql = () => {
         dbmlProjectQuery.refetch().then(res => {

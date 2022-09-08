@@ -9,7 +9,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient(
+    // {
+    //     defaultOptions: {
+    //         queries: {
+    //             refetchOnWindowFocus: false,
+    //         },
+    //     },
+    // }
+)
 
 function App() {
     // const setDB = useSqlState((state) => state.setDB);

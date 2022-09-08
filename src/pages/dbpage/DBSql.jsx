@@ -177,7 +177,6 @@ export default function DBSql() {
                                 />
                                 <div className={'flex flex-row gap-2'}>
                                     <Button variant={'contained'} size={'small'} onClick={() => {
-                                        console.log("我懵逼了")
                                         handleClickOptimizeSql(it)
                                     }}>调优</Button>
                                     <Button variant={'contained'} size={'small'}

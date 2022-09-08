@@ -28,8 +28,8 @@ function DBContent({projectId}) {
         id: projectId
     }, {
         enabled: !!projectId,
+        refetchOnWindowFocus : false,
         onSuccess: (res) => {
-            console.log("项目是", res.data.data)
             setProject(res.data.data)
         }
     })

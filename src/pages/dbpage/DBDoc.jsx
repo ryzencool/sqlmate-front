@@ -1,11 +1,27 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import {activeTableAtom} from "../../store/tableListStore";
+import {activeTableAtom, projectTableDetailsAtom, projectTableRelationsAtom} from "../../store/tableListStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addColumn, addIndex, deleteColumns, deleteIndex, updateColumn, updateIndex, updateTable} from "../../api/dbApi";
+import {
+    addColumn,
+    addIndex,
+    deleteColumns,
+    deleteIndex,
+    deleteTable,
+    updateColumn,
+    updateIndex,
+    updateTable
+} from "../../api/dbApi";
 import * as _ from 'lodash'
 import {Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import ZTable, {IndeterminateCheckbox} from "../../components/table/ZTable";
-import {useGetProjectDetail, useGetTable, useListColumn, useListIndex} from "../../store/rq/reactQueryStore";
+import {
+    useGetProjectDetail,
+    useGetTable,
+    useListColumn,
+    useListIndex,
+    useListTableDetail,
+    useListTableRel
+} from "../../store/rq/reactQueryStore";
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import {useAtom} from "jotai";
 import TableViewOutlinedIcon from '@mui/icons-material/TableViewOutlined';
@@ -20,12 +36,15 @@ import FormTableAndColumnSelectBox from "../../components/form/FormTableAndColum
 import {useNavigate} from "react-router";
 import {activeProjectAtom} from "../../store/projectStore";
 import FormFaker from "../../components/form/FormFaker";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function DBDoc() {
     const queryClient = useQueryClient()
-
+    const [tableDetails, setTableDetails] = useAtom(projectTableDetailsAtom)
+    const [tableRelations, setTableRelations] = useAtom(projectTableRelationsAtom)
     // state
-    const [activeTableState, setActiveTableState] = useAtom(activeTableAtom)
+    const [activeTableId, setActiveTableId] = useAtom(activeTableAtom)
+    const [activeProject] = useAtom(activeProjectAtom)
     const [columnsSelectedState, setColumnsSelectedState] = useState([])
     const [indexesSelectedState, setIndexesSelectedState] = useState([])
 
@@ -37,22 +56,38 @@ function DBDoc() {
     const [indexAddOpen, setIndexAddOpen] = useState(false)
     const [indexDeleteOpen, setIndexDeleteOpen] = useState(false)
     const [deleteColumnOpen, setDeleteColumnOpen] = useState(false)
-
+    const [deleteTableOpen, setDeleteTableOpen] = useState(false)
 
     // memo
     const indexesMemo = useMemo(() => indexHeader, [])
     const columnsMemo = useMemo(() => columnHeader, [])
 
     // query
-    const tableQuery = useGetTable({tableId: activeTableState}, {
-        enabled: !!activeTableState
+    const tableQuery = useGetTable({tableId: activeTableId}, {
+        enabled: !!activeTableId
     })
-    const tableIndexesQuery = useListIndex({tableId: activeTableState}, {
-        enabled: !!activeTableState
+    const tableIndexesQuery = useListIndex({tableId: activeTableId}, {
+        enabled: !!activeTableId
     })
-    const projectQuery = useGetProjectDetail({projectId: 1})
-    const tableColumnsQuery = useListColumn({tableId: activeTableState}, {
-        enabled: !!activeTableState
+    const projectQuery = useGetProjectDetail({projectId: activeProject.id})
+
+    const tableColumnsQuery = useListColumn({tableId: activeTableId}, {
+        enabled: !!activeTableId
+    })
+
+    useListTableDetail({projectId: activeProject.id}, {
+        enabled: !!activeProject.id,
+        onSuccess: res => {
+            setTableDetails(res.data.data)
+        }
+    });
+
+    useListTableRel({projectId: activeProject.id}, {
+        enabled: !!activeProject.id,
+
+        onSuccess: res => {
+            setTableRelations(res.data.data)
+        }
     })
 
 
@@ -60,27 +95,34 @@ function DBDoc() {
     const columnAddMutation = useMutation(addColumn, {
         onSuccess: () => {
             queryClient.invalidateQueries(["tableColumns"])
+            queryClient.invalidateQueries(["projectTablesDetail"])
         }
     })
     const columnsDeleteMutation = useMutation(deleteColumns, {
         onSuccess: () => {
             queryClient.invalidateQueries(["tableColumns"])
+            queryClient.invalidateQueries(["projectTablesDetail"])
         }
     })
     const columnUpdateMutation = useMutation(updateColumn, {
         onSuccess: () => {
             queryClient.invalidateQueries(['tableColumns'])
+            queryClient.invalidateQueries(["projectTablesDetail"])
+
         }
     })
     const tableUpdateMutation = useMutation(updateTable, {
         onSuccess: () => {
             queryClient.invalidateQueries(['table'])
             queryClient.invalidateQueries(['projectTables'])
+            queryClient.invalidateQueries(["projectTablesDetail"])
+
         }
     })
     const indexAddMutation = useMutation(addIndex, {
         onSuccess: () => {
             queryClient.invalidateQueries("tableIndexes")
+
         }
     })
     const indexUpdateMutation = useMutation(updateIndex, {
@@ -95,6 +137,14 @@ function DBDoc() {
     })
 
 
+    const tableDeleteMutation = useMutation(deleteTable, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["table"])
+        }
+    })
+
+
+
     const handleColumnSelected = (params) => {
         setColumnsSelectedState(_.keys(params))
     }
@@ -103,34 +153,59 @@ function DBDoc() {
         setIndexesSelectedState(_.keys(params))
     }
 
+    const handleDeleteTableOpen = () => {
+        setDeleteTableOpen(true)
+    }
+
+    const handleDeleteTable = () => {
+        tableDeleteMutation.mutate({
+            tableId: activeTableId
+        }, {
+            onSuccess: res => {
+                setActiveTableId(0)
+            }
+        })
+    }
+
     if (tableQuery.isLoading || tableIndexesQuery.isLoading || projectQuery.isLoading || tableColumnsQuery.isLoading) {
         return <div>加载中</div>
     }
     return (
         <div className={"flex flex-col gap-5  "}>
             <div className={"flex-col flex gap-20"}>
-                <div className={"flex flex-row gap-1"}>
+                <div className={"flex flex-row gap-6"}>
                     <div className={'flex flex-row gap-2'}>
                         <TableViewOutlinedIcon/>
                         <div className={"text-base font-bold"}>
                             {tableQuery.data?.data.data.name}
                         </div>
                     </div>
-                    <div onClick={() => {
-                        setTableEditOpen(true)
-                    }}>
-                        <DriveFileRenameOutlineOutlinedIcon/>
+                    <div className={'flex flex-row gap-2'}>
+                        <div onClick={() => {
+                            setTableEditOpen(true)
+                        }}>
+                            <DriveFileRenameOutlineOutlinedIcon/>
+                        </div>
+                        <EditTableDialog
+                            value={tableQuery.data?.data.data}
+                            open={tableEditOpen}
+                            closeDialog={() => setTableEditOpen(false)}
+                            submitForm={(e) => {
+                                tableUpdateMutation.mutate({
+                                    ...e,
+                                    tableId: activeTableId
+                                })
+                            }}/>
+
+                        <div onClick={handleDeleteTableOpen}>
+                            <DeleteIcon/>
+                        </div>
+                        <AlertDialog open={deleteTableOpen}
+                                     handleClose={() => setDeleteTableOpen(false)}
+                                     title={"删除"}
+                                     confirm={handleDeleteTable}
+                                     msg={"确认删除当前数据表"}/>
                     </div>
-                    <EditTableDialog
-                        value={tableQuery.data?.data.data}
-                        open={tableEditOpen}
-                        closeDialog={() => setTableEditOpen(false)}
-                        submitForm={(e) => {
-                            tableUpdateMutation.mutate({
-                                ...e,
-                                tableId: activeTableState
-                            })
-                        }}/>
 
                 </div>
             </div>
@@ -161,7 +236,7 @@ function DBDoc() {
                             submitForm={(data, reset) => {
                                 columnAddMutation.mutate({
                                     ...data,
-                                    tableId: activeTableState
+                                    tableId: activeTableId
                                 }, {
                                     onSuccess: () => {
                                         reset()
@@ -235,7 +310,7 @@ function DBDoc() {
                             closeDialog={() => setIndexAddOpen(false)}
                             submitForm={data => {
                                 console.log("添加index", data)
-                                indexAddMutation.mutate({...data, tableId: activeTableState})
+                                indexAddMutation.mutate({...data, tableId: activeTableId})
                             }}/>
                         <Button size={"small"} variant={"contained"}
                                 onClick={() => {
@@ -256,7 +331,7 @@ function DBDoc() {
                             submitForm={data => {
                                 indexUpdateMutation.mutate({
                                     ...data,
-                                    tableId: activeTableState,
+                                    tableId: activeTableId,
                                     id: indexesSelectedState[0]
                                 })
                             }}

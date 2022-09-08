@@ -1,59 +1,91 @@
 import React, {useEffect, useState} from 'react'
 import {activeTableAtom} from "../../store/tableListStore";
-import {Button} from "@mui/material";
-import {dbAtom} from "../../store/sqlStore";
+import {Button, Menu, MenuItem} from "@mui/material";
 import {useAtom} from "jotai";
-import {useGetDBML, useListColumn} from "../../store/rq/reactQueryStore";
-import {Parser} from "@dbml/core";
+import {useGetTable, useListColumn} from "../../store/rq/reactQueryStore";
 import {createColumnHelper} from "@tanstack/react-table";
 import {faker} from "@faker-js/faker";
 import * as _ from 'lodash'
 import {activeDbTypeAtom} from "../../store/databaseStore";
 import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
 import beautify from 'json-beautify'
-import {format} from "sql-formatter";
 import ZTable from "../../components/table/ZTable";
-import dateFormat from "dateformat";
+import toast from "react-hot-toast";
+import Box from "@mui/material/Box";
+import {format} from "sql-formatter";
+import {executeSql} from "../../api/dbApi";
+import {useMutation} from "@tanstack/react-query";
+import {activeProjectAtom} from "../../store/projectStore";
+import {dateToDBTime} from "../../utils/date";
+import {IoKeyOutline} from "react-icons/io5";
+import {AiOutlineArrowUp} from "react-icons/ai";
+import {ClipLoader} from "react-spinners";
+import ZBackdrop from "../../components/feedback/ZBackdrop";
+
+const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+};
 
 // 展现相关联的表的数据
 export default function DBData() {
 
-    const [db, setDb] = useAtom(dbAtom)
-    const [dbmlObj, setDbmlObj] = useState({})
-    const [data, setData] = useState([])
+    const [fakerData, setFakerData] = useState([])
     const [jsonDrawerOpen, setJsonDrawerOpen] = useState(false)
     const [insertDrawerOpen, setInsertDrawerOpen] = useState(false)
-    const [activeTable, setActiveTable] = useAtom(activeTableAtom)
-    const [databaseType, setDatabase] = useAtom(activeDbTypeAtom)
+    const [activeTable] = useAtom(activeTableAtom)
+    const [activeDbType] = useAtom(activeDbTypeAtom)
+    const [project] = useAtom(activeProjectAtom)
     const [insertSql, setInsertSql] = useState("");
+    const [insertSqlPreview, setInsertSqlPreview] = useState("");
     const [jsonData, setJsonData] = useState("");
-    const [generateCount, setGenerateCount] = useState(100)
-    useGetDBML({tableId: activeTable}, {
-        enabled: !!activeTable,
-        onSuccess: (data) => {
-            let obj = Parser.parse(data.data.data, 'dbml')
+    const [jsonDataPreview, setJsonDataPreview] = useState("");
+    const [generateAnchorEl, setGenerateAnchorEl] = useState(null)
+    const [exportAnchorEl, setExportAnchorEl] = useState(null)
+    const generateDataOpen = Boolean(generateAnchorEl)
+    const exportDataOpen = Boolean(exportAnchorEl)
+    const [isVisible, setIsVisible] = useState(false)
+    const [bdOpen, setBdOpen] = useState(false)
+    const sqlExecuteMutation = useMutation(executeSql)
 
-            setDbmlObj(obj.schemas[0].tables[0])
-            let header = obj.schemas[0].tables[0].fields.map(it => {
+
+    const handleBdToggle = () => {
+        setBdOpen(!bdOpen)
+    }
+
+    const handleCloseBd = () => {
+        setBdOpen(false)
+    }
+
+    const tableQuery = useGetTable({tableId: activeTable}, {
+        enabled: !!activeTable,
+        refetchOnWindowFocus: false
+    })
+
+    const listColumnQuery = useListColumn({tableId: activeTable}, {
+        enabled: !!activeTable,
+        refetchOnWindowFocus: false,
+        onSuccess: res => {
+            console.log("列表数据", res.data.data)
+            let header = res.data.data.map(it => {
                 return columnHelper.accessor(it.name, {
                     cell: info => info.getValue(),
-                    header: () => <span className={'font-bold'}>{it.name}</span>,
-
+                    header: () =>
+                        <div className={'flex flex-row gap-2 items-center'}>
+                            <span className={'font-bold'}>{it.name}</span>
+                            {it.isPrimaryKey && <IoKeyOutline/>}
+                            {it.isAutoIncrement && <AiOutlineArrowUp/>}
+                        </div>,
                 })
             })
             setTableHeader(header)
         }
-
-    })
-
-
-    const listColumnQuery = useListColumn({tableId: activeTable}, {
-        enabled: !!activeTable
     })
 
 
     useEffect(() => {
-        setData([])
+        setFakerData([])
     }, [activeTable])
 
     const [tableHeader, setTableHeader] = useState([])
@@ -64,132 +96,215 @@ export default function DBData() {
         // 找出和当前表关联的所有表
     }
 
-    const handleGenerateData = () => {
-        let push = []
-        let data = listColumnQuery.data.data.data
-        for (let i = 0; i < generateCount; i++) {
-            let res = data.map((it, index) => {
-                console.log(it)
-                let dt;
-                if (it.kindKey != null && it.kindKey !== '' && it.cateKey != null && it.cateKey !== '') {
-                    dt = faker[it.kindKey][it.cateKey]()
-                    if (dt instanceof Date) {
-                        dt = dateFormat(dt, "isoDateTime");
-                    }
+    const handleGenerateData = (generateCount) => {
 
-                } else {
-                    let type = it.type.toLowerCase();
-                    if (it.isAutoIncrement) {
-                        if ((type.includes("int") && it.isAutoIncrement) || type.includes("serial")) {
-                            dt = i + 1;
+        handleBdToggle()
+        setGenerateAnchorEl(null)
+
+        window.setTimeout(() => {
+            let push = []
+            let data = listColumnQuery.data.data.data
+            data = data.filter(it => !it.isAutoIncrement)
+            for (let i = 0; i < generateCount; i++) {
+                let res = data.map((it, index) => {
+                    let dt;
+                    if (it.kindKey != null && it.kindKey !== '' && it.cateKey != null && it.cateKey !== '') {
+                        dt = faker[it.kindKey][it.cateKey]()
+                        if (dt instanceof Date) {
+                            dt = dateToDBTime(dt)
                         }
+
                     } else {
-                        if (type === "tinyint" && !it.isAutoIncrement) {
-                            dt = faker.datatype.number(128);
-                        } else if ((type === ("smallint") || type.includes("int2")) && !it.isAutoIncrement) {
-                            dt = faker.datatype.number(32767);
-                        } else if ((type === ("mediumint"))) {
-                            dt = faker.datatype.number(8388607);
-                        } else if (type === "int" || type === "integer" || type === "int4") {
-                            dt = faker.datatype.number(2147483647);
-                        } else if (type === "bigint" || type === "int8") {
-                            dt = faker.datatype.number(9223372036854775807);
-                        }
-                        if (type.startsWith("varchar") || type === ("text")) {
-                            dt = faker.random.word()
+                        let type = it.type.toLowerCase();
+                        if (it.isAutoIncrement) {
+                            if ((type.includes("int") && it.isAutoIncrement) || type.includes("serial")) {
+                                dt = i + 1;
+                            }
+                        } else {
+                            if (type === "tinyint" && !it.isAutoIncrement) {
+                                dt = faker.datatype.number(128);
+                            } else if ((type === ("smallint") || type.includes("int2")) && !it.isAutoIncrement) {
+                                dt = faker.datatype.number(32767);
+                            } else if ((type === ("mediumint"))) {
+                                dt = faker.datatype.number(8388607);
+                            } else if (type === "int" || type === "integer" || type === "int4") {
+                                dt = faker.datatype.number(2147483647);
+                            } else if (type === "bigint" || type === "int8") {
+                                dt = faker.datatype.number(9223372036854775807);
+                            }
+                            if (type.startsWith("varchar") || type === ("text")) {
+                                dt = faker.random.word()
+                            }
+
+                            if (type === "timestamp") {
+                                dt = dateToDBTime(faker.date.recent())
+                            }
                         }
 
-                        if (type === "timestamp") {
-                            dt = dateFormat(faker.date.recent(), "isoDateTime")
-                        }
+
                     }
+                    return {
+                        [it.name]: dt
+                    }
+                }).reduce((a, b) => {
+                    return {
+                        ...a,
+                        ...b
+                    }
+                }, {})
+                push.push(res)
+            }
+            setFakerData(push)
+
+            handleCloseBd()
+        }, 0)
 
 
-                }
-                return {
-                    [it.name]: dt
-                }
-            }).reduce((a, b) => {
-                return {
-                    ...a,
-                    ...b
-                }
-            }, {})
-            push.push(res)
-        }
-        setData(push)
+
     }
 
-    const generateInsert = () => {
-        if (dbmlObj.fields == null) {
-            return '';
-        }
-        let tableName = dbmlObj.name
-        let fields = dbmlObj.fields.map(it => it.name).join(",")
+    const generateInsert = (mockData) => {
+
+        let tableName = tableQuery.data.data.data.name
+
+        let columns = listColumnQuery.data.data.data
+
+        let fields = columns
+            .filter(it => !it.isAutoIncrement)
+            .map(it => it.name)
+            .join(",")
         let header = `INSERT INTO ${tableName} (${fields}) VALUES `
         console.log("生成：", tableName, fields)
-        return header + data.map(it => {
-            let vs = _.values(it).join(",")
+        return header + mockData.map(it => {
+            let vs = _.keys(it).map(key => {
+                let type = columns.find(f => f.name === key).type;
+                type = type.toLowerCase()
+                let tempValue = it[key]
+
+                if (!type.includes("int")
+                    && !type.includes("float")
+                    && !type.includes("double")
+                    && !type.includes("decimal")
+                    && !type.includes("numeric")) {
+                    return `'${tempValue}'`
+                } else {
+                    return tempValue
+                }
+            }).join(",")
 
             return `(${vs})`
         }).join(",")
     }
 
     const handleClickGenerateSql = () => {
-        let res = generateInsert();
-        setInsertSql(format(res));
+        if (fakerData.length < 10) {
+            toast.error("请先生成数据再进行导出操作")
+            return;
+        }
+        console.log(fakerData.slice(0, 9))
+        let resPreview = generateInsert(fakerData.slice(0, 9))
+
+        setInsertSqlPreview(format(resPreview))
+        let resAll = generateInsert(fakerData);
+        setInsertSql(format(resAll));
         setInsertDrawerOpen(true)
     }
 
     const handleClickGenerateJson = () => {
-        let res = beautify(data, null, 2, 100)
-        setJsonData(res)
+        if (fakerData.length < 10) {
+            toast.error("请先生成数据再进行导出操作")
+            return;
+        }
+        let resPreview = beautify(fakerData.slice(0, 9), null, 2, 100);
+        setJsonDataPreview(resPreview);
+        let resAll = beautify(fakerData, null, 2, 100)
+        setJsonData(resAll)
         setJsonDrawerOpen(true)
     }
 
     const handleClickSyncDatabase = () => {
-        let res = generateInsert();
-        if (databaseType === 1) {
-            // 本地sqlite执行
-        } else {
-            // 请求接口
-        }
+        handleBdToggle()
+        window.setTimeout(() => {
+            let resAll = generateInsert(fakerData);
+            if (activeDbType === 0) {
+                // 本地sqlite执行
+            } else {
+                console.log("执行")
+                sqlExecuteMutation.mutate({
+                    projectId: project.id,
+                    dbType: activeDbType,
+                    sql: resAll
+                }, {
+                    onSuccess: res => {
+                        handleCloseBd()
+                        toast("数据同步完成");
+
+                    }
+                })
+            }
+        }, 0)
+
     }
 
     const handleClickClearDatabase = () => {
 
     }
 
-    if (listColumnQuery.isLoading) {
-        return <div>加载中</div>
+    const handleClickGenerate = (event) => {
+        setGenerateAnchorEl(event.currentTarget);
+    };
+
+    const handleClickExport = (event) => {
+        setExportAnchorEl(event.currentTarget);
+
+    }
+
+    if (listColumnQuery.isLoading || tableQuery.isLoading) {
+        return <ClipLoader color={"#36d7b7"} loading={listColumnQuery.isLoading || tableQuery.isLoading}
+                           cssOverride={override} size={150}/>
+
     }
 
     return <div className={"w-full flex flex-col gap-3"}>
         <div className={"w-full flex flex-row gap-3"}>
-            <Button size={"small"} variant={"contained"} onClick={() => {
-                handleGenerateData()
-            }
-            }>生成单表数据</Button>
-            {/*<Button size={"small"} variant={"contained"}*/}
-            {/*    onClick={() => {handleGenerateLinkTableData()}}*/}
-            {/*>生成关联表数据</Button>*/}
-            <Button size={"small"} variant={"contained"} onClick={() => setData([])}>清除本地数据</Button>
-            <Button size={"small"} variant={"contained"}
-                    onClick={handleClickGenerateJson}>导出Json</Button>
+            <Button size={"small"} variant={"contained"} onClick={handleClickGenerate}>生成单表数据</Button>
+
+            <GenerateDataMenus open={generateDataOpen}
+                               handleClose={() => setGenerateAnchorEl(null)}
+                               handleGenerateData={handleGenerateData} anchorEl={generateAnchorEl}/>
+
+            <Button size={"small"} variant={"contained"} onClick={handleClickExport}>
+                导出
+            </Button>
+            <ExportMenus anchorEl={exportAnchorEl}
+                         open={exportDataOpen}
+                         handleClose={() => setExportAnchorEl(null)}
+                         handleExportJson={() => handleClickGenerateJson()}
+                         handleExportInsert={() => handleClickGenerateSql()}/>
             <TemporaryDrawer open={jsonDrawerOpen}
                              handleClose={() => setJsonDrawerOpen(false)}
-                             element={<CodeResult content={jsonData} format={'sql'}/>}/>
-            <Button size={"small"} variant={"contained"} onClick={handleClickGenerateSql}>导出Insert语句</Button>
+                             element={
+                                 <Box>
+                                     <Button sx={{
+                                         marginTop: "10px",
+                                         marginLeft: "10px",
+                                     }} variant={"contained"} size={"small"}>导出文件</Button>
+                                     <CodeResult content={jsonDataPreview} format={'json'}/>
+                                 </Box>
+                             }/>
             <TemporaryDrawer open={insertDrawerOpen}
                              handleClose={() => setInsertDrawerOpen(false)}
-                             element={<CodeResult content={insertSql} format={'sql'}/>}/>
+                             element={
+                                 <Box>
+                                     <Button sx={{
+                                         marginTop: "10px",
+                                         marginLeft: "10px",
+                                     }} variant={"contained"} size={"small"}>导出文件</Button>
+                                     <CodeResult content={insertSqlPreview} format={'sql'}/>
+                                 </Box>}/>
 
             <Button size={"small"} variant={"contained"} onClick={handleClickSyncDatabase}>同步到数据库</Button>
             <Button size={"small"} variant={"contained"} onClick={handleClickClearDatabase}>清空数据库</Button>
-
-
-        </div>
-        <div>
         </div>
 
         <div className={"flex flex-col gap-3"}>
@@ -198,15 +313,79 @@ export default function DBData() {
                     <div className={"text-xl font-bold"}>{activeTable.name}</div>
                     <div className={"text-base"}>{activeTable.note}</div>
                 </div>
-
-                <ZTable data={data} columns={tableHeader} canSelect={false}/>
+                <div className={'text-sm text-slate-400'}>
+                    共<span className={'text-base text-black p-1'}>{fakerData.length}</span>条数据
+                </div>
+                <ZTable data={fakerData} columns={tableHeader} canSelect={false}/>
             </div>
 
         </div>
 
+        <ZBackdrop open={bdOpen} handleClose={handleCloseBd}/>
     </div>
 }
 
 
+function ExportMenus({anchorEl, open, handleClose, handleExportJson, handleExportInsert}) {
+    return <Menu
+        size={'small'}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+            'aria-labelledby': 'basic-button',
+        }}
+    >
+        <MenuItem onClick={() => {
+            handleExportJson()
+            handleClose()
+        }}>JSON</MenuItem>
+        <MenuItem onClick={() => {
+            handleExportInsert()
+            handleClose()
 
+        }}>Insert</MenuItem>
+
+    </Menu>
+}
+
+
+function GenerateDataMenus({anchorEl, open, handleClose, handleGenerateData}) {
+
+
+    return <Menu
+        size={'small'}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+            'aria-labelledby': 'basic-button',
+        }}
+    >
+        <MenuItem onClick={() => {
+            handleGenerateData(10)
+            handleClose()
+        }}>10条</MenuItem>
+        <MenuItem onClick={() => {
+            handleGenerateData(100)
+            handleClose()
+        }}>100条</MenuItem>
+        <MenuItem onClick={() => {
+            handleGenerateData(1000)
+            handleClose()
+
+        }}>1000条</MenuItem>
+        <MenuItem onClick={() => {
+            handleGenerateData(10000)
+            handleClose()
+
+        }}>10000条</MenuItem>
+        <MenuItem onClick={() => {
+            handleGenerateData(100000)
+            handleClose()
+        }}>100000条</MenuItem>
+    </Menu>
+}
 

@@ -1,18 +1,18 @@
 import React, {useState} from "react";
 import {Outlet, useNavigate} from "react-router";
 import Button from "@mui/material/Button";
-import {useLocation} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {
     useConnectIsLive,
     useGetProject,
     useGetUserInfo,
+    useListTables,
     useListTablesDetail,
     useProjectDBML
 } from "../store/rq/reactQueryStore";
 import {Avatar} from "@mui/material";
 import {colors} from "./dashboard/project/ProjectCard";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../store/projectStore";
 import Select from 'react-select';
 import OperationMenu from "./dbpage/OperationMenu";
 import SyncIcon from '@mui/icons-material/Sync';
@@ -50,38 +50,55 @@ const dbTypeSelectOptions = [{
 
 
 function Header() {
+
+    const {id: projectId} = useParams()
+
     const [sqliteDB] = useAtom(dbAtom)
 
-
-    const [project] = useAtom(activeProjectAtom)
-    const [dbType] = useAtom(activeDbTypeAtom)
-
+    const [activeDbType, setActiveDbType] = useAtom(activeDbTypeAtom)
+    const [selectDbType, setSelectDbType] = useState(dbTypeSelectOptions[0])
     const [syncDbAlert, setSyncDbAlert] = useState(false)
 
     const location = useLocation()
 
     const navigate = useNavigate()
 
-    const [activeDbType, setActiveDbType] = useAtom(activeDbTypeAtom);
-
     const queryClient = useQueryClient()
-    const dbmlProjectQuery = useProjectDBML({projectId: project.id}, {
+
+    const dbmlProjectQuery = useProjectDBML({projectId: projectId}, {
         enabled: false
     })
 
     const userQuery = useGetUserInfo({})
 
+    const {data: tablesData, isLoading: isLoadingTables} = useListTables({projectId: projectId}, {
+        enabled: !!projectId
+    })
 
+
+    const {data: project} = useGetProject({id: projectId}, {
+        enabled: !!projectId,
+        onSuccess: res => {
+            let type = res.data.data.dbType
+            const selectedType = dbTypeSelectOptions.find(it => it.value === type)
+            setSelectDbType(selectedType)
+            setActiveDbType(type)
+        }
+    })
+
+    const dbType = project?.data?.data?.dbType
 
     const connectIsLiveQuery = useConnectIsLive({
-        projectId: project.id, dbType: activeDbType
+        projectId: projectId,
+        dbType: dbType
     }, {
-        enabled: !!project.id && activeDbType > 0
+        enabled: !!projectId && !!dbType && dbType > 0
     })
 
-    const allTableQuery = useListTablesDetail({projectId: project.id}, {
+    const allTableQuery = useListTablesDetail({projectId: projectId}, {
         enabled: false
     })
+
     const syncDatabaseMutation = useMutation(syncDatabase)
     const projectMutation = useMutation(updateProject, {
         onSuccess: data => {
@@ -92,6 +109,7 @@ function Header() {
 
     const createConnectMutation = useMutation(createConnect, {
         onSuccess: res => {
+            queryClient.invalidateQueries(['connectIsLive'])
             console.log("链接数据库结果", res.data);
         }
     })
@@ -134,6 +152,23 @@ ${cols}
 
 
     const handleSyncDatabase = () => {
+        console.log("侍弄那对哦分分")
+
+        if (isLoadingTables) {
+            toast("加载中")
+            return;
+        }
+
+        let tables = tablesData?.data?.data
+
+        console.log("表格是", tables)
+
+        if (tables === null || tables.length === 0) {
+            toast("请至少创建一个数据表，再进行当前操作");
+            return;
+        }
+
+
         // 获取所有的表
         if (activeDbType === 0) {
             execSqlite()
@@ -143,11 +178,11 @@ ${cols}
             // 生成dbml 然后生成sql 进行插入
             dbmlProjectQuery.refetch().then(res => {
                 let sql;
-                if (activeDbType === 1) {
+                if (dbType === 1) {
                     sql = 'mysql'
-                } else if (activeDbType === 2) {
+                } else if (dbType === 2) {
                     sql = 'postgres'
-                } else if (activeDbType === 3) {
+                } else if (dbType === 3) {
                     sql = 'mssql'
                 }
 
@@ -158,11 +193,9 @@ ${cols}
                     lang = lang.replaceAll("(now())", "now()")
                 }
 
-                console.log("cula")
-
                 // 插入
                 syncDatabaseMutation.mutate({
-                    projectId: project.id, sql: lang, dbType: activeDbType
+                    projectId: projectId, sql: lang, dbType: activeDbType
                 }, {
                     onSuccess: (res) => {
                         console.log("返回的结果是", res.data)
@@ -183,19 +216,16 @@ ${cols}
     const handleDbChange = (evt) => {
         console.log("选中db", evt.value)
         let dbType = evt.value
-        console.log(dbType)
         projectMutation.mutate({
-            id: project.id, dbType: dbType
-        }, {
-            onSuccess: data => {
-                setActiveDbType(dbType)
-            }
+            id: projectId, dbType: dbType
         })
     }
 
     const handleCreateConnect = () => {
+        console.log("建立连接", projectId, dbType)
         createConnectMutation.mutate({
-            projectId: project.id, dbType: activeDbType
+            projectId: projectId,
+            dbType: dbType
         }, {
             onSuccess: res => {
                 toast("连接远程模拟库成功")
@@ -207,10 +237,6 @@ ${cols}
         return <div>加载中</div>
     }
 
-
-    // console.log("链接状态是", connectIsLiveQuery.data.data.data)
-
-
     return (<div className="h-screen w-screen">
         <div className="h-20  flex-col flex w-full">
             <div className={"h-16 grid grid-cols-[350px_1fr]  w-screen  border-b w-full"}>
@@ -221,34 +247,38 @@ ${cols}
                     {location.pathname.includes("home")
                         && <div className={'pr-6 flex flex-row items-center gap-2'}>
                             <Select className={'text-sm'}
-                                    defaultValue={ activeDbType ? dbTypeSelectOptions.find(it => it.value === activeDbType) : dbTypeSelectOptions[0]}
+                                    defaultValue={selectDbType}
+                                    value={selectDbType}
                                     onChange={handleDbChange}
                                     options={dbTypeSelectOptions}
                             />
 
-
-                            {activeDbType > 0 ? <div>
-                                {!connectIsLiveQuery.isLoading && connectIsLiveQuery.data.data.data ? <LinkIcon
-                                    className={'text-2xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}
-                                    onClick={handleCreateConnect}/> : <LinkOff
-                                    className={'text-2xl text-gray-400 transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}/>
-                                }
-
-
-                            </div> : <div title={"模拟库连接状态"}>
-                                <LinkIcon
-                                    className={'text-2xl  text-blue-500 '}
-
-                                />
-                            </div>}
-                            <div title={"同步数据库"}>
+                            {selectDbType > 0 ?
+                                <div>
+                                    {!connectIsLiveQuery.isLoading && connectIsLiveQuery.data.data.data ?
+                                        <LinkIcon
+                                            className={'text-2xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}
+                                        />
+                                        :
+                                        <LinkOff onClick={handleCreateConnect}
+                                                 className={'text-2xl text-gray-400 transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}/>
+                                    }
+                                </div>
+                                :
+                                <div title={"模拟库连接状态"}>
+                                    <LinkIcon
+                                        className={'text-2xl  text-blue-500 '}
+                                    />
+                                </div>}
+                            <div title={"同步远程模拟库"}>
                                 <SyncIcon
                                     className={'text-3xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}
                                     onClick={() => setSyncDbAlert(true)}/>
                             </div>
 
                             <AlertDialog title={"和远端数据库同步"} open={syncDbAlert}
-                                         handleClose={() => setSyncDbAlert(false)} confirm={handleSyncDatabase}
+                                         handleClose={() => setSyncDbAlert(false)}
+                                         confirm={handleSyncDatabase}
                                          msg={"同步过程中将重建模拟库中的所有表结构，并删除数据"}/>
                         </div>}
 
@@ -262,13 +292,12 @@ ${cols}
                         </div>
                     </div>
                     {location.pathname.includes("home") && <div className={'font-bold text-xl'}>
-                        {project?.name?.toUpperCase()}
+                        {project?.data?.data?.name?.toUpperCase()}
                     </div>}
 
                     <div className={'flex flex-row  items-center justify-between'}>
 
                         <div className={"flex flex-row items-center pr-10  gap-5"}>
-                            {/*<Button>邀请伙伴</Button>*/}
                             <Button size={"small"} variant={"contained"}
                                     onClick={() => navigate('/header/dashboard/myProject')}>控制台</Button>
                             <div>

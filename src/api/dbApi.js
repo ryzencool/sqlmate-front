@@ -65,6 +65,7 @@ const cloneDefaultColumnUrl = "/defaultColumn/clone"
 const generateTeamUrl = "/team/generateUrl"
 const createConnectUrl = "/database/createConnect"
 const connectIsLiveUrl = "/database/connectIsLive"
+const deleteTableUrl = "/table/delete"
 
 export function connectIsLive(params) {
     return get(connectIsLiveUrl, params);
@@ -312,6 +313,10 @@ export function updateIndex(params) {
 
 export function deleteIndex(params) {
     return post(deleteIndexUrl, params)
+}
+
+export function deleteTable(params) {
+    return post(deleteTableUrl, params)
 }
 
 export function executeSql(params) {

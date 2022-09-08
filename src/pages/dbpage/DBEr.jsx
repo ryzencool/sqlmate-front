@@ -5,44 +5,13 @@ import DiagramWidget from "../../components/graph/DiagramWidget";
 import {NodeFactory} from "../../components/graph/NodeFactory";
 import {NodeModel} from "../../components/graph/NodeModel";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../store/projectStore";
-import {useListTableDetail, useListTableRel} from "../../store/rq/reactQueryStore";
-import Button from "@mui/material/Button";
+import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../store/tableListStore";
 
-function DBEr() {
+export default  function DBEr() {
 
-    const [project] = useAtom(activeProjectAtom)
-    const [tableList, setTableList] = useState(null);
-    const [tableRels, setTableRels] = useState(null);
-    const tableListQuery = useListTableDetail({projectId: project.id}, {
-        enabled: false
-    });
-    const tableRelsQuery = useListTableRel({projectId: project.id}, {
-        enabled: false
-    })
+    const [tableDetails] = useAtom(projectTableDetailsAtom)
+    const [tableRelations] = useAtom(projectTableRelationsAtom)
 
-    return (
-        <div>
-            <Button onClick={() => {
-                tableListQuery.refetch().then(
-                    res => {
-                        console.log("数据是", res.data.data.data)
-                        setTableList(res.data.data.data)
-                    }
-                )
-
-                tableRelsQuery.refetch().then(
-                    res => {
-                        setTableRels(res.data.data.data)
-                    }
-                )
-            }}>刷新</Button>
-            {!!tableList && !!tableRels && <Graph tableList={tableList} tableRels={tableRels}/>}
-        </div>
-    )
-}
-
-function Graph({tableList, tableRels}) {
     const engine = createEngine();
     engine.getNodeFactories().registerFactory(new NodeFactory());
 
@@ -50,7 +19,7 @@ function Graph({tableList, tableRels}) {
 
     let nodes = []
 
-    tableList.forEach((it, index) => {
+    tableDetails.forEach((it, index) => {
         let node = new NodeModel(
             {
                 color: "LightCyan",
@@ -61,8 +30,8 @@ function Graph({tableList, tableRels}) {
         nodes.push(node)
     });
 
-    if (tableRels.length > 0) {
-        tableRels.forEach((it, index) => {
+    if (tableRelations.length > 0) {
+        tableRelations.forEach((it, index) => {
             const link = new DefaultLinkModel();
             let leftNode = nodes.find(n => n.id === it.leftTableId)
             let rightNode = nodes.find(n => n.id === it.rightTableId)
@@ -77,4 +46,4 @@ function Graph({tableList, tableRels}) {
     return <DiagramWidget engine={engine}/>;
 }
 
-export default DBEr;
+

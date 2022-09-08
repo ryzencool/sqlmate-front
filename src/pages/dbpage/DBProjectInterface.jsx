@@ -1,4 +1,4 @@
-import {useGetProjectDetail, useListTables} from "../../store/rq/reactQueryStore";
+import {useGetProjectDetail, useListTableDetail, useListTableRel, useListTables} from "../../store/rq/reactQueryStore";
 import {createColumnHelper} from "@tanstack/react-table";
 import {Card} from "@mui/material";
 import ZTable from "../../components/table/ZTable";
@@ -8,8 +8,12 @@ import {IoLogoTableau} from "react-icons/io5";
 import {MdOutlineTableChart} from "react-icons/md";
 import {AiOutlineConsoleSql} from "react-icons/ai";
 import {BsTable} from "react-icons/bs";
+import {useAtom} from "jotai";
+import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../store/tableListStore";
 
 export default function DBProjectInterface({projectId}) {
+
+
 
     const projectQuery = useGetProjectDetail({projectId: projectId, dbType: 2}, {
         enabled: !!projectId
@@ -18,6 +22,8 @@ export default function DBProjectInterface({projectId}) {
     const tablesQuery = useListTables({projectId: projectId}, {
         enabled: !!projectId
     })
+
+
 
     const columnHelper = createColumnHelper();
 
