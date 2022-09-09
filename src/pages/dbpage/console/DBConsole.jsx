@@ -2,19 +2,19 @@ import React, {useState} from 'react'
 import {Button, Card} from "@mui/material";
 import CodeMirror from "@uiw/react-codemirror";
 import {sql} from "@codemirror/lang-sql";
-import {dbAtom} from "../../../store/sqlStore";
+import {dbAtom} from "../../../store/jt/sqlStore";
 import '../../../components/style.css'
 import {createColumnHelper,} from '@tanstack/react-table'
-import {activeTableAtom} from "../../../store/tableListStore";
+import {activeTableAtom} from "../../../store/jt/tableListStore";
 import ZTable from "../../../components/table/ZTable";
 import {useAtom} from "jotai";
-import {consoleSqlAtom} from "../../../store/consoleStore";
+import {consoleSqlAtom} from "../../../store/jt/consoleStore";
 import {format} from 'sql-formatter';
-import {activeDbTypeAtom} from "../../../store/databaseStore";
+import {activeDbTypeAtom} from "../../../store/jt/databaseStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {addProjectSql, executeSql, queryOptimizer, syncConsole} from "../../../api/dbApi";
 import * as _ from "lodash"
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {useConnectIsLive, useGetConsole} from "../../../store/rq/reactQueryStore";
 import toast from "react-hot-toast";
 import {EditSqlDialog} from "../sql/DBSql";

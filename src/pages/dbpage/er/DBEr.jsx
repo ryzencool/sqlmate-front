@@ -5,7 +5,7 @@ import DiagramWidget from "../../../components/graph/DiagramWidget";
 import {NodeFactory} from "../../../components/graph/NodeFactory";
 import {NodeModel} from "../../../components/graph/NodeModel";
 import {useAtom} from "jotai";
-import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/tableListStore";
+import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/jt/tableListStore";
 
 export default  function DBEr() {
 

@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react'
-import DBTablePanel from "./dbpage/DBTablePanel";
+import DBTablePanel from "./dbpage/panel/DBTablePanel";
 import DBContent from "./dbpage/DBContent";
 import {useParams} from "react-router-dom";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../store/projectStore";
+import {activeProjectAtom} from "../store/jt/projectStore";
 import {useGetProject} from "../store/rq/reactQueryStore";
 
 

@@ -1,16 +1,7 @@
 import React, {useMemo, useState} from 'react'
-import {activeTableAtom, projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/tableListStore";
+import {activeTableAtom, projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/jt/tableListStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {
-    addColumn,
-    addIndex,
-    deleteColumns,
-    deleteIndex,
-    deleteTable,
-    updateColumn,
-    updateIndex,
-    updateTable
-} from "../../../api/dbApi";
+import {addColumn, addIndex, deleteColumns, deleteIndex, updateColumn, updateIndex} from "../../../api/dbApi";
 import * as _ from 'lodash'
 import {Button} from "@mui/material";
 import ZTable from "../../../components/table/ZTable";
@@ -22,16 +13,13 @@ import {
     useListTableDetail,
     useListTableRel
 } from "../../../store/rq/reactQueryStore";
-import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import {useAtom} from "jotai";
 import TableViewOutlinedIcon from '@mui/icons-material/TableViewOutlined';
 import AlertDialog from "../../../components/dialog/AlertDialog";
 import toast from "react-hot-toast";
-import {activeProjectAtom} from "../../../store/projectStore";
-import DeleteIcon from '@mui/icons-material/Delete';
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {EditColumnDialog} from "./EditColumnDialog";
 import {EditIndexDialog} from "./EditIndexDialog";
-import {EditTableDialog} from "./EditTableDialog";
 import {columnHeader, indexHeader} from "./tableHeader";
 
 function DBDoc() {
@@ -47,13 +35,10 @@ function DBDoc() {
     // dialog
     const [columnEditOpen, setColumnEditOpen] = useState(false)
     const [columnAddOpen, setColumnAddOpen] = useState(false)
-    const [tableEditOpen, setTableEditOpen] = useState(false)
     const [indexEditOpen, setIndexEditOpen] = useState(false)
     const [indexAddOpen, setIndexAddOpen] = useState(false)
     const [indexDeleteOpen, setIndexDeleteOpen] = useState(false)
     const [deleteColumnOpen, setDeleteColumnOpen] = useState(false)
-    const [deleteTableOpen, setDeleteTableOpen] = useState(false)
-
     // memo
     const indexesMemo = useMemo(() => indexHeader, [])
     const columnsMemo = useMemo(() => columnHeader, [])
@@ -107,17 +92,10 @@ function DBDoc() {
 
         }
     })
-    const tableUpdateMutation = useMutation(updateTable, {
-        onSuccess: () => {
-            queryClient.invalidateQueries(['table'])
-            queryClient.invalidateQueries(['projectTables'])
-            queryClient.invalidateQueries(["projectTablesDetail"])
 
-        }
-    })
     const indexAddMutation = useMutation(addIndex, {
         onSuccess: () => {
-            queryClient.invalidateQueries("tableIndexes")
+            queryClient.invalidateQueries(["tableIndexes"])
 
         }
     })
@@ -133,37 +111,12 @@ function DBDoc() {
     })
 
 
-    const tableDeleteMutation = useMutation(deleteTable, {
-        onSuccess: () => {
-            queryClient.invalidateQueries(["table"])
-        }
-    })
-
-
     const handleColumnSelected = (params) => {
         setColumnsSelectedState(_.keys(params))
     }
 
     const handleIndexSelected = (params) => {
         setIndexesSelectedState(_.keys(params))
-    }
-
-    const handleDeleteTableOpen = () => {
-        setDeleteTableOpen(true)
-    }
-
-    const handleDeleteTable = () => {
-        tableDeleteMutation.mutate({
-            tableId: activeTableId
-        }, {
-            onSuccess: res => {
-                setActiveTableId(0)
-            }
-        })
-    }
-
-    if (tableQuery.isLoading || tableIndexesQuery.isLoading || projectQuery.isLoading || tableColumnsQuery.isLoading) {
-        return <div>加载中</div>
     }
 
     const closeDeleteIndexDialog = () => {
@@ -184,6 +137,16 @@ function DBDoc() {
         setIndexDeleteOpen(true);
     }
 
+
+    if (tableQuery.isLoading ||
+        tableIndexesQuery.isLoading ||
+        projectQuery.isLoading ||
+        tableColumnsQuery.isLoading) {
+        return <div>加载中</div>
+    }
+
+
+
     return (
         <div className={"flex flex-col gap-5  "}>
             <div className={"flex-col flex gap-20"}>
@@ -194,33 +157,6 @@ function DBDoc() {
                             {tableQuery.data?.data.data.name}
                         </div>
                     </div>
-                    <div className={'flex flex-row gap-2'}>
-                        <div onClick={() => {
-                            setTableEditOpen(true)
-                        }}>
-                            <DriveFileRenameOutlineOutlinedIcon/>
-                        </div>
-                        <EditTableDialog
-                            value={tableQuery.data?.data.data}
-                            open={tableEditOpen}
-                            closeDialog={() => setTableEditOpen(false)}
-                            submitForm={(e) => {
-                                tableUpdateMutation.mutate({
-                                    ...e,
-                                    tableId: activeTableId
-                                })
-                            }}/>
-
-                        <div onClick={handleDeleteTableOpen}>
-                            <DeleteIcon/>
-                        </div>
-                        <AlertDialog open={deleteTableOpen}
-                                     handleClose={() => setDeleteTableOpen(false)}
-                                     title={"删除"}
-                                     confirm={handleDeleteTable}
-                                     msg={"确认删除当前数据表"}/>
-                    </div>
-
                 </div>
             </div>
             <div className={"flex flex-col gap-1"}>

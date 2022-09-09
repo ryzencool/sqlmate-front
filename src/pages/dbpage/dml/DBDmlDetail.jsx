@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
-import {activeTableAtom} from "../../store/tableListStore";
+import {activeTableAtom} from "../../../store/jt/tableListStore";
 import {exporter, Parser} from "@dbml/core";
 import {CopyBlock, nord} from "react-code-blocks";
 import {useAtom} from "jotai";
-import {useGetDBML} from "../../store/rq/reactQueryStore";
+import {useGetDBML} from "../../../store/rq/reactQueryStore";
 
 
 export default function DBDmlDetail({dbType}) {

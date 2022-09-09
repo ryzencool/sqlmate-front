@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {activeTableAtom} from "../../../store/tableListStore";
+import {activeTableAtom} from "../../../store/jt/tableListStore";
 import {Button, Menu, MenuItem} from "@mui/material";
 import {useAtom} from "jotai";
 import {useGetTable, useListColumn} from "../../../store/rq/reactQueryStore";
 import {createColumnHelper} from "@tanstack/react-table";
 import {faker} from "@faker-js/faker";
 import * as _ from 'lodash'
-import {activeDbTypeAtom} from "../../../store/databaseStore";
+import {activeDbTypeAtom} from "../../../store/jt/databaseStore";
 import {CodeResult, TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
 import beautify from 'json-beautify'
 import ZTable from "../../../components/table/ZTable";
@@ -15,7 +15,7 @@ import Box from "@mui/material/Box";
 import {format} from "sql-formatter";
 import {cleanTable, executeSql} from "../../../api/dbApi";
 import {useMutation} from "@tanstack/react-query";
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {dateToDBTime} from "../../../utils/date";
 import {IoKeyOutline} from "react-icons/io5";
 import {AiOutlineArrowUp} from "react-icons/ai";

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useListColumn, useListTables} from "../../store/rq/reactQueryStore";
 import FormSelect from "./FormSelect";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../store/projectStore";
+import {activeProjectAtom} from "../../store/jt/projectStore";
 
 
 export default function FormTableAndColumnSelectBox({nameTable, nameColumn, control, watch, index}) {

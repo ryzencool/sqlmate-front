@@ -9,7 +9,7 @@ import {MdOutlineTableChart} from "react-icons/md";
 import {AiOutlineConsoleSql} from "react-icons/ai";
 import {BsTable} from "react-icons/bs";
 import {useAtom} from "jotai";
-import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/tableListStore";
+import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/jt/tableListStore";
 
 export default function DBProjectInterface({projectId}) {
 

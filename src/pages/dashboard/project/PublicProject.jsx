@@ -3,7 +3,7 @@ import {usePagePublicProject} from "../../../store/rq/reactQueryStore";
 import {useNavigate} from "react-router";
 import Button from "@mui/material/Button";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {addFavoriteProject} from "../../../api/dbApi";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import ProjectCard from "./ProjectCard";

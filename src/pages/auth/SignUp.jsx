@@ -5,8 +5,8 @@ import {useMutation} from "@tanstack/react-query";
 import {getUserInfo, signUpUser} from "../../api/dbApi";
 import {useNavigate} from "react-router";
 import {useAtom} from "jotai";
-import {tokenAtomWithPersistence} from "../../store/tokenLocalStore";
-import {userAtom} from "../../store/userStore";
+import {tokenAtomWithPersistence} from "../../store/jt/tokenLocalStore";
+import {userAtom} from "../../store/jt/userStore";
 import {handleLoginSuccess} from "../../utils/auth";
 
 export default function SignUp() {

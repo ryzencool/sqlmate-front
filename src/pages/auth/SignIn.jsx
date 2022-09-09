@@ -4,8 +4,8 @@ import {useForm} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
 import {signInUser} from "../../api/dbApi";
 import {useAtom} from "jotai";
-import {userAtom} from "../../store/userStore";
-import {tokenAtomWithPersistence} from "../../store/tokenLocalStore";
+import {userAtom} from "../../store/jt/userStore";
+import {tokenAtomWithPersistence} from "../../store/jt/tokenLocalStore";
 import {handleLoginSuccess} from "../../utils/auth";
 import {useNavigate} from "react-router";
 

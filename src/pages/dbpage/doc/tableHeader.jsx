@@ -2,8 +2,8 @@ import {IndeterminateCheckbox} from "../../../components/table/ZTable";
 import {Chip} from "@mui/material";
 import {useNavigate} from "react-router";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../../store/projectStore";
-import {activeTableAtom} from "../../../store/tableListStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
+import {activeTableAtom} from "../../../store/jt/tableListStore";
 import React from 'react'
 
 export const indexHeader = [

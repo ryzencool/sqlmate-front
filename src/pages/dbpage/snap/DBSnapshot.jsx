@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {useListSnapshot, useProjectDBML} from "../../../store/rq/reactQueryStore";
 import {useForm} from "react-hook-form";
 import FormInputText from "../../../components/form/FormInputText";

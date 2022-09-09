@@ -3,7 +3,7 @@ import CustomRouter from "./Router";
 import initSqlJs from "sql.js";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import {useAtom} from "jotai";
-import {dbAtom} from "./store/sqlStore";
+import {dbAtom} from "./store/jt/sqlStore";
 import { Toaster} from "react-hot-toast";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";

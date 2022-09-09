@@ -20,7 +20,7 @@ export const EditTableDialog = ({value, open, closeDialog, submitForm}) => {
         <DialogTitle>修改表信息</DialogTitle>
         <form onSubmit={handleSubmit(data => {
             console.log("内部提交", data)
-            submitForm(data)
+            submitForm(data, reset)
         })}>
             <DialogContent>
                 <FormInputText name={"name"} control={control} label={"表名"}/>

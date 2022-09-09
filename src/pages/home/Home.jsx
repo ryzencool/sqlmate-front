@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {Avatar} from "@mui/material";
 import {colors} from "../dashboard/project/ProjectCard";
 import {useAtom} from "jotai";
-import {userAtom} from "../../store/userStore";
+import {userAtom} from "../../store/jt/userStore";
 
 export default function Home() {
 

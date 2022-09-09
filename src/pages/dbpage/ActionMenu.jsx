@@ -3,12 +3,12 @@ import React, {useRef} from 'react'
 import {Menu, MenuItem} from "@mui/material";
 import {exporter, importer} from "@dbml/core";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../store/projectStore";
+import {activeProjectAtom} from "../../store/jt/projectStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {importProjectDbml, syncDatabase} from "../../api/dbApi";
-import {activeDbTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../store/jt/databaseStore";
 import {useListTablesDetail, useProjectDBML} from "../../store/rq/reactQueryStore";
-import {dbAtom} from "../../store/sqlStore";
+import {dbAtom} from "../../store/jt/sqlStore";
 import toast from "react-hot-toast";
 
 export default function ActionMenu() {

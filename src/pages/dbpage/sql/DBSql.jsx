@@ -16,12 +16,12 @@ import {addProjectSql, deleteProjectSql, executeSql, queryOptimizer, updateProje
 import {useListProjectSql} from "../../../store/rq/reactQueryStore";
 import AlertDialog from "../../../components/dialog/AlertDialog";
 import {useAtom} from "jotai";
-import {activeDbTypeAtom} from "../../../store/databaseStore";
+import {activeDbTypeAtom} from "../../../store/jt/databaseStore";
 import {TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
 import FormInputText from "../../../components/form/FormInputText";
 import {useForm} from "react-hook-form";
 import FormCodeMirror from "../../../components/form/FormCodeMirror";
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {format} from "sql-formatter";

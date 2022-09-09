@@ -3,7 +3,7 @@ import {Card, Chip} from "@mui/material";
 import {useListFavoriteProject} from "../../../store/rq/reactQueryStore";
 import {useNavigate} from "react-router";
 import Button from "@mui/material/Button";
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {useAtom} from "jotai";
 import ProjectCard from "./ProjectCard";
 

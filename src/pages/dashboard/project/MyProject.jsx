@@ -13,11 +13,11 @@ import FormMultiSelect from "../../../components/form/FormMultiSelect";
 import FormCheckBox from "../../../components/form/FormCheckBox";
 import {FaRegClone, FaRegEye, FaRegHeart} from "react-icons/fa";
 import {useAtom} from "jotai";
-import {activeTableAtom} from "../../../store/tableListStore";
+import {activeTableAtom} from "../../../store/jt/tableListStore";
 import {colors} from "./ProjectCard";
 import {DB_TYPE_List} from "../../../constant/dbConstant";
-import {activeProjectAtom} from "../../../store/projectStore";
-import {activeDbTypeAtom} from "../../../store/databaseStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
+import {activeDbTypeAtom} from "../../../store/jt/databaseStore";
 
 export default function MyProject() {
     const navigate = useNavigate()

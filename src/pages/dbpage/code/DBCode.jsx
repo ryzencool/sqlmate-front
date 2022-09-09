@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {activeTableAtom} from "../../../store/tableListStore";
+import {activeTableAtom} from "../../../store/jt/tableListStore";
 import {Parser} from '@dbml/core'
 import Box from "@mui/material/Box";
 import {Tab, Tabs} from "@mui/material";

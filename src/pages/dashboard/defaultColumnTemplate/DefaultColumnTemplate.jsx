@@ -6,7 +6,7 @@ import {useListDefaultColumnTemplate} from "../../../store/rq/reactQueryStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {addDefaultColumnTemplate, cloneDefaultColumn} from "../../../api/dbApi";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../../store/projectStore";
+import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {useForm} from "react-hook-form";
 import FormInputText from "../../../components/form/FormInputText";
 import toast from "react-hot-toast";
