@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useState} from 'react'
-import {activeTableAtom, projectTableDetailsAtom, projectTableRelationsAtom} from "../../store/tableListStore";
+import React, {useMemo, useState} from 'react'
+import {activeTableAtom, projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/tableListStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {
     addColumn,
@@ -10,10 +10,10 @@ import {
     updateColumn,
     updateIndex,
     updateTable
-} from "../../api/dbApi";
+} from "../../../api/dbApi";
 import * as _ from 'lodash'
-import {Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
-import ZTable, {IndeterminateCheckbox} from "../../components/table/ZTable";
+import {Button} from "@mui/material";
+import ZTable from "../../../components/table/ZTable";
 import {
     useGetProjectDetail,
     useGetTable,
@@ -21,22 +21,18 @@ import {
     useListIndex,
     useListTableDetail,
     useListTableRel
-} from "../../store/rq/reactQueryStore";
+} from "../../../store/rq/reactQueryStore";
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import {useAtom} from "jotai";
 import TableViewOutlinedIcon from '@mui/icons-material/TableViewOutlined';
-import AlertDialog from "../../components/dialog/AlertDialog";
-import {useFieldArray, useForm} from "react-hook-form";
+import AlertDialog from "../../../components/dialog/AlertDialog";
 import toast from "react-hot-toast";
-import FormInputText from "../../components/form/FormInputText";
-import FormCheckBox from "../../components/form/FormCheckBox";
-import FormSelect from "../../components/form/FormSelect";
-import Box from "@mui/material/Box";
-import FormTableAndColumnSelectBox from "../../components/form/FormTableAndColumnSelectBox";
-import {useNavigate} from "react-router";
-import {activeProjectAtom} from "../../store/projectStore";
-import FormFaker from "../../components/form/FormFaker";
+import {activeProjectAtom} from "../../../store/projectStore";
 import DeleteIcon from '@mui/icons-material/Delete';
+import {EditColumnDialog} from "./EditColumnDialog";
+import {EditIndexDialog} from "./EditIndexDialog";
+import {EditTableDialog} from "./EditTableDialog";
+import {columnHeader, indexHeader} from "./tableHeader";
 
 function DBDoc() {
     const queryClient = useQueryClient()
@@ -144,7 +140,6 @@ function DBDoc() {
     })
 
 
-
     const handleColumnSelected = (params) => {
         setColumnsSelectedState(_.keys(params))
     }
@@ -170,6 +165,25 @@ function DBDoc() {
     if (tableQuery.isLoading || tableIndexesQuery.isLoading || projectQuery.isLoading || tableColumnsQuery.isLoading) {
         return <div>加载中</div>
     }
+
+    const closeDeleteIndexDialog = () => {
+        setIndexDeleteOpen(false);
+    }
+
+    const confirmDeleteIndex = () => {
+        indexDeleteMutation.mutate({
+            indexesId: indexesSelectedState
+        }, {
+            onSuccess: res => {
+                setIndexDeleteOpen(false)
+            }
+        })
+    }
+
+    const openDeleteIndexDialog = () => {
+        setIndexDeleteOpen(true);
+    }
+
     return (
         <div className={"flex flex-col gap-5  "}>
             <div className={"flex-col flex gap-20"}>
@@ -338,333 +352,23 @@ function DBDoc() {
 
                         />
                         <Button size={"small"} variant={"contained"}
-                                onClick={() => setIndexDeleteOpen(true)}>删除</Button>
-                        <AlertDialog open={indexDeleteOpen} handleClose={() => setIndexDeleteOpen(false)}
-                                     title={"确认删除当前选中的索引吗"} confirm={() => {
-                            indexDeleteMutation.mutate({
-                                indexesId: indexesSelectedState
-                            })
-                            setIndexDeleteOpen(false)
-                        }}/>
+                                onClick={openDeleteIndexDialog}>删除</Button>
+                        <AlertDialog open={indexDeleteOpen}
+                                     handleClose={closeDeleteIndexDialog}
+                                     title={"确认删除当前选中的索引吗"}
+                                     confirm={confirmDeleteIndex}/>
                     </div>
 
                     <div>
-
                         <ZTable data={tableIndexesQuery?.data?.data?.data} columns={indexesMemo}
                                 getSelectedRows={it => handleIndexSelected(it)} canSelect={true}/>
                     </div>
                 </div>
             </div>
 
-
-            {/*<div>*/}
-            {/*    <div className={"text-base font-bold"}>关系图</div>*/}
-            {/*</div>*/}
         </div>
     )
 }
-
-
-const EditIndexDialog = ({
-                             mode, value, open, closeDialog, submitForm
-                         }) => {
-    const {handleSubmit, control, reset} = useForm({
-        defaultValues: value
-    })
-
-    useEffect(() => {
-        if (value != null) {
-            reset(value)
-        }
-    }, [value])
-
-    return <Dialog open={open} onClose={closeDialog}>
-        <DialogTitle>{mode === 0 ? "新增" : "编辑"}</DialogTitle>
-        <form onSubmit={handleSubmit(data => {
-            submitForm(data)
-        })}>
-            <DialogContent>
-                <FormInputText name={"name"} control={control} label={"索引名称"}/>
-                <FormSelect
-                    name={"type"}
-                    control={control}
-                    label={"索引类型"}
-                    value={"unique_key"}
-                    choices={[{
-                        key: "unique_key",
-                        value: "UNIQUE KEY"
-                    }]}/>
-                <FormInputText name={"columns"} control={control} label={"字段"}/>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={closeDialog}>取消</Button>
-                <Button type={"submit"} onClick={closeDialog}>确定</Button>
-            </DialogActions>
-        </form>
-    </Dialog>
-}
-
-
-const EditColumnDialog = ({
-                              value, open, closeDialog, submitForm, resetValue
-                          }) => {
-
-    const {handleSubmit, control, watch, reset, getValues} = useForm({
-        defaultValues: value
-    })
-
-    const {fields, append} = useFieldArray({
-        control,
-        name: "relationShip"
-    });
-
-
-    useEffect(() => {
-        if (value != null) {
-            reset(value)
-        }
-    }, [value])
-
-    return <Dialog open={open} onClose={() => {
-        closeDialog();
-        reset();
-    }
-    }>
-        <DialogTitle>新增</DialogTitle>
-        <form onSubmit={handleSubmit((data) => {
-            submitForm(data, reset)
-            closeDialog()
-        })}>
-            <DialogContent>
-                <FormInputText name={"name"} control={control} label={"字段名称"}/>
-                <FormInputText name={"type"} control={control} label={"类型"}/>
-                <FormInputText name={"note"} control={control} label={"备注"}/>
-                <FormInputText name={"defaultValue"} control={control} label={"默认值"}/>
-                <Box sx={{display: "flex", flexDirection: "row", gap: "30px"}}>
-                    <FormFaker control={control}
-                               nameKind={"kindKey"}
-                               nameCate={"cateKey"}
-                               watch={watch}
-                               getValues={getValues}/>
-                </Box>
-                <Box sx={{display: "flex", flexDirection: "row", gap: "20px", marginTop: "20px"}}>
-                    <FormCheckBox name={"isPrimaryKey"} control={control} label={"主键"}/>
-                    <FormCheckBox name={"isNotNull"} control={control} label={"非空"}/>
-                    <FormCheckBox name={"isAutoIncrement"} control={control} label={"自增"}/>
-                    <FormCheckBox name={"isUniqueKey"} control={control} label={"唯一"}/>
-                </Box>
-
-
-                <Box sx={{display: "flex", flexDirection: "row", gap: "2", marginTop: "20px", alignItems: "center"}}>
-                    <Button size={"small"} variant={"contained"}
-                            onClick={() => append({type: "", tableId: "", columnId: ""})}>添加关系</Button>
-                </Box>
-                <Box sx={{display: "flex", flexDirection: "column", gap: 1, marginTop: '4px'}}>
-                    {
-                        fields.map(
-                            (item, index) =>
-                                <Box key={index}
-                                     sx={{display: "flex", flexDirection: "row", gap: 2, width: '100%'}}>
-                                    <FormSelect name={`relationShip.${index}.type`}
-                                                label={"关系类型"}
-                                                control={control}
-                                                choices={[
-                                                    {key: 1, value: "一对一"},
-                                                    {key: 2, value: "一对多"},
-                                                    {key: 3, value: "多对多"},
-                                                ]}/>
-                                    <FormTableAndColumnSelectBox nameTable={`relationShip.${index}.tableId`}
-                                                                 nameColumn={`relationShip.${index}.columnId`}
-                                                                 control={control}
-                                                                 watch={watch}
-                                                                 index={index}
-                                    />
-                                </Box>
-                        )
-                    }
-
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => {
-                    closeDialog();
-                    reset();
-                }
-                }>取消</Button>
-                <Button type={"submit"}>确定</Button>
-            </DialogActions>
-        </form>
-    </Dialog>
-}
-
-
-const EditTableDialog = ({value, open, closeDialog, submitForm}) => {
-
-
-    const {handleSubmit, control, reset} = useForm({
-        defaultValues: value
-    })
-
-
-    useEffect(() => {
-        reset(value)
-    }, [value])
-
-    return <Dialog open={open} onClose={closeDialog}>
-        <DialogTitle>修改表信息</DialogTitle>
-        <form onSubmit={handleSubmit(data => {
-            console.log("内部提交", data)
-            submitForm(data)
-        })}>
-            <DialogContent>
-                <FormInputText name={"name"} control={control} label={"表名"}/>
-                <FormInputText name={"note"} control={control} label={"备注"}/>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={closeDialog}>取消</Button>
-                <Button type={"submit"} onClick={closeDialog}>确定</Button>
-            </DialogActions>
-        </form>
-    </Dialog>;
-}
-
-const indexHeader = [
-    {
-        id: "select",
-        header: ({table}) => (
-            <IndeterminateCheckbox
-                {...{
-                    checked: table.getIsAllRowsSelected(),
-                    indeterminate: table.getIsSomeRowsSelected(),
-                    onChange: table.getToggleAllRowsSelectedHandler()
-                }}
-            />
-        ),
-        cell: ({row}) => (
-            <div>
-                <IndeterminateCheckbox
-                    {...{
-                        checked: row.getIsSelected(),
-                        indeterminate: row.getIsSomeSelected(),
-                        onChange: row.getToggleSelectedHandler()
-                    }}
-                />
-            </div>
-        )
-    },
-    {
-        accessorKey: "name",
-        header: () => <div>名称</div>,
-        cell: (info) => info.getValue(),
-    },
-    {
-        accessorKey: "type",
-        header: () => <div>类型</div>,
-        cell: (info) => info.getValue(),
-    },
-    {
-        accessorKey: "columns",
-        header: () => <div>字段</div>,
-        cell: (info) => info.getValue(),
-    }, {
-        accessorKey: "note",
-        header: () => <div>备注</div>,
-        cell: (info) => info.getValue(),
-    },
-]
-
-
-const columnHeader = [
-    {
-        id: "select",
-        header: ({table}) => (
-            <IndeterminateCheckbox
-                {...{
-                    checked: table.getIsAllRowsSelected(),
-                    indeterminate: table.getIsSomeRowsSelected(),
-                    onChange: table.getToggleAllRowsSelectedHandler()
-                }}
-            />
-        ),
-        cell: ({row}) => (
-            <div>
-                <IndeterminateCheckbox
-                    {...{
-                        checked: row.getIsSelected(),
-                        indeterminate: row.getIsSomeSelected(),
-                        onChange: row.getToggleSelectedHandler()
-                    }}
-                />
-            </div>
-        )
-    },
-    {
-        accessorKey: "name",
-        header: () => <div>名称</div>,
-        cell: (info) => info.getValue(),
-    },
-    {
-        accessorKey: "type",
-        header: () => <div>类型</div>,
-        cell: (info) => info.getValue(),
-    },
-    {
-        accessorKey: "note",
-        header: () => <div>备注</div>,
-        cell: (info) => info.getValue(),
-    },
-    {
-        accessorKey: "settings",
-        header: () => <div>配置</div>,
-        cell: (info) => {
-            return (<div className={"flex flex-row gap-1"}>
-                {info.row.original.isPrimaryKey && <Chip label={"pk"} size={"small"}/>}
-                {info.row.original.isAutoIncrement && <Chip size={"small"} label={"auto inc"}/>}
-                {info.row.original.isNotNull && <Chip size={"small"} label={"not null"}/>}
-                {info.row.original.isUniqueKey && <Chip size={"small"} label={"unique"}/>}
-            </div>)
-        },
-
-    },
-    {
-        accessorKey: "defaultValue",
-        header: () => <div>默认值</div>,
-        cell: (info) => info.getValue(),
-    },
-    {
-        accessorKey: "columnRelationShip",
-        header: () => <div>关联关系</div>,
-        cell: info => {
-
-            const navigate = useNavigate()
-            const [project, setProject] = useAtom(activeProjectAtom)
-            const [activeTable, setActiveTable] = useAtom(activeTableAtom)
-
-            return <div>
-                {!!info.getValue() && !!info.getValue().leftColumns && info.getValue().leftColumns.map(it =>
-                    (<div onClick={() => {
-                        setActiveTable(
-                            it.rightTableId
-                        )
-                    }}>
-                        -- {it.rightTableName}.{it.rightColumnName}
-                    </div>))}
-                {!!info.getValue() && !!info.getValue().rightColumns && info.getValue().rightColumns.map(it => (
-                    <div onClick={() => {
-                        setActiveTable(
-                            it.leftTableId
-                        )
-                    }}>
-                        -- {it.leftTableName}.{it.leftColumnName}</div>))}
-            </div>
-        }
-    },
-    {
-        accessorKey: "comment",
-        header: () => <div>注释</div>,
-        cell: (info) => info.getValue(),
-    },
-]
 
 
 export default DBDoc

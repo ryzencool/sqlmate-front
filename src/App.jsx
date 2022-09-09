@@ -10,13 +10,13 @@ import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/
 
 
 const queryClient = new QueryClient(
-    // {
-    //     defaultOptions: {
-    //         queries: {
-    //             refetchOnWindowFocus: false,
-    //         },
-    //     },
-    // }
+    {
+        defaultOptions: {
+            queries: {
+                refetchOnWindowFocus: false,
+            },
+        },
+    }
 )
 
 function App() {

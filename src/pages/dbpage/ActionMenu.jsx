@@ -11,7 +11,7 @@ import {useListTablesDetail, useProjectDBML} from "../../store/rq/reactQueryStor
 import {dbAtom} from "../../store/sqlStore";
 import toast from "react-hot-toast";
 
-export default function OperationMenu() {
+export default function ActionMenu() {
 
     const [project] = useAtom(activeProjectAtom)
     const [activeDbType] = useAtom(activeDbTypeAtom);

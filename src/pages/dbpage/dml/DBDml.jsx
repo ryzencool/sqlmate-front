@@ -2,7 +2,7 @@ import React from 'react'
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {Tab, Tabs} from "@mui/material";
-import DBDmlDetail from "./DBMysqlDetail";
+import DBDmlDetail from "../DBMysqlDetail";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;

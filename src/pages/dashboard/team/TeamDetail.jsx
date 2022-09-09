@@ -35,7 +35,7 @@ export default function TeamDetail(props) {
         generateTeamJoinQuery.refetch().then(res => {
             console.log(res.data.data)
             setShareOpen(true)
-            setShareUrl(`http://49.235.94.2?team=${res.data.data.data}`)
+            setShareUrl(`http://49.235.94.2/team/join?key=${res.data.data.data}`)
         })
     }
 
@@ -44,7 +44,9 @@ export default function TeamDetail(props) {
             <Button size={"small"} onClick={handleClickShareJoin}>
                 生成邀请链接
             </Button>
-            <ShareDialog link={shareUrl} open={shareOpen} handleClose={handleCloseShare}/>
+            <ShareDialog link={shareUrl}
+                         open={shareOpen}
+                         handleClose={handleCloseShare}/>
         </div>
 
         <List className={'w-11/12'}>

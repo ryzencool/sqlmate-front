@@ -18,6 +18,7 @@ import SignIn from "./pages/auth/SignIn";
 import TeamDetail from "./pages/dashboard/team/TeamDetail";
 import DefaultColumnTemplate from "./pages/dashboard/defaultColumnTemplate/DefaultColumnTemplate";
 import DefaultColumnTemplateDetail from "./pages/dashboard/defaultColumnTemplate/DefaultColumnTemplateDetail";
+import TeamJoin from "./pages/dashboard/team/TeamJoin";
 
 
 const CustomRouter = () => {
@@ -25,13 +26,13 @@ const CustomRouter = () => {
         <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/index" element={<Home/>}/>
+            <Route path={"/team/join/:key"} element={<TeamJoin/>}/>
             <Route path="/auth" element={<SignUpIn/>}>
                 <Route path="signUp" element={<SignUp/>}/>
                 <Route path="signIn" element={<SignIn/>}/>
             </Route>
             <Route path="/header" element={<Header/>}>
                 <Route path={"home/:id"} element={<DBMain/>}/>
-
                 <Route path={"dashboard"} element={<Dashboard/>}>
                     <Route path={"favorite"} element={<FavoriteProject/>}/>
                     <Route path={"codeSettings"} element={<CodeSettings/>}/>

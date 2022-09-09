@@ -1,20 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import Box from "@mui/material/Box";
 import {Tab, Tabs} from "@mui/material";
-import DBDoc from "./DBDoc";
-import DBEr from "./DBEr";
-import DBConsole from "./DBConsole";
-import DBData from "./DBData";
-import DBDml from "./DBDml";
-import DBSql from "./DBSql";
-import DBCode from "./DBCode";
+import DBDoc from "./doc/DBDoc";
+import DBEr from "./er/DBEr";
+import DBConsole from "./console/DBConsole";
+import DBData from "./data/DBData";
+import DBDml from "./dml/DBDml";
+import DBSql from "./sql/DBSql";
+import DBCode from "./code/DBCode";
 import {activeTableAtom} from "../../store/tableListStore";
-import DBSnapshot from "./DBSnapshot";
+import DBSnapshot from "./snap/DBSnapshot";
 import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/projectStore";
 import {useGetProject} from "../../store/rq/reactQueryStore";
 import {a11yProps, ZTabPanel} from "../../components/tab/ZTabPanel";
-import DBProjectInterface from "./DBProjectInterface";
+import DBProjectInterface from "./project/DBProjectInterface";
 
 
 function DBContent({projectId}) {

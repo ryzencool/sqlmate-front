@@ -66,6 +66,17 @@ const generateTeamUrl = "/team/generateUrl"
 const createConnectUrl = "/database/createConnect"
 const connectIsLiveUrl = "/database/connectIsLive"
 const deleteTableUrl = "/table/delete"
+const cleanTableUrl = "/database/cleanTable"
+
+const joinTeamUrl = "/team/join"
+
+export function joinTeam (params) {
+    return post(joinTeamUrl, params)
+}
+
+export function cleanTable(params) {
+    return post(cleanTableUrl, params)
+}
 
 export function connectIsLive(params) {
     return get(connectIsLiveUrl, params);

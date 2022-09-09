@@ -12,20 +12,20 @@ import {
 import {CopyBlock, nord} from "react-code-blocks";
 import {sql} from "@codemirror/lang-sql";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addProjectSql, deleteProjectSql, executeSql, queryOptimizer, updateProjectSql} from "../../api/dbApi";
-import {useListProjectSql} from "../../store/rq/reactQueryStore";
-import AlertDialog from "../../components/dialog/AlertDialog";
+import {addProjectSql, deleteProjectSql, executeSql, queryOptimizer, updateProjectSql} from "../../../api/dbApi";
+import {useListProjectSql} from "../../../store/rq/reactQueryStore";
+import AlertDialog from "../../../components/dialog/AlertDialog";
 import {useAtom} from "jotai";
-import {activeDbTypeAtom} from "../../store/databaseStore";
-import {TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
-import FormInputText from "../../components/form/FormInputText";
+import {activeDbTypeAtom} from "../../../store/databaseStore";
+import {TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
+import FormInputText from "../../../components/form/FormInputText";
 import {useForm} from "react-hook-form";
-import FormCodeMirror from "../../components/form/FormCodeMirror";
-import {activeProjectAtom} from "../../store/projectStore";
+import FormCodeMirror from "../../../components/form/FormCodeMirror";
+import {activeProjectAtom} from "../../../store/projectStore";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {format} from "sql-formatter";
-import {OptimizeDrawer} from "./DBConsole";
+import {OptimizeDrawer} from "../console/DBConsole";
 import toast from "react-hot-toast";
 
 

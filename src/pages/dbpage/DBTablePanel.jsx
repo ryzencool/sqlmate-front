@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {activeTableAtom} from "../../store/tableListStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {createTable, updateProject} from "../../api/dbApi";
+import {createTable, deleteTable} from "../../api/dbApi";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {
@@ -9,14 +9,12 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl,
-    InputLabel,
     List,
     ListItem,
     ListItemButton,
     ListItemText,
+    Menu,
     MenuItem,
-    Select,
     TextField
 } from "@mui/material";
 import {useGetProject, useListDefaultColumnTemplate, useListTables} from "../../store/rq/reactQueryStore";
@@ -25,6 +23,8 @@ import {activeDbTypeAtom} from "../../store/databaseStore";
 import FormInputText from "../../components/form/FormInputText";
 import {useForm} from "react-hook-form";
 import FormSelect from "../../components/form/FormSelect";
+import {FiMoreVertical} from "react-icons/fi";
+import AlertDialog from "../../components/dialog/AlertDialog";
 
 function DBTablePanel({projectId}) {
 
@@ -33,6 +33,8 @@ function DBTablePanel({projectId}) {
     const [tableCreateOpen, setTableCreateOpen] = useState(false)
     const [searchParam, setSearchParam] = useState({projectId: projectId});
     const [databaseType, setDatabaseType] = useAtom(activeDbTypeAtom)
+    const [tableMenuAnchorEl, setTableMenuAnchorEl] = useState(null)
+    const tableMenuOpen = Boolean(tableMenuAnchorEl)
     const projectQuery = useGetProject({id: projectId}, {
         onSuccess: data => {
             setDatabaseType(data.data.data.dbType)
@@ -47,7 +49,6 @@ function DBTablePanel({projectId}) {
             queryClient.invalidateQueries(['projectTables'])
         }
     })
-
 
 
     const submitCreateTableForm = (data, reset) => {
@@ -65,7 +66,7 @@ function DBTablePanel({projectId}) {
 
     }
 
-    if (tablesQuery.isLoading || projectQuery.isLoading ) {
+    if (tablesQuery.isLoading || projectQuery.isLoading) {
         return <div>加载中</div>
     }
 
@@ -88,10 +89,10 @@ function DBTablePanel({projectId}) {
                         创建表
                     </Button>
                     <TableCreateDialog
-                    value={{defaultColumnTemplateId: projectQuery.data.data.data.defaultColumnTemplateId}}
+                        value={{defaultColumnTemplateId: projectQuery.data.data.data.defaultColumnTemplateId}}
                         closeDialog={() => setTableCreateOpen(false)}
-                                       open={tableCreateOpen}
-                                       submitForm={submitCreateTableForm}/>
+                        open={tableCreateOpen}
+                        submitForm={submitCreateTableForm}/>
                 </div>
 
             </div>
@@ -99,14 +100,30 @@ function DBTablePanel({projectId}) {
                 <List className={"w-10/12 overflow-auto mt-4 h-[calc(100vh-11rem)]"}>
 
                     {tablesQuery.data.data.data.map(it => (
-                        <ListItem key={it.id} disablePadding onClick={() => {
-                            setActiveTable(it.id)
-
-                        }}>
+                        <ListItem key={it.id} disablePadding>
                             {
-                                <ListItemButton
-                                    className={`rounded-lg ${it.id === activeTable ? "bg-slate-200" : "bg-white"}`}>
+                                <ListItemButton onClick={() => {
+                                    setActiveTable(it.id)
+                                }}
+                                                className={`rounded-lg ${it.id === activeTable ? "bg-slate-200" : "bg-white"}`}>
                                     <ListItemText primary={it.name}/>
+                                    <div
+                                        onClick={(event) => {
+                                            event.stopPropagation()
+
+                                            setTableMenuAnchorEl(event.currentTarget)
+
+                                        }}
+                                        className={'bg-sky-200 p-2 rounded-lg transition delay-150 duration-300 ease-in-out'}>
+                                        <FiMoreVertical/>
+                                    </div>
+                                    <TableMenus
+                                        tableId={it.id}
+                                        open={tableMenuOpen}
+                                        anchorEl={tableMenuAnchorEl}
+                                        handleClose={() => {
+                                            setTableMenuAnchorEl(null)
+                                        }}/>
                                 </ListItemButton>
                             }
 
@@ -119,6 +136,63 @@ function DBTablePanel({projectId}) {
 }
 
 export default DBTablePanel;
+
+
+function TableMenus({tableId, anchorEl, open, handleClose}) {
+
+    const [setActiveTableId] = useAtom(activeTableAtom)
+
+    const queryClient = useQueryClient();
+
+    const tableDeleteMutation = useMutation(deleteTable, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["table"])
+        }
+    })
+
+    const handleDeleteTable = () => {
+        tableDeleteMutation.mutate({
+            tableId: tableId
+        }, {
+            onSuccess: res => {
+                setDeleteDialogOpen(false)
+                setActiveTableId(0)
+            }
+        })
+    }
+
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+
+    return <Menu
+        size={'small'}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+            'aria-labelledby': 'basic-button',
+        }}
+        sx={{marginTop: "3px"}}
+    >
+        <MenuItem sx={{fontSize: "12px"}} onClick={() => {
+            setDeleteDialogOpen(true)
+            // handleClose()
+        }}>删除</MenuItem>
+        <AlertDialog open={deleteDialogOpen}
+                     handleClose={() => {
+                         setDeleteDialogOpen(false)
+                         handleClose()
+                     }}
+                     confirm={handleDeleteTable}
+                     title={"删除"}
+                     msg={"确认删除当前表吗"}/>
+        <MenuItem sx={{fontSize: "12px"}} onClick={() => {
+            handleClose()
+        }}>编辑</MenuItem>
+
+    </Menu>
+}
 
 
 function TableCreateDialog({value, open, closeDialog, submitForm}) {
@@ -172,7 +246,7 @@ function TableCreateDialog({value, open, closeDialog, submitForm}) {
                     closeDialog();
                     reset({})
                 }}>取消</Button>
-                <Button type={"submit"} >确定</Button>
+                <Button type={"submit"}>确定</Button>
             </DialogActions>
         </form>
 

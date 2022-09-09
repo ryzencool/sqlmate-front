@@ -13,19 +13,19 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import {useAtom} from "jotai";
-import {activeProjectAtom} from "../../store/projectStore";
-import {useListSnapshot, useProjectDBML} from "../../store/rq/reactQueryStore";
+import {activeProjectAtom} from "../../../store/projectStore";
+import {useListSnapshot, useProjectDBML} from "../../../store/rq/reactQueryStore";
 import {useForm} from "react-hook-form";
-import FormInputText from "../../components/form/FormInputText";
+import FormInputText from "../../../components/form/FormInputText";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {createSnapshot} from "../../api/dbApi";
-import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
+import {createSnapshot} from "../../../api/dbApi";
+import {CodeResult, TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
 import {format} from "sql-formatter";
 import {exporter} from "@dbml/core";
 import Box from "@mui/material/Box";
-import {a11yProps, ZTabPanel} from "../../components/tab/ZTabPanel";
+import {a11yProps, ZTabPanel} from "../../../components/tab/ZTabPanel";
 import beautify from "json-beautify";
-import {colors} from "../dashboard/project/ProjectCard";
+import {colors} from "../../dashboard/project/ProjectCard";
 
 
 export default function DBSnapshot() {

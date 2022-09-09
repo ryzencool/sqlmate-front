@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
-import {activeTableAtom} from "../../store/tableListStore";
+import {activeTableAtom} from "../../../store/tableListStore";
 import {Parser} from '@dbml/core'
 import Box from "@mui/material/Box";
 import {Tab, Tabs} from "@mui/material";
 import mustache from "mustache/mustache.mjs";
 import {CopyBlock, nord} from "react-code-blocks";
-import {useGetDBML, useListCodeTemplate, useListTemplateFile} from "../../store/rq/reactQueryStore";
+import {useGetDBML, useListCodeTemplate, useListTemplateFile} from "../../../store/rq/reactQueryStore";
 import {useAtom} from "jotai";
-import {a11yProps, ZTabPanel} from "../../components/tab/ZTabPanel";
+import {a11yProps, ZTabPanel} from "../../../components/tab/ZTabPanel";
 
 
 export default function DBCode() {

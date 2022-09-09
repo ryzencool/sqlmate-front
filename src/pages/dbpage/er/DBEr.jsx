@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import createEngine, {DefaultLinkModel, DiagramModel,} from "@projectstorm/react-diagrams";
 
-import DiagramWidget from "../../components/graph/DiagramWidget";
-import {NodeFactory} from "../../components/graph/NodeFactory";
-import {NodeModel} from "../../components/graph/NodeModel";
+import DiagramWidget from "../../../components/graph/DiagramWidget";
+import {NodeFactory} from "../../../components/graph/NodeFactory";
+import {NodeModel} from "../../../components/graph/NodeModel";
 import {useAtom} from "jotai";
-import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../store/tableListStore";
+import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/tableListStore";
 
 export default  function DBEr() {
 

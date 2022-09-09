@@ -1,26 +1,26 @@
 import React, {useEffect, useState} from 'react'
-import {activeTableAtom} from "../../store/tableListStore";
+import {activeTableAtom} from "../../../store/tableListStore";
 import {Button, Menu, MenuItem} from "@mui/material";
 import {useAtom} from "jotai";
-import {useGetTable, useListColumn} from "../../store/rq/reactQueryStore";
+import {useGetTable, useListColumn} from "../../../store/rq/reactQueryStore";
 import {createColumnHelper} from "@tanstack/react-table";
 import {faker} from "@faker-js/faker";
 import * as _ from 'lodash'
-import {activeDbTypeAtom} from "../../store/databaseStore";
-import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
+import {activeDbTypeAtom} from "../../../store/databaseStore";
+import {CodeResult, TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
 import beautify from 'json-beautify'
-import ZTable from "../../components/table/ZTable";
+import ZTable from "../../../components/table/ZTable";
 import toast from "react-hot-toast";
 import Box from "@mui/material/Box";
 import {format} from "sql-formatter";
-import {executeSql} from "../../api/dbApi";
+import {cleanTable, executeSql} from "../../../api/dbApi";
 import {useMutation} from "@tanstack/react-query";
-import {activeProjectAtom} from "../../store/projectStore";
-import {dateToDBTime} from "../../utils/date";
+import {activeProjectAtom} from "../../../store/projectStore";
+import {dateToDBTime} from "../../../utils/date";
 import {IoKeyOutline} from "react-icons/io5";
 import {AiOutlineArrowUp} from "react-icons/ai";
-import {ClipLoader} from "react-spinners";
-import ZBackdrop from "../../components/feedback/ZBackdrop";
+import ZBackdrop from "../../../components/feedback/ZBackdrop";
+import AlertDialog from "../../../components/dialog/AlertDialog";
 
 const override = {
     display: "block",
@@ -34,7 +34,7 @@ export default function DBData() {
     const [fakerData, setFakerData] = useState([])
     const [jsonDrawerOpen, setJsonDrawerOpen] = useState(false)
     const [insertDrawerOpen, setInsertDrawerOpen] = useState(false)
-    const [activeTable] = useAtom(activeTableAtom)
+    const [activeTableId] = useAtom(activeTableAtom)
     const [activeDbType] = useAtom(activeDbTypeAtom)
     const [project] = useAtom(activeProjectAtom)
     const [insertSql, setInsertSql] = useState("");
@@ -45,7 +45,8 @@ export default function DBData() {
     const [exportAnchorEl, setExportAnchorEl] = useState(null)
     const generateDataOpen = Boolean(generateAnchorEl)
     const exportDataOpen = Boolean(exportAnchorEl)
-    const [isVisible, setIsVisible] = useState(false)
+    const [cleanTableOpen, setCleanTableOpen] = useState(false)
+
     const [bdOpen, setBdOpen] = useState(false)
     const sqlExecuteMutation = useMutation(executeSql)
 
@@ -58,13 +59,13 @@ export default function DBData() {
         setBdOpen(false)
     }
 
-    const tableQuery = useGetTable({tableId: activeTable}, {
-        enabled: !!activeTable,
+    const tableQuery = useGetTable({tableId: activeTableId}, {
+        enabled: !!activeTableId,
         refetchOnWindowFocus: false
     })
 
-    const listColumnQuery = useListColumn({tableId: activeTable}, {
-        enabled: !!activeTable,
+    const listColumnQuery = useListColumn({tableId: activeTableId}, {
+        enabled: !!activeTableId,
         refetchOnWindowFocus: false,
         onSuccess: res => {
             console.log("列表数据", res.data.data)
@@ -83,18 +84,16 @@ export default function DBData() {
         }
     })
 
+    const cleanTableMutation = useMutation(cleanTable)
+
 
     useEffect(() => {
         setFakerData([])
-    }, [activeTable])
+    }, [activeTableId])
 
     const [tableHeader, setTableHeader] = useState([])
     const columnHelper = createColumnHelper();
 
-    const handleGenerateLinkTableData = () => {
-        let push = []
-        // 找出和当前表关联的所有表
-    }
 
     const handleGenerateData = (generateCount) => {
 
@@ -158,7 +157,6 @@ export default function DBData() {
 
             handleCloseBd()
         }, 0)
-
 
 
     }
@@ -247,7 +245,21 @@ export default function DBData() {
     }
 
     const handleClickClearDatabase = () => {
+        handleBdToggle()
+        window.setTimeout(() => {
+            cleanTableMutation.mutate({
+                projectId: project.id,
+                tableId: activeTableId,
+                dbType: activeDbType
+            }, {
+                onSuccess: res => {
+                    handleCloseBd()
 
+                    toast.success("清空数据库成功")
+                }
+            })
+        }, 0)
+        setCleanTableOpen(false)
     }
 
     const handleClickGenerate = (event) => {
@@ -260,8 +272,7 @@ export default function DBData() {
     }
 
     if (listColumnQuery.isLoading || tableQuery.isLoading) {
-        return <ClipLoader color={"#36d7b7"} loading={listColumnQuery.isLoading || tableQuery.isLoading}
-                           cssOverride={override} size={150}/>
+        return <div>加载中</div>
 
     }
 
@@ -304,14 +315,17 @@ export default function DBData() {
                                  </Box>}/>
 
             <Button size={"small"} variant={"contained"} onClick={handleClickSyncDatabase}>同步到数据库</Button>
-            <Button size={"small"} variant={"contained"} onClick={handleClickClearDatabase}>清空数据库</Button>
+            <Button size={"small"} variant={"contained"} onClick={() => {setCleanTableOpen(true)}}>清空数据库</Button>
+            <AlertDialog open={cleanTableOpen} handleClose={() => {
+                setCleanTableOpen(false)
+            }} confirm={() => handleClickClearDatabase()} title={"清空模拟表"} msg={"确定清空当前的模拟表?"}/>
         </div>
 
         <div className={"flex flex-col gap-3"}>
             <div className={"flex flex-col gap-2"}>
                 <div className={"flex flex-row gap-3 items-end"}>
-                    <div className={"text-xl font-bold"}>{activeTable.name}</div>
-                    <div className={"text-base"}>{activeTable.note}</div>
+                    <div className={"text-xl font-bold"}>{activeTableId.name}</div>
+                    <div className={"text-base"}>{activeTableId.note}</div>
                 </div>
                 <div className={'text-sm text-slate-400'}>
                     共<span className={'text-base text-black p-1'}>{fakerData.length}</span>条数据

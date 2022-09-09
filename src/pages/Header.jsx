@@ -10,11 +10,11 @@ import {
     useListTablesDetail,
     useProjectDBML
 } from "../store/rq/reactQueryStore";
-import {Avatar} from "@mui/material";
+import {Avatar, Menu, MenuItem} from "@mui/material";
 import {colors} from "./dashboard/project/ProjectCard";
 import {useAtom} from "jotai";
 import Select from 'react-select';
-import OperationMenu from "./dbpage/OperationMenu";
+import ActionMenu from "./dbpage/ActionMenu";
 import SyncIcon from '@mui/icons-material/Sync';
 import toast from "react-hot-toast";
 import {exporter} from "@dbml/core";
@@ -65,6 +65,9 @@ function Header() {
 
     const queryClient = useQueryClient()
 
+    const [profileAnchorEl, setProfileAnchorEl] = useState()
+    const profileOpen = Boolean(profileAnchorEl)
+
     const dbmlProjectQuery = useProjectDBML({projectId: projectId}, {
         enabled: false
     })
@@ -110,7 +113,6 @@ function Header() {
     const createConnectMutation = useMutation(createConnect, {
         onSuccess: res => {
             queryClient.invalidateQueries(['connectIsLive'])
-            console.log("链接数据库结果", res.data);
         }
     })
 
@@ -221,6 +223,11 @@ ${cols}
         })
     }
 
+    const handleSignOut = () => {
+        localStorage.removeItem("authToken")
+        navigate("/")
+    }
+
     const handleCreateConnect = () => {
         console.log("建立连接", projectId, dbType)
         createConnectMutation.mutate({
@@ -231,6 +238,11 @@ ${cols}
                 toast("连接远程模拟库成功")
             }
         })
+    }
+
+    const handleProfileClick = (event) => {
+        setProfileAnchorEl(event.currentTarget);
+
     }
 
     if (userQuery.isLoading) {
@@ -288,7 +300,7 @@ ${cols}
                 <div className={'flex flex-row justify-between items-center'}>
                     <div>
                         <div>
-                            {location.pathname.includes("home") && <OperationMenu/>}
+                            {location.pathname.includes("home") && <ActionMenu/>}
                         </div>
                     </div>
                     {location.pathname.includes("home") && <div className={'font-bold text-xl'}>
@@ -301,8 +313,14 @@ ${cols}
                             <Button size={"small"} variant={"contained"}
                                     onClick={() => navigate('/header/dashboard/myProject')}>控制台</Button>
                             <div>
-                                <Avatar
-                                    className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery.data.data.data.username.substring(0, 1)}</Avatar>
+                                <Avatar onClick={handleProfileClick}
+                                        className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery.data.data.data.username.substring(0, 1)}</Avatar>
+
+                                <ProfileMenus open={profileOpen} anchorEl={profileAnchorEl} handleClose={() => {
+                                    setProfileAnchorEl(null)
+                                }} handleSignOut={handleSignOut}/>
+
+
                             </div>
                         </div>
                     </div>
@@ -316,3 +334,23 @@ ${cols}
 }
 
 export default Header;
+
+
+function ProfileMenus({anchorEl, open, handleClose, handleSignOut}) {
+    return <Menu
+        size={'small'}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+            'aria-labelledby': 'basic-button',
+        }}
+    >
+        <MenuItem onClick={() => {
+            handleSignOut()
+            handleClose()
+        }}>退出</MenuItem>
+
+    </Menu>
+}

@@ -2,23 +2,23 @@ import React, {useState} from 'react'
 import {Button, Card} from "@mui/material";
 import CodeMirror from "@uiw/react-codemirror";
 import {sql} from "@codemirror/lang-sql";
-import {dbAtom} from "../../store/sqlStore";
-import '../../components/style.css'
+import {dbAtom} from "../../../store/sqlStore";
+import '../../../components/style.css'
 import {createColumnHelper,} from '@tanstack/react-table'
-import {activeTableAtom} from "../../store/tableListStore";
-import ZTable from "../../components/table/ZTable";
+import {activeTableAtom} from "../../../store/tableListStore";
+import ZTable from "../../../components/table/ZTable";
 import {useAtom} from "jotai";
-import {consoleSqlAtom} from "../../store/consoleStore";
+import {consoleSqlAtom} from "../../../store/consoleStore";
 import {format} from 'sql-formatter';
-import {activeDbTypeAtom} from "../../store/databaseStore";
+import {activeDbTypeAtom} from "../../../store/databaseStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addProjectSql, executeSql, queryOptimizer, syncConsole} from "../../api/dbApi";
+import {addProjectSql, executeSql, queryOptimizer, syncConsole} from "../../../api/dbApi";
 import * as _ from "lodash"
-import {activeProjectAtom} from "../../store/projectStore";
-import {useConnectIsLive, useGetConsole} from "../../store/rq/reactQueryStore";
+import {activeProjectAtom} from "../../../store/projectStore";
+import {useConnectIsLive, useGetConsole} from "../../../store/rq/reactQueryStore";
 import toast from "react-hot-toast";
-import {EditSqlDialog} from "./DBSql";
-import {CodeResult, TemporaryDrawer} from "../../components/drawer/TemporaryDrawer";
+import {EditSqlDialog} from "../sql/DBSql";
+import {CodeResult, TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
@@ -170,7 +170,6 @@ export default function DBConsole() {
             }
         } else {
             connectIsLiveQuery.refetch().then(res => {
-                console.log("判断当前的链接状态", res.data.data.data)
                 if (res.data === false) {
                     toast.error("当前与模拟库已断开连接，请先建立连接")
                 } else {
@@ -180,9 +179,16 @@ export default function DBConsole() {
                         sql: executeSql,
                         dbType: databaseType
                     }, {
-                        onSuccess: data => {
+                        onSuccess: resp => {
+                            if (resp.data.code !== "000000") {
+                                toa1st.error("请确认已同步远程模拟库或检查SQL")
+                                return;
+                            }
                             setSqlResult("")
-                            let res = data.data.data
+                            let res = resp.data.data
+
+
+
                             if (!!res && res.length() > 0) {
                                 setResultHeader(_.keys(res[0]).map(it => {
                                     return columnHelper.accessor(it, {

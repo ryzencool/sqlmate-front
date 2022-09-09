@@ -54,7 +54,7 @@ export default function Home() {
         </div>
 
         <div className={"w-screen flex flex-col items-center "}>
-            <div className={"font-bold text-5xl tracking-widest mt-28"}>SQL界的瑞士军刀</div>
+            <div className={"font-bold text-5xl tracking-widest mt-28 text-slate-500 "}>SQL界的瑞士军刀</div>
             <div
                 className={"tracking-widest  text-indigo-800 mt-16 text-xl  text-center leading-9 w-3/5"}>
                 基于SQL创建文档，生成ER图和代码，管理SQL语句，调优SQL，与团队协作，一切尽在SQLMate。
