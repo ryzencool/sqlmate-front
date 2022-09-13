@@ -19,7 +19,7 @@ export default function DashMenu() {
     return <div className={"flex flex-col items-center  h-[calc(100vh-5rem)]"}>
         <List className={'w-11/12'}>
             <ListItem disablePadding>
-                <ListItemButton onClick={() => navigate("/header/dashboard/myProject")}
+                <ListItemButton onClick={() => navigate("/terminal/dashboard/myProject")}
                                 className={`rounded-lg ${pathname.includes("myProject") ? "bg-slate-100" : "bg-white"} `}>
                     <ListItemIcon className={'ml-3'}>
                         <ArticleOutlinedIcon/>
@@ -28,7 +28,7 @@ export default function DashMenu() {
                 </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-                <ListItemButton onClick={() => navigate("/header/dashboard/favorite")}
+                <ListItemButton onClick={() => navigate("/terminal/dashboard/favorite")}
                                 className={`rounded-lg ${pathname.includes("favorite") ? "bg-slate-100" : "bg-white"}`}>
                     <ListItemIcon className={'ml-3'}>
                         <FavoriteBorderIcon/>
@@ -37,7 +37,7 @@ export default function DashMenu() {
                 </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-                <ListItemButton onClick={() => navigate("/header/dashboard/publicProject")}
+                <ListItemButton onClick={() => navigate("/terminal/dashboard/publicProject")}
                                 className={`rounded-lg ${pathname.includes("publicProject") ? "bg-slate-100" : "bg-white"}`}>
                     <ListItemIcon className={'ml-3'}>
                         <AccountTreeIcon/>
@@ -47,7 +47,7 @@ export default function DashMenu() {
             </ListItem>
 
             <ListItem disablePadding>
-                <ListItemButton onClick={() => navigate("/header/dashboard/codeSettings")}
+                <ListItemButton onClick={() => navigate("/terminal/dashboard/codeSettings")}
                                 className={`rounded-lg ${pathname.includes("codeSettings") ? "bg-slate-100" : "bg-white"}`}>
                     <ListItemIcon className={'ml-3'}>
                         <DataObjectOutlinedIcon/>
@@ -59,7 +59,7 @@ export default function DashMenu() {
             <ListItem disablePadding>
 
 
-                <ListItemButton onClick={() => navigate("/header/dashboard/teams")}
+                <ListItemButton onClick={() => navigate("/terminal/dashboard/teams")}
                                 className={`rounded-lg ${pathname.includes("teams") ? "bg-slate-100" : "bg-white"}`}>
                     <ListItemIcon className={'ml-3'}>
                         <GroupAddOutlinedIcon/>
@@ -68,7 +68,7 @@ export default function DashMenu() {
                 </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-                <ListItemButton onClick={() => navigate("/header/dashboard/defaultColumnTemplate")}
+                <ListItemButton onClick={() => navigate("/terminal/dashboard/defaultColumnTemplate")}
                                 className={`rounded-lg ${pathname.includes("defaultColumnTemplate") ? "bg-slate-100" : "bg-white"}`}>
                     <ListItemIcon className={'ml-3'}>
                         <Grid4x4OutlinedIcon/>

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import createEngine, {DefaultLinkModel, DiagramModel,} from "@projectstorm/react-diagrams";
 
 import DiagramWidget from "../../../components/graph/DiagramWidget";
@@ -6,8 +6,9 @@ import {NodeFactory} from "../../../components/graph/NodeFactory";
 import {NodeModel} from "../../../components/graph/NodeModel";
 import {useAtom} from "jotai";
 import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/jt/tableListStore";
+import Button from "@mui/material/Button";
 
-export default  function DBEr() {
+export default function DBErd() {
 
     const [tableDetails] = useAtom(projectTableDetailsAtom)
     const [tableRelations] = useAtom(projectTableRelationsAtom)
@@ -43,7 +44,9 @@ export default  function DBEr() {
 
     engine.setModel(model)
 
-    return <DiagramWidget engine={engine}/>;
+    return <div>
+        <Button onClick={() => engine.zoomToFit()}>自适应大小</Button>
+        <DiagramWidget engine={engine}/></div>
 }
 
 

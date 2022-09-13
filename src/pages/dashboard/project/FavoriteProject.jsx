@@ -16,7 +16,7 @@ export default function FavoriteProject() {
     const favoriteProjects = useListFavoriteProject(favoriteProjectSearch)
 
     const handleClickEnterProject = (data) => {
-        navigate(`/header/home/${data.id}`);
+        navigate(`/console/project/${data.id}`);
         setProject(data)
     }
 

@@ -18,7 +18,7 @@ export default function Home() {
 
     const handleClickStart = () => {
         if (!!auth) {
-            navigate('/header/dashboard/myProject')
+            navigate('/terminal/dashboard/myProject')
         } else {
             navigate("/auth/signUp")
         }
@@ -26,13 +26,23 @@ export default function Home() {
 
     return <div className={'w-screen bg-slate-100 flex-col items-center pb-10'}>
         <div className={' h-20  pl-20 pr-20 flex flex-row justify-between  items-center'}>
-            <div className={"font-bold  text-2xl text-center"}>
-                SQLMate
+            <div className={'flex flex-row gap-7 items-end'}>
+                <div className={"font-bold  text-2xl "}>
+                    SQLMate
+                </div>
+                <div>
+                    <div className={'text-indigo-400 underline-offset-auto '}>
+                        <a href="https://www.wolai.com/x8qUADE2nyif8LXeHgmfk"
+                           target="_blank" rel="noreferrer">
+                            指南
+                        </a>
+                    </div>
+                </div>
             </div>
 
             {
                 auth ? <div className={" flex flex-row gap-10 items-center text-indigo-700"}>
-                        <Link to={"/header/dashboard/myProject"}>
+                        <Link to={"/console/dashboard/myProject"}>
                             <div
                                 className={'bg-indigo-400 text-white font-bold rounded-md p-2 w-24 text-center tracking-wider'}>
                                 控制台
@@ -102,18 +112,11 @@ export default function Home() {
                              img={'https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/iShot_2022-09-05_17.03.29.png'}
                              mainTitle={"快照管理"}
                              subTitle={"生成sql快照，轻松管理项目版本，还原版本"}/>
+                <FeatureCard color={'bg-purple-200'}
+                             img={'https://sqlmate-1259183164.cos.ap-shanghai.myqcloud.com/%E5%8D%A1%E7%89%87%E8%83%8C%E6%99%AF/iShot_2022-09-09_19.35.58.png'}
+                             mainTitle={"团队协作"}
+                             subTitle={"共享项目SQL，代码，设计，再也不用担心团队管理问题"}/>
 
-                <div className={'flex flex-col items-center w-56'}>
-                    <div className={'bg-purple-800 rounded-xl w-56 h-32'}>
-
-                    </div>
-                    <div className={'font-bold mt-2'}>
-                        团队协作
-                    </div>
-                    <div className={'text-sm text-slate-500 w-4/5'}>
-                        共享项目SQL，代码，设计，再也不用担心团队管理问题
-                    </div>
-                </div>
             </div>
 
         </div>

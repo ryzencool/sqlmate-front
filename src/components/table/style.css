@@ -1,0 +1,22 @@
+.react-select__control {
+    border: none!important;
+    outline-width: 0px!important;
+}
+
+.react-select__control--is-focused {
+    border: none!important;
+    outline-width: 0px!important;
+    box-shadow: none!important;
+}
+
+.react-select__indicator-separator {
+    width: 0px!important;
+}
+
+.react-select__clear-indicator {
+    visibility: hidden!important;
+    width: 0px!important;
+    height: 0px!important;
+    padding: 0px!important;
+    margin: 0px!important;
+}

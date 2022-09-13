@@ -50,7 +50,7 @@ export default function Team() {
                             {it.note}
                         </div>
                         <div className={'mt-2 w-full flex-row flex justify-end'}>
-                            <Button onClick={() => navigate(`/header/dashboard/teamDetail/${it.id}`)}>进入团队</Button>
+                            <Button onClick={() => navigate(`/console/dashboard/teamDetail/${it.id}`)}>进入团队</Button>
                         </div>
                     </div>
                 </Card>

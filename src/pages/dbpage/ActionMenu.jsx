@@ -10,7 +10,9 @@ import {activeDbTypeAtom} from "../../store/jt/databaseStore";
 import {useListTablesDetail, useProjectDBML} from "../../store/rq/reactQueryStore";
 import {dbAtom} from "../../store/jt/sqlStore";
 import toast from "react-hot-toast";
-
+import TerminalIcon from '@mui/icons-material/Terminal';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Box from "@mui/material/Box";
 export default function ActionMenu() {
 
     const [project] = useAtom(activeProjectAtom)
@@ -78,15 +80,16 @@ export default function ActionMenu() {
 
     return (
         <div>
-            <Button
+            <Box
+                className={'bg-slate-200 rounded-lg p-1'}
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                更多操作
-            </Button>
+                <MoreVertIcon/>
+            </Box>
 
             <Menu
                 id="basic-menu"
@@ -105,6 +108,8 @@ export default function ActionMenu() {
 
                 <MenuItem onClick={handleExportSql}>导出SQL</MenuItem>
             </Menu>
+
+
         </div>
     );
 }

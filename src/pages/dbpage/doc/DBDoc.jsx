@@ -20,7 +20,8 @@ import toast from "react-hot-toast";
 import {activeProjectAtom} from "../../../store/jt/projectStore";
 import {EditColumnDialog} from "./EditColumnDialog";
 import {EditIndexDialog} from "./EditIndexDialog";
-import {columnHeader, indexHeader} from "./tableHeader";
+import {columnHeader, indexHeader, testHeader} from "./tableHeader";
+import ZEditableTable from "../../../components/table/ZEditableTable";
 
 function DBDoc() {
     const queryClient = useQueryClient()
@@ -42,6 +43,8 @@ function DBDoc() {
     // memo
     const indexesMemo = useMemo(() => indexHeader, [])
     const columnsMemo = useMemo(() => columnHeader, [])
+    const testMemo = useMemo(() => testHeader, [])
+    const [testData, setTestData] = useState([])
 
     // query
     const tableQuery = useGetTable({tableId: activeTableId}, {
@@ -53,7 +56,11 @@ function DBDoc() {
     const projectQuery = useGetProjectDetail({projectId: activeProject.id})
 
     const tableColumnsQuery = useListColumn({tableId: activeTableId}, {
-        enabled: !!activeTableId
+        enabled: !!activeTableId,
+        onSuccess: res => {
+            console.log("行数据", res.data.data)
+            setTestData(res.data.data)
+        }
     })
 
     useListTableDetail({projectId: activeProject.id}, {
@@ -171,76 +178,84 @@ function DBDoc() {
             <div>
                 <div className={"text-base font-bold"}>字段</div>
                 <div className={"mt-3"}>
-                    <div className={"flex flex-row items-center gap-2"}>
-                        <Button size={"small"} variant={"contained"} onClick={() => {
-                            setColumnAddOpen(true)
-                        }}>
-                            新增
-                        </Button>
-                        <EditColumnDialog
-                            mode={1}
-                            closeDialog={() => {
-                                setColumnAddOpen(false)
-                            }}
-                            open={columnAddOpen}
-                            submitForm={(data, reset) => {
-                                columnAddMutation.mutate({
-                                    ...data,
-                                    tableId: activeTableId
-                                }, {
-                                    onSuccess: () => {
-                                        reset()
-                                    }
-                                })
-                            }}/>
-                        <Button size={"small"} variant={"contained"} onClick={() => {
-                            console.log("选择的记录", columnsSelectedState)
+                    {/*<div className={"flex flex-row items-center gap-2"}>*/}
+                    {/*    <Button size={"small"} variant={"contained"} onClick={() => {*/}
+                    {/*        setColumnAddOpen(true)*/}
+                    {/*    }}>*/}
+                    {/*        新增*/}
+                    {/*    </Button>*/}
+                    {/*    <EditColumnDialog*/}
+                    {/*        mode={1}*/}
+                    {/*        closeDialog={() => {*/}
+                    {/*            setColumnAddOpen(false)*/}
+                    {/*        }}*/}
+                    {/*        open={columnAddOpen}*/}
+                    {/*        submitForm={(data, reset) => {*/}
+                    {/*            columnAddMutation.mutate({*/}
+                    {/*                ...data,*/}
+                    {/*                tableId: activeTableId*/}
+                    {/*            }, {*/}
+                    {/*                onSuccess: () => {*/}
+                    {/*                    reset()*/}
+                    {/*                }*/}
+                    {/*            })*/}
+                    {/*        }}/>*/}
+                    {/*    <Button size={"small"} variant={"contained"} onClick={() => {*/}
+                    {/*        terminal.log("选择的记录", columnsSelectedState)*/}
 
-                            if (columnsSelectedState.length === 0) {
-                                toast.error("请至少选择一条记录", {position: 'top-center'})
-                                return;
-                            } else if (columnsSelectedState.length > 1) {
-                                toast.error("同时只能编辑一条记录", {position: 'top-center'})
-                                return;
-                            }
-                            setColumnEditOpen(true)
+                    {/*        if (columnsSelectedState.length === 0) {*/}
+                    {/*            toast.error("请至少选择一条记录", {position: 'top-center'})*/}
+                    {/*            return;*/}
+                    {/*        } else if (columnsSelectedState.length > 1) {*/}
+                    {/*            toast.error("同时只能编辑一条记录", {position: 'top-center'})*/}
+                    {/*            return;*/}
+                    {/*        }*/}
+                    {/*        setColumnEditOpen(true)*/}
 
-                        }}>
-                            编辑
-                        </Button>
-                        <EditColumnDialog
-                            mode={2}
-                            value={tableColumnsQuery.data.data.data.filter(it => it.id.toString() === columnsSelectedState[0])[0]}
-                            closeDialog={() => setColumnEditOpen(false)}
-                            open={columnEditOpen}
-                            submitForm={(data, reset) => {
-                                columnUpdateMutation.mutate({
-                                    ...data,
-                                    id: columnsSelectedState[0]
-                                }, {
-                                    onSuccess: () => {
-                                        reset()
-                                    }
-                                })
-                            }}/>
-                        <Button size={"small"} variant={"contained"} onClick={() => {
-                            setDeleteColumnOpen(true)
-                        }}>
-                            删除
-                        </Button>
-                        <AlertDialog open={deleteColumnOpen} handleClose={() => setDeleteColumnOpen(false)}
-                                     title={"是否确认删除当前选中的行？"}
-                                     msg={""}
-                                     confirm={() => {
-                                         columnsDeleteMutation.mutate({
-                                             columnIds: columnsSelectedState
-                                         })
-                                         setDeleteColumnOpen(false)
-                                     }}/>
-                    </div>
+                    {/*    }}>*/}
+                    {/*        编辑*/}
+                    {/*    </Button>*/}
+                    {/*    <EditColumnDialog*/}
+                    {/*        mode={2}*/}
+                    {/*        value={tableColumnsQuery.data.data.data.filter(it => it.id.toString() === columnsSelectedState[0])[0]}*/}
+                    {/*        closeDialog={() => setColumnEditOpen(false)}*/}
+                    {/*        open={columnEditOpen}*/}
+                    {/*        submitForm={(data, reset) => {*/}
+                    {/*            columnUpdateMutation.mutate({*/}
+                    {/*                ...data,*/}
+                    {/*                id: columnsSelectedState[0]*/}
+                    {/*            }, {*/}
+                    {/*                onSuccess: () => {*/}
+                    {/*                    reset()*/}
+                    {/*                }*/}
+                    {/*            })*/}
+                    {/*        }}/>*/}
+                    {/*    <Button size={"small"} variant={"contained"} onClick={() => {*/}
+                    {/*        setDeleteColumnOpen(true)*/}
+                    {/*    }}>*/}
+                    {/*        删除*/}
+                    {/*    </Button>*/}
+                    {/*    <AlertDialog open={deleteColumnOpen} handleClose={() => setDeleteColumnOpen(false)}*/}
+                    {/*                 title={"是否确认删除当前选中的行？"}*/}
+                    {/*                 msg={""}*/}
+                    {/*                 confirm={() => {*/}
+                    {/*                     columnsDeleteMutation.mutate({*/}
+                    {/*                         columnIds: columnsSelectedState*/}
+                    {/*                     })*/}
+                    {/*                     setDeleteColumnOpen(false)*/}
+                    {/*                 }}/>*/}
+                    {/*</div>*/}
                     <div>
-                        <ZTable data={tableColumnsQuery.data.data.data} columns={columnsMemo}
-                                getSelectedRows={it => handleColumnSelected(it)} canSelect={true}/>
+                        {/*<ZTable data={tableColumnsQuery.data.data.data} columns={columnsMemo}*/}
+                        {/*        getSelectedRows={it => handleColumnSelected(it)} canSelect={true}/>*/}
+
+                        <ZEditableTable
+                            data={[...testData, {tableId: activeTableId, name: "", note: ""}]}
+                            columns={testMemo}
+                            setData={(res) => {
+                            // terminal.log("结果是", res)
+                            setTestData(res)
+                        }}/>
 
                     </div>
                 </div>
@@ -298,6 +313,7 @@ function DBDoc() {
                     <div>
                         <ZTable data={tableIndexesQuery?.data?.data?.data} columns={indexesMemo}
                                 getSelectedRows={it => handleIndexSelected(it)} canSelect={true}/>
+
                     </div>
                 </div>
             </div>

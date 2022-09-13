@@ -10,7 +10,7 @@ export function handleLoginSuccess(data, setGlobalToken, setUser, navigate) {
             .then(r =>{
                 console.log("token是", r.data.data)
                 setUser(r.data.data)
-                navigate("/header/dashboard/myProject")
+                navigate("/terminal/dashboard/myProject")
                 return r
             })
             .catch(e => {

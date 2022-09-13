@@ -28,7 +28,7 @@ export default function SignUp() {
     return <div className={'w-96 '}>
         <div className={'font-bold text-left text-3xl'}>欢迎注册</div>
         <form onSubmit={handleSubmit(data => {
-            // console.log(data)
+            // terminal.log(data)
             signUpMutation.mutate(data)
         })}>
             <div className={'flex flex-col gap-4 mt-4'}>

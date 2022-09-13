@@ -88,7 +88,7 @@ export default function DefaultColumnTemplate(props) {
                         <Button
                             onClick={() => handleCloneColumns(it)}>克隆</Button>
                         <Button
-                            onClick={() => navigate(`/header/dashboard/defaultColumnTemplate/detail/${it.id}`)}>详情</Button>
+                            onClick={() => navigate(`/console/dashboard/defaultColumnTemplate/detail/${it.id}`)}>详情</Button>
                     </div>
                 </Card>))}
         </div>

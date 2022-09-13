@@ -25,8 +25,8 @@ import {activeProjectAtom} from "../../../store/jt/projectStore";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {format} from "sql-formatter";
-import {OptimizeDrawer} from "../console/DBConsole";
 import toast from "react-hot-toast";
+import {OptimizeDrawer} from "../terminal/OptimizeDrawer";
 
 
 export default function DBSql() {
@@ -50,7 +50,6 @@ export default function DBSql() {
 
 
     const queryClient = useQueryClient()
-
 
 
     const projectSqlsQuery = useListProjectSql(searchParam, {
@@ -219,18 +218,20 @@ export default function DBSql() {
                          handleClose={() => {
                              setOptimizeOpen(false)
                          }}
-                         dir={"right"} element={<OptimizeDrawer data={optimizeResult}/>}/>
+                         dir={"right"}
+                         element={<OptimizeDrawer data={optimizeResult}/>}/>
         <TemporaryDrawer open={drawerOpen} handleClose={() => handleDrawerClose()} element={<div>
 
         </div>}/>
 
         <div>
-            <SpeedDial onClick={() => {
-                setAddSqlOpen(true)
-            }}
-                       ariaLabel="SpeedDial basic example"
-                       sx={{position: 'absolute', bottom: 80, right: 80}}
-                       icon={<SpeedDialIcon/>}
+            <SpeedDial
+                onClick={() => {
+                    setAddSqlOpen(true)
+                }}
+                ariaLabel="SpeedDial basic example"
+                sx={{position: 'absolute', bottom: 80, right: 80}}
+                icon={<SpeedDialIcon/>}
             >
             </SpeedDial>
             <EditSqlDialog closeDialog={handleCloseAddSql} mode={1} open={addSqlOpen} submitForm={(data, reset) => {

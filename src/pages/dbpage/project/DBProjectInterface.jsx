@@ -15,7 +15,7 @@ export default function DBProjectInterface({projectId}) {
 
 
 
-    const projectQuery = useGetProjectDetail({projectId: projectId, dbType: 2}, {
+    const projectQuery = useGetProjectDetail({projectId: projectId}, {
         enabled: !!projectId
     })
 

@@ -93,7 +93,7 @@ export default function CodeSettings() {
                                         <Button size={"small"} onClick={() => handleClickClone(it)}>克隆</Button>
 
                                         <Button size={"small"}
-                                                onClick={() => navigate(`/header/dashboard/codeTemplateEdit/${it.id}`)}>点击进入</Button>
+                                                onClick={() => navigate(`/console/dashboard/codeTemplateEdit/${it.id}`)}>点击进入</Button>
                                     </div>
                                 </div>
                             </div>

@@ -26,6 +26,7 @@ function DBTablePanel({projectId}) {
             setDatabaseType(data.data.data.dbType)
         }
     })
+    console.log("项目吧", projectId)
     const tablesQuery = useListTables(searchParam, {
         enabled: !!projectId
     })

@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Outlet, useNavigate} from "react-router";
-import Button from "@mui/material/Button";
 import {useLocation, useParams} from "react-router-dom";
 import {
     useConnectIsLive,
@@ -26,7 +25,13 @@ import AlertDialog from "../components/dialog/AlertDialog";
 import LinkIcon from '@mui/icons-material/Link';
 import {LinkOff} from "@mui/icons-material";
 import {SiMysql, SiPostgresql, SiSqlite} from "react-icons/si";
-
+import TerminalIcon from "@mui/icons-material/Terminal";
+import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import TableViewIcon from '@mui/icons-material/TableView';
+import {activeMenuAtom} from "../store/jt/projectStore";
 
 const dbTypeSelectOptions = [{
     value: 0,
@@ -48,18 +53,23 @@ const dbTypeSelectOptions = [{
         </div>
 }];
 
+const projectUrl = "/console/project"
 
 function Header() {
 
     const {id: projectId} = useParams()
+    console.log("项目id是", projectId)
 
     const [sqliteDB] = useAtom(dbAtom)
 
     const [activeDbType, setActiveDbType] = useAtom(activeDbTypeAtom)
     const [selectDbType, setSelectDbType] = useState(dbTypeSelectOptions[0])
     const [syncDbAlert, setSyncDbAlert] = useState(false)
-
+    const [activeMenu, setActiveMenu] = useAtom(activeMenuAtom)
     const location = useLocation()
+
+
+    const isProjectPage = location.pathname.includes(projectUrl)
 
     const navigate = useNavigate()
 
@@ -74,7 +84,10 @@ function Header() {
 
     const userQuery = useGetUserInfo({})
 
-    const {data: tablesData, isLoading: isLoadingTables} = useListTables({projectId: projectId}, {
+    const {
+        data: tablesData,
+        isLoading: isLoadingTables
+    } = useListTables({projectId: projectId}, {
         enabled: !!projectId
     })
 
@@ -249,50 +262,56 @@ ${cols}
         return <div>加载中</div>
     }
 
+    if (!connectIsLiveQuery.isLoading) {
+        console.log("当前的状态是", connectIsLiveQuery.data.data.data)
+        console.log("selectedType", selectDbType)
+    }
+
     return (<div className="h-screen w-screen">
         <div className="h-20  flex-col flex w-full">
-            <div className={"h-16 grid grid-cols-[350px_1fr]  w-screen  border-b w-full"}>
+            <div className={"h-16 grid grid-cols-[280px_1fr]  w-screen  border-b w-full"}>
                 <div className={'flex  flex-row gap-2 items-center justify-between'}>
                     <div className={'text-2xl font-bold text-xl pl-5'} onClick={() => navigate("/index")}>
-                        SQLMate
+                        <ArrowBackIosNewIcon/>
                     </div>
-                    {location.pathname.includes("home")
-                        && <div className={'pr-6 flex flex-row items-center gap-2'}>
-                            <Select className={'text-sm'}
-                                    defaultValue={selectDbType}
-                                    value={selectDbType}
-                                    onChange={handleDbChange}
-                                    options={dbTypeSelectOptions}
-                            />
+                    {isProjectPage && <div className={'pr-6 flex flex-row items-center gap-2'}>
+                        <Select className={'text-sm'}
+                                defaultValue={selectDbType}
+                                value={selectDbType}
+                                onChange={handleDbChange}
+                                options={dbTypeSelectOptions}
+                        />
 
-                            {selectDbType > 0 ?
-                                <div>
-                                    {!connectIsLiveQuery.isLoading && connectIsLiveQuery.data.data.data ?
-                                        <LinkIcon
-                                            className={'text-2xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}
-                                        />
-                                        :
-                                        <LinkOff onClick={handleCreateConnect}
-                                                 className={'text-2xl text-gray-400 transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}/>
-                                    }
-                                </div>
-                                :
-                                <div title={"模拟库连接状态"}>
-                                    <LinkIcon
-                                        className={'text-2xl  text-blue-500 '}
-                                    />
-                                </div>}
-                            <div title={"同步远程模拟库"}>
-                                <SyncIcon
-                                    className={'text-3xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}
-                                    onClick={() => setSyncDbAlert(true)}/>
+                        {selectDbType.value > 0 ?
+                            <div>
+                                {!connectIsLiveQuery.isLoading &&
+                                    <div>
+                                        {connectIsLiveQuery.data.data.data ?
+                                            <div title={"同步远程模拟库"}>
+                                                <SyncIcon
+                                                    className={'text-2xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}
+                                                    onClick={() => setSyncDbAlert(true)}/>
+                                            </div>
+                                            :
+                                            <LinkOff onClick={handleCreateConnect}
+                                                     className={'text-2xl text-gray-400 transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300'}/>
+                                        }
+                                    </div>
+                                }
                             </div>
+                            :
+                            <div title={"模拟库连接状态"}>
+                                <LinkIcon
+                                    className={'text-2xl  text-blue-500 '}
+                                />
+                            </div>}
 
-                            <AlertDialog title={"和远端数据库同步"} open={syncDbAlert}
-                                         handleClose={() => setSyncDbAlert(false)}
-                                         confirm={handleSyncDatabase}
-                                         msg={"同步过程中将重建模拟库中的所有表结构，并删除数据"}/>
-                        </div>}
+
+                        <AlertDialog title={"和远端数据库同步"} open={syncDbAlert}
+                                     handleClose={() => setSyncDbAlert(false)}
+                                     confirm={handleSyncDatabase}
+                                     msg={"同步过程中将重建模拟库中的所有表结构，并删除数据"}/>
+                    </div>}
 
 
                 </div>
@@ -300,18 +319,56 @@ ${cols}
                 <div className={'flex flex-row justify-between items-center'}>
                     <div>
                         <div>
-                            {location.pathname.includes("home") && <ActionMenu/>}
+                            {isProjectPage && <ActionMenu/>}
                         </div>
                     </div>
-                    {location.pathname.includes("home") && <div className={'font-bold text-xl'}>
-                        {project?.data?.data?.name?.toUpperCase()}
+                    {isProjectPage && <div className={'font-bold text-xl items-center flex flex-row gap-10'}>
+                        <div
+                            className={`text-slate-500 ${activeMenu === 0 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
+                            onClick={() => {
+                                setActiveMenu(0)
+                                navigate(`/console/project/${projectId}/table`)
+                            }}>
+                            <TableViewIcon/>
+                        </div>
+                        <div
+                            className={`text-slate-500 ${activeMenu === 1 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
+                            onClick={() => {
+                                setActiveMenu(1)
+                                navigate(`/console/project/${projectId}/terminal`)
+                            }}>
+                            <TerminalIcon/>
+                        </div>
+                        <div
+                            className={`text-slate-500 ${activeMenu === 2 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
+                            onClick={() => {
+                            setActiveMenu(2)
+                            navigate(`/console/project/${projectId}/erd`)
+                        }}>
+                            <DeviceHubIcon/>
+                        </div>
+                        <div
+                            className={`text-slate-500 ${activeMenu === 3 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
+                            onClick={() => {
+                            setActiveMenu(3)
+                            navigate(`/console/project/${projectId}/snapshot`)
+
+                        }}>
+                            <EventNoteIcon/>
+                        </div>
+                        <div
+                            className={`text-slate-500 ${activeMenu === 4 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
+                            onClick={() => {
+                            setActiveMenu(4)
+                            navigate(`/console/project/${projectId}/sqlLib`);
+                        }}>
+                            <ClosedCaptionOffIcon/>
+                        </div>
                     </div>}
 
                     <div className={'flex flex-row  items-center justify-between'}>
 
                         <div className={"flex flex-row items-center pr-10  gap-5"}>
-                            <Button size={"small"} variant={"contained"}
-                                    onClick={() => navigate('/header/dashboard/myProject')}>控制台</Button>
                             <div>
                                 <Avatar onClick={handleProfileClick}
                                         className={`text-2xl ${colors[userQuery.data.data.data.username.length % 6]}`}>{userQuery.data.data.data.username.substring(0, 1)}</Avatar>

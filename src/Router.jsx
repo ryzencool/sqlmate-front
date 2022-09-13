@@ -19,7 +19,11 @@ import TeamDetail from "./pages/dashboard/team/TeamDetail";
 import DefaultColumnTemplate from "./pages/dashboard/defaultColumnTemplate/DefaultColumnTemplate";
 import DefaultColumnTemplateDetail from "./pages/dashboard/defaultColumnTemplate/DefaultColumnTemplateDetail";
 import TeamJoin from "./pages/dashboard/team/TeamJoin";
-
+import DBTable from "./pages/dbpage/table/DBTable"
+import DBTerminal from "./pages/dbpage/terminal/DBTerminal"
+import DBErd from "./pages/dbpage/er/DBErd"
+import DBSnapshot from "./pages/dbpage/snap/DBSnapshot"
+import DBSql from "./pages/dbpage/sql/DBSql";
 
 const CustomRouter = () => {
     return (
@@ -31,8 +35,16 @@ const CustomRouter = () => {
                 <Route path="signUp" element={<SignUp/>}/>
                 <Route path="signIn" element={<SignIn/>}/>
             </Route>
-            <Route path="/header" element={<Header/>}>
-                <Route path={"home/:id"} element={<DBMain/>}/>
+            <Route path="/console" element={<Header/>}>
+                <Route path={"project/:id"} element={<DBMain/>}>
+                    <Route path={"table"} element={<DBTable/>}/>
+                    <Route path={"terminal"} element={<DBTerminal/>}/>
+                    <Route path={"erd"} element={<DBErd/>}/>
+                    <Route path={"snapshot"} element={<DBSnapshot/>}/>
+                    <Route path={"sqlLib"} element={<DBSql/>}/>
+                </Route>
+
+
                 <Route path={"dashboard"} element={<Dashboard/>}>
                     <Route path={"favorite"} element={<FavoriteProject/>}/>
                     <Route path={"codeSettings"} element={<CodeSettings/>}/>

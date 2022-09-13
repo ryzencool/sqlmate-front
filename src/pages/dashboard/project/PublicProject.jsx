@@ -20,7 +20,7 @@ export default function PublicProject() {
 
     const handleClickEnterProject = (it) => {
         setProject(it)
-        navigate(`/header/home/${it.id}`)
+        navigate(`/console/project/${it.id}`)
     }
 
     const queryClient = useQueryClient()

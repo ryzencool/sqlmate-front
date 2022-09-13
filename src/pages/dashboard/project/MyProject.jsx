@@ -49,7 +49,7 @@ export default function MyProject() {
         setActiveTable(0)
         setProject(it)
         setDbType(it.dbType)
-        navigate(`/header/home/${it.id}`)
+        navigate(`/console/project/${it.id}`)
     }
     const handleCloseProjectSetting = () => {
         setProjectUpdateOpen(false)

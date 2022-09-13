@@ -23,7 +23,7 @@ export default function TeamJoin() {
         }, {
             onSuccess: res => {
 
-                navigate(`/header/dashboard/teamDetail/${res.data.data}`)
+                navigate(`/console/dashboard/teamDetail/${res.data.data}`)
             }
         })
     }
