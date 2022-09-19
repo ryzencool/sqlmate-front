@@ -32,7 +32,8 @@ import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import TableViewIcon from '@mui/icons-material/TableView';
 import {activeMenuAtom} from "../store/jt/projectStore";
-
+import ApiIcon from '@mui/icons-material/Api';
+import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
 const dbTypeSelectOptions = [{
     value: 0,
     label:
@@ -362,11 +363,19 @@ ${cols}
                             setActiveMenu(4)
                             navigate(`/console/project/${projectId}/sqlLib`);
                         }}>
-                            <ClosedCaptionOffIcon/>
+                            <TurnedInNotIcon/>
+                        </div>
+                        <div
+                            className={`text-slate-500 ${activeMenu === 5 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
+                            onClick={() => {
+                                setActiveMenu(5)
+                                navigate(`/console/project/${projectId}/api`);
+                            }}>
+                            <ApiIcon/>
                         </div>
                     </div>}
 
-                    <div className={'flex flex-row  items-center justify-between'}>
+                    <div className={'flex flex-row items-center justify-between'}>
 
                         <div className={"flex flex-row items-center pr-10  gap-5"}>
                             <div>

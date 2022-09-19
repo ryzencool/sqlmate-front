@@ -24,6 +24,7 @@ import DBTerminal from "./pages/dbpage/terminal/DBTerminal"
 import DBErd from "./pages/dbpage/er/DBErd"
 import DBSnapshot from "./pages/dbpage/snap/DBSnapshot"
 import DBSql from "./pages/dbpage/sql/DBSql";
+import DBApi from "./pages/dbpage/api/DBApi";
 
 const CustomRouter = () => {
     return (
@@ -42,6 +43,7 @@ const CustomRouter = () => {
                     <Route path={"erd"} element={<DBErd/>}/>
                     <Route path={"snapshot"} element={<DBSnapshot/>}/>
                     <Route path={"sqlLib"} element={<DBSql/>}/>
+                    <Route path={"api"} element={<DBApi/>}/>
                 </Route>
 
 

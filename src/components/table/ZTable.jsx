@@ -39,13 +39,13 @@ export default function ZTable({data, columns, getSelectedRows, canSelect}) {
 
 
     return (
-        <div>
-            <table className={"w-full mt-2"}>
+        <div className={"overflow-x-auto"}>
+            <table className={"w-full table table-compact"}>
                 <thead>
                 {table.getHeaderGroups().map(group => (
-                    <tr key={group.id} className={"border-b-2 border-neutral-100 "}>
+                    <tr key={group.id} >
                         {group.headers.map(header => (
-                            <th key={header.id} className={"text-left p-2 text-sm font-normal font-bold"}>
+                            <th key={header.id} >
                                 {header.isPlaceholder ? null : flexRender(
                                     header.column.columnDef.header,
                                     header.getContext()
@@ -57,9 +57,9 @@ export default function ZTable({data, columns, getSelectedRows, canSelect}) {
                 </thead>
                 <tbody>
                 {table.getRowModel().rows.map(row => {
-                    return <tr key={row.id} className={"border-b-2 border-neutral-100 text-sm"}>
+                    return <tr key={row.id} >
                         {row.getVisibleCells().map(cell => (
-                            <td key={cell.id} className={"text-left p-2 "}>
+                            <td key={cell.id} >
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </td>
                         ))}

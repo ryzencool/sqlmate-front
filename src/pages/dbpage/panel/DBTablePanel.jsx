@@ -2,9 +2,8 @@ import React, {useState} from "react";
 import {activeTableAtom} from "../../../store/jt/tableListStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createTable} from "../../../api/dbApi";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import {List, ListItem, ListItemButton, ListItemText, TextField} from "@mui/material";
+import {List, ListItem, ListItemButton, ListItemText} from "@mui/material";
 import {useGetProject, useListTables} from "../../../store/rq/reactQueryStore";
 import {useAtom} from "jotai";
 import {activeDbTypeAtom} from "../../../store/jt/databaseStore";
@@ -57,41 +56,46 @@ function DBTablePanel({projectId}) {
         setTableMenuAnchorEl(null)
     }
 
-    if (tablesQuery.isLoading || projectQuery.isLoading) {
+    const isLoading = tablesQuery.isLoading || projectQuery.isLoading;
+
+    if (isLoading) {
         return <div>加载中</div>
     }
-
 
     return (
         <div>
             <div className="flex flex-col items-center h-20 w-full gap-2 ">
                 <div className={"relative flex flex-row items-center justify-between w-10/12"}>
                     <div className={'w-full flex flex-row justify-between'}>
-                        <TextField size={"small"} className={"w-full"} label={"搜索"} onChange={(e) => {
+                        <input type="text"
+                               placeholder="搜索"
+                               className="input input-bordered w-full max-w-xs" onChange={(e) => {
                             setSearchParam({
-                                tableName: e.target.value
+                                tableName: e.target.value,
+                                projectId: projectId
                             })
                         }}/>
                     </div>
                 </div>
                 <div className={"flex flex-row gap-2 justify-between w-10/12 mt-1"}>
-                    <Button className={"p-2 bg-black text-white w-full tracking-widest rounded-lg"} onClick={() => {
+
+                    <button className="btn btn-active w-full tracking-widest" onClick={() => {
                         setTableCreateOpen(true)
-                    }}>
-                        创建表
-                    </Button>
-                    <TableCreateDialog
-                        value={{defaultColumnTemplateId: projectQuery.data.data.data.defaultColumnTemplateId}}
-                        closeDialog={() => setTableCreateOpen(false)}
-                        open={tableCreateOpen}
-                        submitForm={submitCreateTableForm}/>
+                    }}>创建表
+                    </button>
+                        <TableCreateDialog
+                            value={{defaultColumnTemplateId: projectQuery.data.data.data.defaultColumnTemplateId}}
+                            closeDialog={() => setTableCreateOpen(false)}
+                            open={tableCreateOpen}
+                            submitForm={submitCreateTableForm}/>
+
                 </div>
 
             </div>
-            <Box className={"w-full flex flex-col  items-center text-sm "}>
-                <List className={"w-10/12 overflow-auto mt-4 h-[calc(100vh-11rem)]"}>
+            <div className={"w-full flex flex-col  items-center text-sm h-[calc(100vh-11rem)] mt-8"}>
+                <List className={"w-10/12 overflow-auto  "}>
 
-                    {tablesQuery.data.data.data.map(it => (
+                    { tablesQuery.data.data.data.map(it => (
                         <ListItem key={it.id} disablePadding>
                             {
                                 <ListItemButton
@@ -100,16 +104,14 @@ function DBTablePanel({projectId}) {
                                         setActiveTable(it.id)
                                     }}>
                                     <ListItemText primary={it.name}/>
-                                    <div
+                                    <button
                                         onClick={(event) => {
                                             event.stopPropagation()
-
                                             setTableMenuAnchorEl(event.currentTarget)
-
                                         }}
-                                        className={'bg-sky-200 p-2 rounded-lg transition delay-150 duration-300 ease-in-out'}>
+                                        className={'btn btn-sm'}>
                                         <FiMoreVertical/>
-                                    </div>
+                                    </button>
                                     <TableMenus
                                         tableId={it.id}
                                         open={tableMenuOpen}
@@ -121,7 +123,7 @@ function DBTablePanel({projectId}) {
                         </ListItem>))
                     }
                 </List>
-            </Box>
+            </div>
         </div>
     );
 }

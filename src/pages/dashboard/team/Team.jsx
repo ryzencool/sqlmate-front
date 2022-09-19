@@ -3,19 +3,7 @@ import {useListTeam, useListTeamUser} from "../../../store/rq/reactQueryStore";
 import Button from "@mui/material/Button";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createTeam} from "../../../api/dbApi";
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary, Card, Chip,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField
-} from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-import Typography from "@mui/material/Typography";
+import {Card} from "@mui/material";
 import {useNavigate} from "react-router";
 import {colors} from "../project/ProjectCard";
 
@@ -39,8 +27,8 @@ export default function Team() {
         <div className={'flex flex-row gap-10 '}>
             {!teams.isLoading && teams.data.data.data.map(it => (
 
-                <Card className={"w-52 h-72 rounded-xl"} key={it.id} >
-                    <div className={`h-1/2 ${colors[it.name.length % 6]}`} >
+                <Card className={"w-52 h-72 rounded-xl"} key={it.id}>
+                    <div className={`h-1/2 ${colors[it.name.length % 6]}`}>
                     </div>
                     <div className={"p-3 flex-col flex justify-between h-1/2"}>
                         <div className={" font-bold text-xl"}>

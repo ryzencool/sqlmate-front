@@ -48,22 +48,7 @@ export default function Dashboard() {
                             </Link>
                         ))
                     }
-
-                    {/*<Link*/}
-                    {/*    underline="hover"*/}
-                    {/*    color="inherit"*/}
-                    {/*    href="/material-ui/getting-started/installation/"*/}
-                    {/*>*/}
-                    {/*    Core*/}
-                    {/*</Link>*/}
-                    {/*<Link*/}
-                    {/*    underline="hover"*/}
-                    {/*    color="text.primary"*/}
-                    {/*    href="/material-ui/react-breadcrumbs/"*/}
-                    {/*    aria-current="page"*/}
-                    {/*>*/}
-                    {/*    Breadcrumbs*/}
-                    {/*</Link>*/}
+                    
                 </Breadcrumbs>
             </div>
             <div className={'mt-6 overflow-auto h-[calc(100vh-9.5rem)]  pl-2'}>
