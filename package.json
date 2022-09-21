@@ -70,13 +70,16 @@
     "postcss": "^8.4.14",
     "react-dev-inspector": "^1.8.1",
     "react-router-dom": "^6.3.0",
-    "tailwindcss": "^3.1.6"
+    "tailwindcss": "^3.1.6",
+    "ts-migrate": "^0.1.33",
+    "typescript": "^4.8.3"
   },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
     "test": "craco test --env=jsdom",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "ts-migrate": "ts-migrate"
   },
   "browserslist": {
     "production": [
