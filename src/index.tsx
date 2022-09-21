@@ -6,6 +6,8 @@ import {BrowserRouter} from "react-router-dom";
 import { Provider} from 'jotai'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Inspector, InspectParams } from 'react-dev-inspector'
+import { ChakraProvider } from '@chakra-ui/react'
+import { theme } from './styles/theme';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const isDev = process.env.NODE_ENV === 'development'
@@ -22,10 +24,12 @@ root.render(
     //  }}
     />}
       <Provider>
+        <ChakraProvider theme={theme}>
           <BrowserRouter>
-    <App />
+            <App />
 
           </BrowserRouter>
+          </ChakraProvider>
       </Provider>
 
   </React.StrictMode>

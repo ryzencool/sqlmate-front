@@ -88,6 +88,7 @@ export default function DBTerminal() {
                     console.log("接收到数据:", _.keys(data[0]))
 
                     setResultHeader(_.keys(data[0]).map(it => {
+                           // @ts-ignore
                         return columnHelper.accessor(it, {
                             header: () => it,
                             cell: info => info.getValue()
@@ -196,6 +197,7 @@ export default function DBTerminal() {
 
                             if (!!res && res.length() > 0) {
                                 setResultHeader(_.keys(res[0]).map(it => {
+                                    // @ts-ignore
                                     return columnHelper.accessor(it, {
                                         header: () => it,
                                         cell: info => info.getValue()
