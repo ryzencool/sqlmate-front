@@ -77,29 +77,31 @@ export const kinds = [{
         value: "LCH颜色"
     }, {key: "rgb", value: "RGB颜色"}, {key: "space", value: "颜色空间名称"},
 
-        {key: "commerce", value:"商业中心", cates: [{ key: "color" , value: "可读颜色"},
-                { key: "department" , value: "店铺"},
-                { key: "price" , value: "价格"},
-                { key: "product" , value: "产品"},
-                { key: "productAdjective" , value: "产品形容词"},
-                { key: "productDescription" , value: "产品介绍"},
-                { key: "productMaterial" , value: "产品材料"},
-                { key: "productName" , value: "产品名称"},]}
+        {
+            key: "commerce", value: "商业中心", cates: [{key: "color", value: "可读颜色"},
+                {key: "department", value: "店铺"},
+                {key: "price", value: "价格"},
+                {key: "product", value: "产品"},
+                {key: "productAdjective", value: "产品形容词"},
+                {key: "productDescription", value: "产品介绍"},
+                {key: "productMaterial", value: "产品材料"},
+                {key: "productName", value: "产品名称"},]
+        }
     ]
 }, {
     key: "company", value: "公司", cates: [
-        { key: "bs", value: "bs 短语"},
-        { key: "bsAdjective", value: "bs形容词"},
-        { key: "bsBuzz", value: ""},
-        { key: "bsNoun", value: ""},
-        { key: "catchPhrase", value: ""},
-        { key: "catchPhraseAdjective", value: ""},
-        { key: "catchPhraseDescriptor", value: ""},
-        { key: "catchPhraseNoun", value: ""},
-        { key: "companyName", value: ""},
-        { key: "companySuffix", value: ""},
-        { key: "name", value: ""},
-        { key: "suffixes", value: ""},
+        {key: "bs", value: "bs 短语"},
+        {key: "bsAdjective", value: "bs形容词"},
+        {key: "bsBuzz", value: ""},
+        {key: "bsNoun", value: ""},
+        {key: "catchPhrase", value: ""},
+        {key: "catchPhraseAdjective", value: ""},
+        {key: "catchPhraseDescriptor", value: ""},
+        {key: "catchPhraseNoun", value: ""},
+        {key: "companyName", value: ""},
+        {key: "companySuffix", value: ""},
+        {key: "name", value: ""},
+        {key: "suffixes", value: ""},
 
     ]
 }]

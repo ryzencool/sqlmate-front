@@ -62,7 +62,7 @@ export default function DBCode() {
     let dbmlObj;
     try {
         dbmlObj = Parser.parse(dbmlQuery.data.data.data, 'dbml')
-    }catch (e) {
+    } catch (e) {
         return <div>无字段</div>
     }
 

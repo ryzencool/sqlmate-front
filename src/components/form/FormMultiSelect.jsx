@@ -24,39 +24,39 @@ export default function FormMultiSelect({control, name, label, choices}) {
         render={({field: {onChange, value, onBlur, ...otherOptions}}) => {
             console.log(value);
             return (
-                <FormControl size={'small'} variant="standard" sx={{width: "100% ", marginTop: "10px" }}>
+                <FormControl size={'small'} variant="standard" sx={{width: "100% ", marginTop: "10px"}}>
                     <InputLabel id="demo-simple-select-standard-label">{label}</InputLabel>
 
                     <Select variant={"standard"}
-                        style={{width: "100%"}}
-                        multiple
-                        value={value === undefined ? [] : value}
+                            style={{width: "100%"}}
+                            multiple
+                            value={value === undefined ? [] : value}
 
-                        onClose={(event) => {
-                            onBlur(event);
-                            setOpen(false);
-                        }}
-                        onChange={onChange}
-                        onOpen={() => setOpen(true)}
-                        open={isOpen}
-                        displayEmpty={true}
-                        MenuProps={MenuProps}
+                            onClose={(event) => {
+                                onBlur(event);
+                                setOpen(false);
+                            }}
+                            onChange={onChange}
+                            onOpen={() => setOpen(true)}
+                            open={isOpen}
+                            displayEmpty={true}
+                            MenuProps={MenuProps}
 
-                        renderValue={(selected) => {
-                            console.log("表达", selected)
-                            console.log(selected?.map((option) => option.value).join(", "))
-                            return (
-                                selected === undefined ? "":  choices.filter(it => selected.includes(it.key)).map(it => it.value).join(", ")
-                            );
-                        }}
-                        {...otherOptions}
-                >
-                    {choices.map((option) => (
-                        <MenuItem key={option.key} value={option.key}>
-                            <ListItemText primary={option.value}/>
-                        </MenuItem>
-                    ))}
-                </Select>
+                            renderValue={(selected) => {
+                                console.log("表达", selected)
+                                console.log(selected?.map((option) => option.value).join(", "))
+                                return (
+                                    selected === undefined ? "" : choices.filter(it => selected.includes(it.key)).map(it => it.value).join(", ")
+                                );
+                            }}
+                            {...otherOptions}
+                    >
+                        {choices.map((option) => (
+                            <MenuItem key={option.key} value={option.key}>
+                                <ListItemText primary={option.value}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
                 </FormControl>
             );
         }}

@@ -1,18 +1,15 @@
-import Button from "@mui/material/Button";
 import React, {useRef} from 'react'
 import {Menu, MenuItem} from "@mui/material";
 import {exporter, importer} from "@dbml/core";
 import {useAtom} from "jotai";
 import {activeProjectAtom} from "../../store/jt/projectStore";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {importProjectDbml, syncDatabase} from "../../api/dbApi";
+import {importProjectDbml} from "../../api/dbApi";
 import {activeDbTypeAtom} from "../../store/jt/databaseStore";
-import {useListTablesDetail, useProjectDBML} from "../../store/rq/reactQueryStore";
-import {dbAtom} from "../../store/jt/sqlStore";
-import toast from "react-hot-toast";
-import TerminalIcon from '@mui/icons-material/Terminal';
+import {useProjectDBML} from "../../store/rq/reactQueryStore";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Box from "@mui/material/Box";
+
 export default function ActionMenu() {
 
     const [project] = useAtom(activeProjectAtom)
@@ -37,10 +34,10 @@ export default function ActionMenu() {
             let dbType;
             if (activeDbType === 1) {
                 dbType = 'mysql'
-            } else if (activeDbType === 2){
+            } else if (activeDbType === 2) {
                 dbType = 'postgres'
             } else if (activeDbType === 3) {
-                dbType ='mssql'
+                dbType = 'mssql'
             }
 
             let dbml = importer.import(text.toString(), dbType)

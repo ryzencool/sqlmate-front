@@ -6,11 +6,11 @@ import FormFaker from "../../../components/form/FormFaker";
 import FormCheckBox from "../../../components/form/FormCheckBox";
 import FormSelect from "../../../components/form/FormSelect";
 import FormTableAndColumnSelectBox from "../../../components/form/FormTableAndColumnSelectBox";
-import React,{useEffect} from "react";
+import React, {useEffect} from "react";
 
 export const EditColumnDialog = ({
-                              value, open, closeDialog, submitForm, resetValue
-                          }) => {
+                                     value, open, closeDialog, submitForm, resetValue
+                                 }) => {
 
     const {handleSubmit, control, watch, reset, getValues} = useForm({
         defaultValues: value

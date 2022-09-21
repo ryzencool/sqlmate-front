@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {API_HOST} from "../SystemConfig";
-import toast from "react-hot-toast";
 import {currentTime} from "./dateUtil";
 
 const onSuccess = resp => {
@@ -14,7 +13,7 @@ const onError = error => {
 }
 
 
-export  function  get(url, params = {}) {
+export function get(url, params = {}) {
 
     let value = "";
     let ps = Object.entries(params).map(it => {

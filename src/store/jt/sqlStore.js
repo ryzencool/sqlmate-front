@@ -1,9 +1,7 @@
-import create from "zustand";
-import {atom, useAtom} from "jotai";
-
+import {atom} from "jotai";
 
 
 export const dbAtom = atom({})
 
 
-export const dbTypeAtom  = atom(1)
+export const dbTypeAtom = atom(1)

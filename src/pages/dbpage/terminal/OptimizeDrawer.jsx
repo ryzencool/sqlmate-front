@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import {CodeResult} from "../../../components/drawer/TemporaryDrawer";
 import React from "react";
 
-export  function OptimizeDrawer({data}) {
+export function OptimizeDrawer({data}) {
 
     if (data === null) {
         return <Box>加载中</Box>
@@ -96,19 +96,19 @@ export  function OptimizeDrawer({data}) {
                         borderRightColor: "grey"
                     }}>
                         {
-                            !!explain.explainTable  && explain.explainTable.map(it =>
+                            !!explain.explainTable && explain.explainTable.map(it =>
                                 <Box sx={{display: "flex", flexDirection: "row", gap: "10px"}}>
                                     <Box sx={{width: "110px"}}>{it.key}</Box>
                                     <Box sx={{width: "100px"}}>{it.value}</Box>
                                 </Box>)
                         }
                     </Box>
-                    <Box sx={{paddingLeft: '15px' , display: 'flex', flexDirection: "column", gap: '20px'}}>
+                    <Box sx={{paddingLeft: '15px', display: 'flex', flexDirection: "column", gap: '20px'}}>
                         <Box>
                             <Box sx={{fontWeight: "bold"}}>
                                 查询类型
                             </Box>
-                            <Box>{explain.selectType === null ? '无': explain.selectType.value}</Box>
+                            <Box>{explain.selectType === null ? '无' : explain.selectType.value}</Box>
                         </Box>
                         <Box>
                             <Box sx={{fontWeight: "bold"}}>

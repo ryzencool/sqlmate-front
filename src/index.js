@@ -3,18 +3,17 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import {BrowserRouter} from "react-router-dom";
-import { Provider} from 'jotai'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import {Provider} from 'jotai'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <Provider>
-          <BrowserRouter>
-    <App />
+    <React.StrictMode>
+        <Provider>
+            <BrowserRouter>
+                <App/>
 
-          </BrowserRouter>
-      </Provider>
-  </React.StrictMode>
+            </BrowserRouter>
+        </Provider>
+    </React.StrictMode>
 );
 

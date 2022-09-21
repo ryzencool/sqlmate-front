@@ -70,7 +70,7 @@ const cleanTableUrl = "/database/cleanTable"
 
 const joinTeamUrl = "/team/join"
 
-export function joinTeam (params) {
+export function joinTeam(params) {
     return post(joinTeamUrl, params)
 }
 
@@ -101,6 +101,7 @@ export function syncConsole(params) {
 export function getConsole(params) {
     return get(getConsoleUrl, params)
 }
+
 export function syncDatabase(params) {
     return post(syncDatabaseUrl, params)
 }

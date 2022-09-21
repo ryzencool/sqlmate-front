@@ -1,18 +1,14 @@
-import {useGetProjectDetail, useListTableDetail, useListTableRel, useListTables} from "../../../store/rq/reactQueryStore";
+import {useGetProjectDetail, useListTables} from "../../../store/rq/reactQueryStore";
 import {createColumnHelper} from "@tanstack/react-table";
 import {Card} from "@mui/material";
 import ZTable from "../../../components/table/ZTable";
 import React from 'react';
 import {GiSwordSpin} from "react-icons/gi";
 import {IoLogoTableau} from "react-icons/io5";
-import {MdOutlineTableChart} from "react-icons/md";
 import {AiOutlineConsoleSql} from "react-icons/ai";
 import {BsTable} from "react-icons/bs";
-import {useAtom} from "jotai";
-import {projectTableDetailsAtom, projectTableRelationsAtom} from "../../../store/jt/tableListStore";
 
 export default function DBProjectInterface({projectId}) {
-
 
 
     const projectQuery = useGetProjectDetail({projectId: projectId}, {
@@ -22,7 +18,6 @@ export default function DBProjectInterface({projectId}) {
     const tablesQuery = useListTables({projectId: projectId}, {
         enabled: !!projectId
     })
-
 
 
     const columnHelper = createColumnHelper();
@@ -116,12 +111,12 @@ export default function DBProjectInterface({projectId}) {
                 </Card>
                 <Card className={'w-44 h-24 flex flex-row items-center justify-around bg-blue-100'}>
                     <div className={'flex flex-col gap-2 pl-2'}>
-                    <div className={' font-bold text-slate-500'}>
-                        SQL
-                    </div>
-                    <div className={' font-bold text-3xl '}>
-                        {projectData.sqlCount}
-                    </div>
+                        <div className={' font-bold text-slate-500'}>
+                            SQL
+                        </div>
+                        <div className={' font-bold text-3xl '}>
+                            {projectData.sqlCount}
+                        </div>
                     </div>
                     <div className={'p-2'}>
                         <AiOutlineConsoleSql className={' text-4xl  text-slate-500'}/>

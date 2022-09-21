@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import {Card, Chip} from "@mui/material";
 import {useListFavoriteProject} from "../../../store/rq/reactQueryStore";
 import {useNavigate} from "react-router";
 import Button from "@mui/material/Button";
@@ -37,7 +36,6 @@ export default function FavoriteProject() {
                                 <Button onClick={() => handleClickEnterProject(it)}>进入项目</Button>
                             </div>
                         }/>
-
                 )
             }
 

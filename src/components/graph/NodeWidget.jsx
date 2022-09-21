@@ -16,7 +16,7 @@ class NodeAbstractWidget extends React.Component {
 
 
         return (
-            <div >
+            <div>
                 {this.props.node.content.map(it => {
                     return <div className={"flex flex-row items-center justify-center relative"}>
                         <PortWidget
@@ -28,7 +28,7 @@ class NodeAbstractWidget extends React.Component {
                         </PortWidget>
                         <div className={'flex flex-row justify-between gap-4 w-full pl-4 pr-4'}>
                             <div>
-                            {it.name}
+                                {it.name}
                             </div>
                             <div>
                                 {it.type}
@@ -49,8 +49,6 @@ class NodeAbstractWidget extends React.Component {
         );
     }
 }
-
-
 
 
 export class NodeWidget extends React.Component {

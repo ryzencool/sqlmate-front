@@ -6,9 +6,7 @@ findUnqiue("user", {
         table: {
             name: 'posts',
             on: ['id', 'id'],
-            select: {
-
-            },
+            select: {},
             include: {}
         }
     }

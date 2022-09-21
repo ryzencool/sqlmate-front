@@ -23,7 +23,7 @@ export default function Dashboard() {
 
                     {
                         menuItems.map((item, index) => (
-                            <Link key={index} underline="hover" color="inherit" >
+                            <Link key={index} underline="hover" color="inherit">
                                 {
                                     item === "dashboard" && "控制台"
                                 }

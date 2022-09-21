@@ -7,7 +7,7 @@ export function handleLoginSuccess(data, setGlobalToken, setUser, navigate) {
             token: data.data.data.token
         }))
         getUserInfo({})
-            .then(r =>{
+            .then(r => {
                 console.log("token是", r.data.data)
                 setUser(r.data.data)
                 navigate("/terminal/dashboard/myProject")
@@ -21,12 +21,11 @@ export function handleLoginSuccess(data, setGlobalToken, setUser, navigate) {
         toast.error("当前手机用户已被注册")
     } else if (data.data.code === "000002") {
         toast.error("用户不存在")
-    } else  if (data.data.code === "000004") {
+    } else if (data.data.code === "000004") {
         toast.error("密码错误，请重试")
     } else {
         toast.error("注册失败，请联系客服")
     }
-
 
 
 }

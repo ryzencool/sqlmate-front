@@ -70,7 +70,6 @@ export default function CodeSettings() {
     }
 
 
-
     return <div>
         <div className={"flex flex-row gap-10"}>
             {
@@ -185,7 +184,7 @@ function CloneDialog({value, open, closeDialog, submitForm, title}) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeDialog}>取消</Button>
-                <Button type={"submit"} >确定</Button>
+                <Button type={"submit"}>确定</Button>
             </DialogActions>
         </form>
     </Dialog>;

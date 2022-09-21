@@ -2,7 +2,7 @@ import React from 'react'
 import {Link} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
-import {getUserInfo, signUpUser} from "../../api/dbApi";
+import {signUpUser} from "../../api/dbApi";
 import {useNavigate} from "react-router";
 import {useAtom} from "jotai";
 import {tokenAtomWithPersistence} from "../../store/jt/tokenLocalStore";
@@ -11,7 +11,7 @@ import {handleLoginSuccess} from "../../utils/auth";
 
 export default function SignUp() {
 
-    const {register, handleSubmit, watch,formState: {errors}} = useForm()
+    const {register, handleSubmit, watch, formState: {errors}} = useForm()
 
 
     const [globalToken, setGlobalToken] = useAtom(tokenAtomWithPersistence)
@@ -43,12 +43,12 @@ export default function SignUp() {
                         }
                         className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                     <div className={'text-red-300 pt-2 pl-2'}>
-                    {
-                        errors?.username?.type === "required" && "用户名不能为空"
-                    }
-                    {
-                        errors?.username?.type === "minLength" && "用户名长度需要超过1"
-                    }
+                        {
+                            errors?.username?.type === "required" && "用户名不能为空"
+                        }
+                        {
+                            errors?.username?.type === "minLength" && "用户名长度需要超过1"
+                        }
                     </div>
                 </div>
                 <div>
@@ -73,13 +73,13 @@ export default function SignUp() {
                 <div>
                     <div className={'block font-semibold text-sm text-gray-700'}>密码</div>
                     <input type={"password"}
-                        {
-                            ...register("password", {
-                                required: true,
-                                minLength: 8
-                            })
-                        }
-                        className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
+                           {
+                               ...register("password", {
+                                   required: true,
+                                   minLength: 8
+                               })
+                           }
+                           className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                     <div className={'text-red-300 pt-2 pl-2'}>
                         {
                             errors?.password?.type === "required" && "密码不能为空"
@@ -92,13 +92,13 @@ export default function SignUp() {
                 <div>
                     <div className={'block font-semibold text-sm text-gray-700'}>确认密码</div>
                     <input type={"password"}
-                        {...register("confirmPassword", {
-                            required: true,
-                            validate: data => {
-                                console.log("data校验", data)
-                                return data === watch('password')
-                            }
-                        })}
+                           {...register("confirmPassword", {
+                               required: true,
+                               validate: data => {
+                                   console.log("data校验", data)
+                                   return data === watch('password')
+                               }
+                           })}
                            className={'border-gray-300 rounded-md border-2 mt-1 block w-96 h-11 mt-2 p-2'}/>
                     <div className={'text-red-300 pt-2 pl-2'}>
                         {

@@ -343,26 +343,26 @@ ${cols}
                         <div
                             className={`text-slate-500 ${activeMenu === 2 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
                             onClick={() => {
-                            setActiveMenu(2)
-                            navigate(`/console/project/${projectId}/erd`)
-                        }}>
+                                setActiveMenu(2)
+                                navigate(`/console/project/${projectId}/erd`)
+                            }}>
                             <DeviceHubIcon/>
                         </div>
                         <div
                             className={`text-slate-500 ${activeMenu === 3 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
                             onClick={() => {
-                            setActiveMenu(3)
-                            navigate(`/console/project/${projectId}/snapshot`)
+                                setActiveMenu(3)
+                                navigate(`/console/project/${projectId}/snapshot`)
 
-                        }}>
+                            }}>
                             <EventNoteIcon/>
                         </div>
                         <div
                             className={`text-slate-500 ${activeMenu === 4 && 'text-black font-bold bg-slate-200 pt-1 pb-1 pl-3 pr-3 rounded-lg'}`}
                             onClick={() => {
-                            setActiveMenu(4)
-                            navigate(`/console/project/${projectId}/sqlLib`);
-                        }}>
+                                setActiveMenu(4)
+                                navigate(`/console/project/${projectId}/sqlLib`);
+                            }}>
                             <TurnedInNotIcon/>
                         </div>
                         <div

@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 
 export function ZTabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {children, value, index, ...other} = props;
 
     return (
         <div
@@ -14,7 +14,7 @@ export function ZTabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
+                <Box sx={{p: 3}}>
                     <Typography>{children}</Typography>
                 </Box>
             )}

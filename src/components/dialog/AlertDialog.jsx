@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 
-export default function AlertDialog({open, handleClose, title, msg, confirm  }) {
+export default function AlertDialog({open, handleClose, title, msg, confirm}) {
 
     return <Dialog
         open={open}

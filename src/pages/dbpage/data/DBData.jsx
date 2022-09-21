@@ -315,7 +315,9 @@ export default function DBData() {
                                  </Box>}/>
 
             <Button size={"small"} variant={"contained"} onClick={handleClickSyncDatabase}>同步到数据库</Button>
-            <Button size={"small"} variant={"contained"} onClick={() => {setCleanTableOpen(true)}}>清空数据库</Button>
+            <Button size={"small"} variant={"contained"} onClick={() => {
+                setCleanTableOpen(true)
+            }}>清空数据库</Button>
             <AlertDialog open={cleanTableOpen} handleClose={() => {
                 setCleanTableOpen(false)
             }} confirm={() => handleClickClearDatabase()} title={"清空模拟表"} msg={"确定清空当前的模拟表?"}/>

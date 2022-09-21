@@ -4,8 +4,8 @@ import initSqlJs from "sql.js";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import {useAtom} from "jotai";
 import {dbAtom} from "./store/jt/sqlStore";
-import { Toaster} from "react-hot-toast";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import {Toaster} from "react-hot-toast";
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 
 
@@ -24,7 +24,7 @@ function App() {
 
     const [db, setDb] = useAtom(dbAtom)
     const [error, setError] = useState(null);
-    useEffect( () => {
+    useEffect(() => {
         try {
             initSqlJs({locateFile: () => sqlWasm})
                 .then((SQL) => {
@@ -43,7 +43,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <Toaster/>
             <CustomRouter/>
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
     );
 }

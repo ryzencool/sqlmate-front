@@ -5,7 +5,7 @@ import {Tab, Tabs} from "@mui/material";
 import DBDmlDetail from "./DBDmlDetail";
 
 function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {children, value, index, ...other} = props;
 
     return (
         <div
@@ -16,7 +16,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
+                <Box sx={{p: 3}}>
                     <Typography>{children}</Typography>
                 </Box>
             )}
@@ -32,7 +32,6 @@ function a11yProps(index) {
 }
 
 
-
 export default function DBDml() {
 
     const [value, setValue] = React.useState(0);
@@ -42,10 +41,10 @@ export default function DBDml() {
     };
 
 
-    return <div >
+    return <div>
 
         <Box
-            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex'}}
+            sx={{flexGrow: 1, bgcolor: 'background.paper', display: 'flex'}}
         >
             <Tabs
                 orientation="vertical"
@@ -53,7 +52,7 @@ export default function DBDml() {
                 value={value}
                 onChange={handleChange}
                 aria-label="Vertical tabs example"
-                sx={{ borderRight: 1, borderColor: 'divider' }}
+                sx={{borderRight: 1, borderColor: 'divider'}}
             >
                 <Tab label="mysql" {...a11yProps(0)} />
                 <Tab label="postgres" {...a11yProps(1)} />
@@ -61,13 +60,13 @@ export default function DBDml() {
 
             </Tabs>
             <TabPanel value={value} index={0} className={"w-full"}>
-                <DBDmlDetail dbType={"mysql"} />
+                <DBDmlDetail dbType={"mysql"}/>
             </TabPanel>
             <TabPanel value={value} index={1} className={"w-full"}>
-                <DBDmlDetail dbType={"postgres"} />
+                <DBDmlDetail dbType={"postgres"}/>
             </TabPanel>
             <TabPanel value={value} index={2} className={"w-full"}>
-                <DBDmlDetail dbType={"mssql"} />
+                <DBDmlDetail dbType={"mssql"}/>
             </TabPanel>
         </Box>
 

@@ -3,7 +3,7 @@ import {Drawer} from "@mui/material";
 import Box from "@mui/material/Box";
 import {CopyBlock, nord} from "react-code-blocks";
 
-export  function TemporaryDrawer({open, handleClose, element, dir="bottom"}) {
+export function TemporaryDrawer({open, handleClose, element, dir = "bottom"}) {
 
 
     return (

@@ -7,7 +7,7 @@ import DBData from "../data/DBData";
 import DBDml from "../dml/DBDml";
 import DBCode from "../code/DBCode";
 
-export default  function DBTableTab() {
+export default function DBTableTab() {
     const [value, setValue] = useState(0)
 
     const handleChange = (event, newValue) => {

@@ -5,8 +5,8 @@ import FormInputText from "../../../components/form/FormInputText";
 import FormSelect from "../../../components/form/FormSelect";
 
 export const EditIndexDialog = ({
-                             mode, value, open, closeDialog, submitForm
-                         }) => {
+                                    mode, value, open, closeDialog, submitForm
+                                }) => {
     const {handleSubmit, control, reset} = useForm({
         defaultValues: value
     })

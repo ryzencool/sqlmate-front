@@ -16,7 +16,7 @@ export class NodeModel extends StormNodeModel {
         this.id = options.id || 0
 
 
-        for (let i = 0 ; i < this.content.length; i++) {
+        for (let i = 0; i < this.content.length; i++) {
             this.addPort(
                 new DefaultPortModel({
                     in: true,
@@ -26,11 +26,10 @@ export class NodeModel extends StormNodeModel {
             this.addPort(
                 new DefaultPortModel({
                     in: false,
-                    name: "right_"+  this.content[i].id
+                    name: "right_" + this.content[i].id
                 })
             )
         }
-
 
 
     }

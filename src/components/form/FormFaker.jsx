@@ -3,8 +3,6 @@ import FormSelect from "./FormSelect";
 import {kinds} from "./fakerStruct";
 
 
-
-
 export default function FormFaker({control, nameKind, nameCate, watch, getValues}) {
 
     let kindTable = kinds.map(it => ({

@@ -36,7 +36,6 @@ export default function TeamJoin() {
     const auth = localStorage.getItem("authToken");
 
 
-
     return <div className={'w-screen h-screen flex flex-row'}>
         <div className={'w-1/2'}>
             <div className={'pl-10 pt-8 h-1/2 font-bold text-2xl'}>SQLMate</div>
@@ -46,7 +45,8 @@ export default function TeamJoin() {
                 {
                     auth ? <div className={'mt-6 underline underline-offset-2  pl-80 font-bold text-neutral-700'}
                                 onClick={handleClickJoin}>立即加入</div>
-                        : <div onClick={handleClickSignUp} className={'mt-6 underline underline-offset-2  pl-80 font-bold text-neutral-700'}>
+                        : <div onClick={handleClickSignUp}
+                               className={'mt-6 underline underline-offset-2  pl-80 font-bold text-neutral-700'}>
                             立即注册
                         </div>
                 }

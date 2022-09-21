@@ -20,7 +20,6 @@ import FormInputText from "../../../components/form/FormInputText";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createSnapshot} from "../../../api/dbApi";
 import {CodeResult, TemporaryDrawer} from "../../../components/drawer/TemporaryDrawer";
-import {format} from "sql-formatter";
 import {exporter} from "@dbml/core";
 import Box from "@mui/material/Box";
 import {a11yProps, ZTabPanel} from "../../../components/tab/ZTabPanel";
@@ -53,8 +52,6 @@ export default function DBSnapshot() {
     }, {enabled: false})
 
 
-
-
     const createSnapMutation = useMutation(createSnapshot, {
         onSuccess: () => {
             queryClient.invalidateQueries(["projectSnapshots"])
@@ -64,7 +61,7 @@ export default function DBSnapshot() {
 
     const [createSnapOpen, setCreateSnapOpen] = useState(false)
 
-    if ( snapshotListQuery.isLoading ) {
+    if (snapshotListQuery.isLoading) {
         return <div>加载中</div>
     }
 
@@ -199,20 +196,20 @@ function CodePanel({content}) {
     try {
         pg = exporter.export(content, "postgres")
     } catch (e) {
-        console.log("异常是",e.message)
+        console.log("异常是", e.message)
 
     }
     let mysql = ""
     try {
         mysql = exporter.export(content, "mysql")
     } catch (e) {
-        console.log("异常是",e)
+        console.log("异常是", e)
     }
     let mssql = ""
     try {
         mssql = exporter.export(content, "mssql")
     } catch (e) {
-        console.log("异常是",e.message)
+        console.log("异常是", e.message)
 
     }
     let json = ""

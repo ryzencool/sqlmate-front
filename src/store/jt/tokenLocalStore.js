@@ -1,7 +1,7 @@
-import {atom, useAtom} from "jotai";
+import {atom} from "jotai";
 
 
-export const tokenAtom = atom(localStorage.getItem("authToken")  ?? {})
+export const tokenAtom = atom(localStorage.getItem("authToken") ?? {})
 
 
 export const tokenAtomWithPersistence = atom(

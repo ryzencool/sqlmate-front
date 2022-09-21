@@ -23,22 +23,22 @@ export class JSCustomNodeWidget extends React.Component {
 
                         return (
 
-                        <div className="flex flex-row">
-                            <PortWidget
-                                engine={this.props.engine}
-                                port={port.in}
-                            >
-                                <div className="circle-port"/>
-                            </PortWidget>
-                            {port.in.options.name + " " + port.out.options.name}
-                            <PortWidget
-                                engine={this.props.engine}
-                                port={this.props.node.getPort(port.out.getName())}
-                            >
-                                <div className="circle-port"/>
-                            </PortWidget>
-                        </div>)
-                })}
+                            <div className="flex flex-row">
+                                <PortWidget
+                                    engine={this.props.engine}
+                                    port={port.in}
+                                >
+                                    <div className="circle-port"/>
+                                </PortWidget>
+                                {port.in.options.name + " " + port.out.options.name}
+                                <PortWidget
+                                    engine={this.props.engine}
+                                    port={this.props.node.getPort(port.out.getName())}
+                                >
+                                    <div className="circle-port"/>
+                                </PortWidget>
+                            </div>)
+                    })}
 
                 {/* <div
           className="custom-node-color"

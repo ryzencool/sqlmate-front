@@ -16,10 +16,11 @@ export const useListIndex = (search, options = {}) => {
 export const KEY_PROJECT_TABLES = "projectTables"
 
 export const useListTables = (search, options = {}) => {
-    return useQuery([KEY_PROJECT_TABLES , search], () => listTables(search), {
+    return useQuery([KEY_PROJECT_TABLES, search], () => listTables(search), {
         enabled: !!search
     })
 }
+
 
 export const KEY_PROJECT_TABLES_DETAIL = "projectTablesDetail"
 
